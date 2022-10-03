@@ -10,3 +10,5 @@ le create le due cartelle?
 ma c'è una qualche forma di chat?
 
 IL README
+
+CREMOOO perchè non compaiono le cose che il profe dice?
