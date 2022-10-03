@@ -1,3 +1,0 @@
-
-Ciao a tutti
-:D
