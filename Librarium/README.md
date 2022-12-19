@@ -1,9 +1,5 @@
 # Librarium
 
-## Aggiornare il modello del DB
-
-- **ECLIPSE**: Tasto destro sul progetto "librarium" &#8594; "Run As" &#8594; "Maven Build". Nel campo "goals" inserire `jooq-codegen:generate` poi premere "Run"
-
 ## Running the application
 
 The project is a standard Maven project. To run it from the command line,
