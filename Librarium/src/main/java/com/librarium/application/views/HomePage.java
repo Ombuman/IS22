@@ -1,23 +1,18 @@
 package com.librarium.application.views;
 
-import java.util.List;
-
-import org.jooq.Record;
-
-import com.librarium.application.backend.DatabaseHelper;
-import com.librarium.application.components.catalogo.ListaLibri;
-import com.vaadin.flow.component.html.H1;
+import com.librarium.application.components.catalogo.Catalogo;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 
-@Route("/")
-public class HomePage extends VerticalLayout {
+@PageTitle("Catalogo")
+@Route(value = "/", layout = MainLayout.class)
+public class HomePage extends VerticalLayout{
 	public HomePage() {
-		H1 titolo = new H1("Catalogo");
 		
-		ListaLibri libri = new ListaLibri();
-		libri.setItems(DatabaseHelper.leggiLibri());
-		
-		add(titolo, libri);
+		Catalogo catalogo = new Catalogo();
+		addClassName(LumoUtility.Padding.NONE);
+		add(catalogo);
 	}
 }
