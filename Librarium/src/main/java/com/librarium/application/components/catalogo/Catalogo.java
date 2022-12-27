@@ -1,33 +1,32 @@
 package com.librarium.application.components.catalogo;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import com.librarium.application.backend.DatabaseHelper;
+import com.librarium.database.generated.org.jooq.tables.records.CaseeditriciRecord;
 import com.librarium.database.generated.org.jooq.tables.records.CategorieRecord;
 import com.librarium.database.generated.org.jooq.tables.records.LibriCompletiRecord;
-import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class Catalogo extends VerticalLayout {
 	
+	HorizontalLayout layoutFiltriNascosti;
 	CheckboxGroup<CategorieRecord> filtroCategoria;
+	Select<CaseeditriciRecord> filtroCasaEditrice;
+	
 	Button annullaFiltri;
 	VerticalLayout listaCategorie;
 	TextField filtroNome;
@@ -57,52 +56,51 @@ public class Catalogo extends VerticalLayout {
 		VerticalLayout filtri = new VerticalLayout();
 		filtri.addClassName(LumoUtility.Padding.SMALL);
 		
-		HorizontalLayout layoutFiltroNome = creaLayoutFiltroNome();
+		layoutFiltriNascosti = new HorizontalLayout();
+		layoutFiltriNascosti.addClassName(LumoUtility.Padding.NONE);
+		layoutFiltriNascosti.addClassName(LumoUtility.FlexWrap.WRAP);
 		
-		VerticalLayout layoutFiltroCategoria = creaLayoutFiltroCategoria();
+		layoutFiltriNascosti.add(
+				creaLayoutFiltroCategoria(),
+				creaLayoutFiltroCasaEditrice()
+			);
+		layoutFiltriNascosti.setVisible(false);
 		
-		filtri.add(layoutFiltroNome, layoutFiltroCategoria);
+		filtri.add(creaLayoutFiltroNome(), layoutFiltriNascosti);
 		filtri.setSizeFull();
 		
 		return filtri;
 	}
-	
+
 	private HorizontalLayout creaLayoutFiltroNome() {
 		HorizontalLayout nameFilterLayout = new HorizontalLayout();
-		nameFilterLayout.addClassName("responsive");
+		nameFilterLayout.addClassName(LumoUtility.Padding.NONE);
 		nameFilterLayout.setAlignItems(Alignment.END);
-		nameFilterLayout.addClassName(LumoUtility.Padding.SMALL);
 		
 		filtroNome = new TextField();
-		filtroNome.addClassName(LumoUtility.Padding.NONE);
+		filtroNome.addClassName(LumoUtility.Padding.XSMALL);
 		filtroNome.setWidth("min(300px, 80vw)");
 		filtroNome.setLabel("Ricerca per nome");
 		filtroNome.setPlaceholder("Cerca...");
 		filtroNome.setValueChangeMode(ValueChangeMode.LAZY);
 		filtroNome.addValueChangeListener(e -> {
-			annullaFiltri.setVisible(!filtroNome.getValue().isBlank());
 			filtraLibri();
 		});
+		filtroNome.setClearButtonVisible(true);
 		
-		annullaFiltri = new Button(new Icon(VaadinIcon.CLOSE_CIRCLE));
-		annullaFiltri.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-		annullaFiltri.setVisible(false);
-		annullaFiltri.addClickListener(e -> {
-			filtroNome.setValue("");
+		Button toggleFiltriNascosti = new Button(new Icon(VaadinIcon.FILTER));
+		toggleFiltriNascosti.addClassName(LumoUtility.Padding.NONE);
+		toggleFiltriNascosti.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+		toggleFiltriNascosti.addClickListener(e -> {
+			layoutFiltriNascosti.setVisible(!layoutFiltriNascosti.isVisible());
 		});
 		
-		Button toggleFiltroCategoria = new Button(new Icon(VaadinIcon.FILTER));
-		toggleFiltroCategoria.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-		toggleFiltroCategoria.addClickListener(e -> {
-			filtroCategoria.setVisible(!filtroCategoria.isVisible());
-		});
-		
-		nameFilterLayout.add(toggleFiltroCategoria, filtroNome, annullaFiltri);
+		nameFilterLayout.add(toggleFiltriNascosti, filtroNome);
 		return nameFilterLayout;
 	}
 	
-	private VerticalLayout creaLayoutFiltroCategoria() {
-		VerticalLayout layoutFiltroCategoria = new VerticalLayout();
+	private Div creaLayoutFiltroCategoria() {
+		Div layoutFiltroCategoria = new Div();
 		layoutFiltroCategoria.addClassName(LumoUtility.Padding.NONE);
 		
 		filtroCategoria = new CheckboxGroup<>();
@@ -115,11 +113,36 @@ public class Catalogo extends VerticalLayout {
 		filtroCategoria.select(categorie);
 		
 		filtroCategoria.addValueChangeListener(e -> filtraLibri());
-		filtroCategoria.setVisible(false);
 		
 		layoutFiltroCategoria.add(filtroCategoria);
 		
 		return layoutFiltroCategoria;
+	}
+	
+	private Div creaLayoutFiltroCasaEditrice() {
+		Div layoutFiltroCasaEditrice = new Div();
+		layoutFiltroCasaEditrice.addClassName(LumoUtility.Padding.NONE);
+		
+		filtroCasaEditrice = new Select<>();
+		filtroCasaEditrice.addClassName(LumoUtility.Padding.SMALL);
+		filtroCasaEditrice.setLabel("Filtro Casa Editrice");
+		filtroCasaEditrice.setItems(DatabaseHelper.leggiCaseEditrici());
+		filtroCasaEditrice.setItemLabelGenerator(casaEditrice -> {
+			if(casaEditrice != null)
+				return casaEditrice.getNome();
+			
+			return new String("");
+		});
+		filtroCasaEditrice.setEmptySelectionAllowed(true);
+		filtroCasaEditrice.setEmptySelectionCaption("- Qualsiasi -");
+		
+		filtroCasaEditrice.addValueChangeListener(e -> {
+			filtraLibri();
+		});
+		
+		layoutFiltroCasaEditrice.add(filtroCasaEditrice);
+		
+		return layoutFiltroCasaEditrice;
 	}
 	
 	private void filtraLibri() {
@@ -127,7 +150,14 @@ public class Catalogo extends VerticalLayout {
 		
 		for(CategorieRecord categoria : filtroCategoria.getValue()) {
 			try {
-				List<LibriCompletiRecord> libriFiltrati = DatabaseHelper.leggiLibri(filtroNome.getValue() ,categoria);
+				CaseeditriciRecord casaEditrice = filtroCasaEditrice.getValue();
+				List<LibriCompletiRecord> libriFiltrati = 
+					DatabaseHelper.leggiLibri(
+							filtroNome.getValue(),
+							categoria, 
+							casaEditrice == null ? null : casaEditrice
+						);
+				
 				if(libriFiltrati.size() > 0) {
 					VerticalLayout layoutCategoria = new VerticalLayout();
 					
@@ -142,7 +172,7 @@ public class Catalogo extends VerticalLayout {
 					listaCategorie.add(layoutCategoria);
 				}
 			}catch (Exception e) {
-				// TODO: handle exception
+				System.out.println(e.getMessage());
 			}
 		}
 		

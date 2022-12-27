@@ -38,20 +38,20 @@ public class ListaLibri extends HorizontalLayout{
 	}
 	
 	public void setItems(List<LibriCompletiRecord> listaLibri, List<CategorieRecord> categorie) {
-		// rimuovi i libri vecchi)
+		// rimuovi i libri vecchi
 		removeAll();
 		
-		for(LibriCompletiRecord libro : listaLibri) {
-			BookDialog dialog = new BookDialog(libro);
+		for(LibriCompletiRecord datiLibro : listaLibri) {
+			BookDialog dialog = new BookDialog(datiLibro);
 			
 			VerticalLayout infoLibro = new VerticalLayout();
 			infoLibro.addClassName("miniatura-libro");
 			
 			Image copertina = new Image();
-			copertina.setSrc(libro.getCopertina());
+			copertina.setSrc(datiLibro.getLibro().getCopertina());
 			
 			Paragraph p = new Paragraph();
-			p.add(new H5(libro.getTitolo()), new Text(libro.getAutore().getNome()));
+			p.add(new H5(datiLibro.getLibro().getTitolo()), new Text(datiLibro.getAutore().getNome()));
 			
 			infoLibro.add(copertina, p);
 			infoLibro.addClickListener(click -> dialog.open());

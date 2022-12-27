@@ -15,9 +15,11 @@ import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 
 import com.librarium.database.generated.org.jooq.tables.Autori;
+import com.librarium.database.generated.org.jooq.tables.Caseeditrici;
 import com.librarium.database.generated.org.jooq.tables.Categorie;
 import com.librarium.database.generated.org.jooq.tables.Libri;
 import com.librarium.database.generated.org.jooq.tables.records.AutoriRecord;
+import com.librarium.database.generated.org.jooq.tables.records.CaseeditriciRecord;
 import com.librarium.database.generated.org.jooq.tables.records.CategorieRecord;
 import com.librarium.database.generated.org.jooq.tables.records.LibriCompletiRecord;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
@@ -59,8 +61,8 @@ public class DatabaseHelper {
 			Result<Record> result = ctx.select().from(Autori.AUTORI).fetch();
 
 			ArrayList<AutoriRecord> autori = new ArrayList<AutoriRecord>();
-			for (Record r : result) {
-				autori.add(new AutoriRecord((int) r.get("id"), (String) r.get("nome")));
+			for (Record autore : result) {
+				autori.add((AutoriRecord) autore);
 			}
 			
 			return autori;
@@ -70,64 +72,69 @@ public class DatabaseHelper {
 		}
 	}
 	
-	/*==================== LIBRI =====================*/
+	/*========================== LIBRI ===========================*/
 	
-	public static List<LibriCompletiRecord> leggiLibri(String titolo) {
-		return leggiLibri(titolo, null, null);
-	}
+	/*public static List<LibriCompletiRecord> leggiLibri(String filtroParole) {
+		return leggiLibri(filtroParole, null, null);
+	}*/
 	
 	public static List<LibriCompletiRecord> leggiLibri(CategorieRecord categoria) {
 		return categoria == null ? null : leggiLibri(null, categoria.getId().toString(), null);
 	}
 	
-	public static List<LibriCompletiRecord> leggiLibri(AutoriRecord autore) {
-		return autore == null ? null : leggiLibri(null, null, autore.getId());
-	}
+	/*public static List<LibriCompletiRecord> leggiLibri(AutoriRecord autore) {
+		return autore == null ? null : leggiLibri(null, null, autore.getId(), null);
+	}*/
 	
-	public static List<LibriCompletiRecord> leggiLibri(String titolo, CategorieRecord categoria) {
+	public static List<LibriCompletiRecord> leggiLibri(String filtroParole, CategorieRecord categoria) {
 		if(categoria == null)
 			return null;
-		return leggiLibri(titolo, categoria.getId().toString(), null);
+		return leggiLibri(filtroParole, categoria.getId().toString(), null);
 	}
 	
-	public static List<LibriCompletiRecord> leggiLibri(String titolo, String categoria, Integer autore) {
+	public static List<LibriCompletiRecord> leggiLibri(String filtroParole, CategorieRecord categoria, CaseeditriciRecord casaEditrice) {
+		if(categoria == null)
+			return null;
+		if(casaEditrice == null)
+			return leggiLibri(filtroParole, categoria);
+		
+		return leggiLibri(filtroParole, categoria.getId().toString(), casaEditrice.getId());
+	}
+	
+	public static List<LibriCompletiRecord> leggiLibri(String filtroParole, String categoria,  Integer casaEditrice) {
 		
 		try(Connection conn = connect()){
 			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
 			
 			Condition condition = DSL.noCondition();
 			
-			if(titolo != null && !titolo.isBlank())
-				condition = condition.and(Libri.LIBRI.TITOLO.contains(titolo));
+			if(filtroParole != null && !filtroParole.isBlank())
+				condition = condition.and(Libri.LIBRI.TITOLO.contains(filtroParole).or(Autori.AUTORI.NOME.contains(filtroParole)));
 			if(categoria != null && !categoria.isBlank())
 				condition = condition.and(Libri.LIBRI.CATEGORIA.contains(categoria));
-			if(autore != null)
-				condition = condition.and(Libri.LIBRI.AUTORE.eq(autore));
+			if(casaEditrice != null)
+				condition = condition.and(Libri.LIBRI.CASA_EDITRICE.eq(casaEditrice));
 			
 			Result<Record> result = 
 					ctx.select()
-					.from(Libri.LIBRI
-							.join(Autori.AUTORI)
-							.on(Libri.LIBRI.AUTORE.eq(Autori.AUTORI.ID)
-						)
-					)
+					.from(Libri.LIBRI)
+					.join(Autori.AUTORI)
+					.on(Libri.LIBRI.AUTORE.eq(Autori.AUTORI.ID))
+					.join(Caseeditrici.CASEEDITRICI)
+					.on(Libri.LIBRI.CASA_EDITRICE.eq(Caseeditrici.CASEEDITRICI.ID))
 					.where(condition)
 					.orderBy(Libri.LIBRI.TITOLO)
 					.fetch();
 			
+			
 			ArrayList<LibriCompletiRecord> libri = new ArrayList<LibriCompletiRecord>();
 			
 			result.forEach(libro -> {
-				AutoriRecord datiAutore = new AutoriRecord((Integer)libro.get("autore"), (String)libro.get("nome"));
 				libri.add(
 					new LibriCompletiRecord(
-							libro.get("id"), 
-							libro.get("titolo"), 
-							libro.get("copertina"), 
-							libro.get("anno"), 
-							libro.get("categoria"), 
-							datiAutore, 
-							libro.get("casa_editrice")
+						libro.into(Libri.LIBRI),
+						libro.into(Autori.AUTORI),
+						libro.into(Caseeditrici.CASEEDITRICI)
 					)
 				);
 			});
@@ -161,4 +168,29 @@ public class DatabaseHelper {
 			return null;
 		}
 	}
+	
+	/*========================== CASE EDITRICI ===========================*/
+	
+	public static ArrayList<CaseeditriciRecord> leggiCaseEditrici() {
+		try (Connection conn = connect()) {
+
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			Result<Record> result = ctx.select()
+					.from(Caseeditrici.CASEEDITRICI)
+					.orderBy(Caseeditrici.CASEEDITRICI.NOME)
+					.fetch();
+
+			ArrayList<CaseeditriciRecord> caseEditrici = new ArrayList<CaseeditriciRecord>();
+			for (Record casaEditrice : result) {
+				caseEditrici.add((CaseeditriciRecord) casaEditrice);
+			}
+			
+			return caseEditrici;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+	
+	/*=====================================================================*/
 }
