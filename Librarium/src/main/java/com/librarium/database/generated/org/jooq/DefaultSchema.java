@@ -4,9 +4,7 @@
 package com.librarium.database.generated.org.jooq;
 
 
-import com.librarium.database.generated.org.jooq.tables.Autori;
-import com.librarium.database.generated.org.jooq.tables.Caseeditrici;
-import com.librarium.database.generated.org.jooq.tables.Categorie;
+import com.librarium.database.generated.org.jooq.tables.Generi;
 import com.librarium.database.generated.org.jooq.tables.Libri;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 
@@ -32,19 +30,9 @@ public class DefaultSchema extends SchemaImpl {
     public static final DefaultSchema DEFAULT_SCHEMA = new DefaultSchema();
 
     /**
-     * The table <code>Autori</code>.
+     * The table <code>Generi</code>.
      */
-    public final Autori AUTORI = Autori.AUTORI;
-
-    /**
-     * The table <code>CaseEditrici</code>.
-     */
-    public final Caseeditrici CASEEDITRICI = Caseeditrici.CASEEDITRICI;
-
-    /**
-     * The table <code>Categorie</code>.
-     */
-    public final Categorie CATEGORIE = Categorie.CATEGORIE;
+    public final Generi GENERI = Generi.GENERI;
 
     /**
      * The table <code>Libri</code>.
@@ -72,9 +60,7 @@ public class DefaultSchema extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
-            Autori.AUTORI,
-            Caseeditrici.CASEEDITRICI,
-            Categorie.CATEGORIE,
+            Generi.GENERI,
             Libri.LIBRI,
             Utenti.UTENTI);
     }

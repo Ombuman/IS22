@@ -5,22 +5,17 @@ package com.librarium.database.generated.org.jooq.tables;
 
 
 import com.librarium.database.generated.org.jooq.DefaultSchema;
-import com.librarium.database.generated.org.jooq.Keys;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
-
-import java.util.Arrays;
-import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -48,39 +43,44 @@ public class Libri extends TableImpl<LibriRecord> {
     }
 
     /**
-     * The column <code>Libri.id</code>.
+     * The column <code>Libri.ID</code>.
      */
-    public final TableField<LibriRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER, this, "");
+    public final TableField<LibriRecord, Integer> ID = createField(DSL.name("ID"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>Libri.titolo</code>.
+     * The column <code>Libri.Titolo</code>.
      */
-    public final TableField<LibriRecord, String> TITOLO = createField(DSL.name("titolo"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<LibriRecord, String> TITOLO = createField(DSL.name("Titolo"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>Libri.copertina</code>.
+     * The column <code>Libri.Descrizione</code>.
      */
-    public final TableField<LibriRecord, String> COPERTINA = createField(DSL.name("copertina"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<LibriRecord, String> DESCRIZIONE = createField(DSL.name("Descrizione"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>Libri.anno</code>.
+     * The column <code>Libri.Copertina</code>.
      */
-    public final TableField<LibriRecord, String> ANNO = createField(DSL.name("anno"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<LibriRecord, String> COPERTINA = createField(DSL.name("Copertina"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>Libri.categoria</code>.
+     * The column <code>Libri.Genere</code>.
      */
-    public final TableField<LibriRecord, String> CATEGORIA = createField(DSL.name("categoria"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<LibriRecord, String> GENERE = createField(DSL.name("Genere"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>Libri.autore</code>.
+     * The column <code>Libri.Anno</code>.
      */
-    public final TableField<LibriRecord, Integer> AUTORE = createField(DSL.name("autore"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LibriRecord, Integer> ANNO = createField(DSL.name("Anno"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>Libri.casa_editrice</code>.
+     * The column <code>Libri.Autore</code>.
      */
-    public final TableField<LibriRecord, Integer> CASA_EDITRICE = createField(DSL.name("casa_editrice"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LibriRecord, String> AUTORE = createField(DSL.name("Autore"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>Libri.Casa_Editrice</code>.
+     */
+    public final TableField<LibriRecord, String> CASA_EDITRICE = createField(DSL.name("Casa_Editrice"), SQLDataType.CLOB, this, "");
 
     private Libri(Name alias, Table<LibriRecord> aliased) {
         this(alias, aliased, null);
@@ -121,46 +121,6 @@ public class Libri extends TableImpl<LibriRecord> {
     }
 
     @Override
-    public UniqueKey<LibriRecord> getPrimaryKey() {
-        return Keys.PK_LIBRI;
-    }
-
-    @Override
-    public List<UniqueKey<LibriRecord>> getKeys() {
-        return Arrays.<UniqueKey<LibriRecord>>asList(Keys.PK_LIBRI);
-    }
-
-    @Override
-    public List<ForeignKey<LibriRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LibriRecord, ?>>asList(Keys.FK_LIBRI_CATEGORIE_1, Keys.FK_LIBRI_AUTORI_1, Keys.FK_LIBRI_CASEEDITRICI_1);
-    }
-
-    private transient Categorie _categorie;
-    private transient Autori _autori;
-    private transient Caseeditrici _caseeditrici;
-
-    public Categorie categorie() {
-        if (_categorie == null)
-            _categorie = new Categorie(this, Keys.FK_LIBRI_CATEGORIE_1);
-
-        return _categorie;
-    }
-
-    public Autori autori() {
-        if (_autori == null)
-            _autori = new Autori(this, Keys.FK_LIBRI_AUTORI_1);
-
-        return _autori;
-    }
-
-    public Caseeditrici caseeditrici() {
-        if (_caseeditrici == null)
-            _caseeditrici = new Caseeditrici(this, Keys.FK_LIBRI_CASEEDITRICI_1);
-
-        return _caseeditrici;
-    }
-
-    @Override
     public Libri as(String alias) {
         return new Libri(DSL.name(alias), this);
     }
@@ -187,11 +147,11 @@ public class Libri extends TableImpl<LibriRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, String, String, Integer, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, String, String, String, String, Integer, String, String> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

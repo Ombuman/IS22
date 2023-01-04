@@ -4,9 +4,7 @@
 package com.librarium.database.generated.org.jooq;
 
 
-import com.librarium.database.generated.org.jooq.tables.Autori;
-import com.librarium.database.generated.org.jooq.tables.Caseeditrici;
-import com.librarium.database.generated.org.jooq.tables.Categorie;
+import com.librarium.database.generated.org.jooq.tables.Generi;
 import com.librarium.database.generated.org.jooq.tables.Libri;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 
@@ -18,19 +16,9 @@ import com.librarium.database.generated.org.jooq.tables.Utenti;
 public class Tables {
 
     /**
-     * The table <code>Autori</code>.
+     * The table <code>Generi</code>.
      */
-    public static final Autori AUTORI = Autori.AUTORI;
-
-    /**
-     * The table <code>CaseEditrici</code>.
-     */
-    public static final Caseeditrici CASEEDITRICI = Caseeditrici.CASEEDITRICI;
-
-    /**
-     * The table <code>Categorie</code>.
-     */
-    public static final Categorie CATEGORIE = Categorie.CATEGORIE;
+    public static final Generi GENERI = Generi.GENERI;
 
     /**
      * The table <code>Libri</code>.

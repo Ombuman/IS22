@@ -2,10 +2,9 @@ package com.librarium.application.components.catalogo;
 
 import java.util.List;
 
-import com.librarium.application.backend.DatabaseHelper;
-import com.librarium.database.generated.org.jooq.tables.records.CaseeditriciRecord;
-import com.librarium.database.generated.org.jooq.tables.records.CategorieRecord;
-import com.librarium.database.generated.org.jooq.tables.records.LibriCompletiRecord;
+import com.librarium.database.DatabaseHelper;
+import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
+import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -24,8 +23,8 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 public class Catalogo extends VerticalLayout {
 	
 	HorizontalLayout layoutFiltriNascosti;
-	CheckboxGroup<CategorieRecord> filtroCategoria;
-	Select<CaseeditriciRecord> filtroCasaEditrice;
+	CheckboxGroup<GeneriRecord> filtroCategoria;
+	Select<String> filtroCasaEditrice;
 	
 	Button annullaFiltri;
 	VerticalLayout listaCategorie;
@@ -107,7 +106,7 @@ public class Catalogo extends VerticalLayout {
 		filtroCategoria.setLabel("Filtro Categoria");
 		filtroCategoria.addClassName(LumoUtility.Padding.SMALL);
 		
-		List<CategorieRecord> categorie = DatabaseHelper.leggiCategorie();
+		List<GeneriRecord> categorie = DatabaseHelper.leggiGeneri();
 		filtroCategoria.setItems(categorie);
 		filtroCategoria.setItemLabelGenerator(categoria -> categoria.getNome());
 		filtroCategoria.select(categorie);
@@ -129,7 +128,7 @@ public class Catalogo extends VerticalLayout {
 		filtroCasaEditrice.setItems(DatabaseHelper.leggiCaseEditrici());
 		filtroCasaEditrice.setItemLabelGenerator(casaEditrice -> {
 			if(casaEditrice != null)
-				return casaEditrice.getNome();
+				return casaEditrice;
 			
 			return new String("");
 		});
@@ -148,14 +147,14 @@ public class Catalogo extends VerticalLayout {
 	private void filtraLibri() {
 		listaCategorie.removeAll();
 		
-		for(CategorieRecord categoria : filtroCategoria.getValue()) {
+		for(GeneriRecord categoria : filtroCategoria.getValue()) {
 			try {
-				CaseeditriciRecord casaEditrice = filtroCasaEditrice.getValue();
-				List<LibriCompletiRecord> libriFiltrati = 
+				String casaEditrice = filtroCasaEditrice.getValue();
+				List<LibriRecord> libriFiltrati = 
 					DatabaseHelper.leggiLibri(
 							filtroNome.getValue(),
-							categoria, 
-							casaEditrice == null ? null : casaEditrice
+							categoria,
+							(casaEditrice == null || casaEditrice.isBlank()) ? null : casaEditrice
 						);
 				
 				if(libriFiltrati.size() > 0) {

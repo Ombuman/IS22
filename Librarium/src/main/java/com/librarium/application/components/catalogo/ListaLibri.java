@@ -1,18 +1,11 @@
 package com.librarium.application.components.catalogo;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import com.librarium.application.backend.DatabaseHelper;
-import com.librarium.database.generated.org.jooq.tables.records.CategorieRecord;
-import com.librarium.database.generated.org.jooq.tables.records.LibriCompletiRecord;
+import com.librarium.database.DatabaseHelper;
+import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
@@ -27,31 +20,31 @@ public class ListaLibri extends HorizontalLayout{
 		addClassName("lista-libri");
 	}
 	
-	public ListaLibri(List<LibriCompletiRecord> listaLibri) {
+	public ListaLibri(List<LibriRecord> listaLibri) {
 		this();
 		
 		setItems(listaLibri);
 	}
 	
-	public void setItems(List<LibriCompletiRecord> listaLibri) {
-		setItems(listaLibri, DatabaseHelper.leggiCategorie());
+	public void setItems(List<LibriRecord> listaLibri) {
+		setItems(listaLibri, DatabaseHelper.leggiGeneri());
 	}
 	
-	public void setItems(List<LibriCompletiRecord> listaLibri, List<CategorieRecord> categorie) {
+	public void setItems(List<LibriRecord> listaLibri, List<GeneriRecord> categorie) {
 		// rimuovi i libri vecchi
 		removeAll();
 		
-		for(LibriCompletiRecord datiLibro : listaLibri) {
+		for(LibriRecord datiLibro : listaLibri) {
 			BookDialog dialog = new BookDialog(datiLibro);
 			
 			VerticalLayout infoLibro = new VerticalLayout();
 			infoLibro.addClassName("miniatura-libro");
 			
 			Image copertina = new Image();
-			copertina.setSrc(datiLibro.getLibro().getCopertina());
+			copertina.setSrc(datiLibro.getCopertina());
 			
 			Paragraph p = new Paragraph();
-			p.add(new H5(datiLibro.getLibro().getTitolo()), new Text(datiLibro.getAutore().getNome()));
+			p.add(new H5(datiLibro.getTitolo()), new Text(datiLibro.getAutore()));
 			
 			infoLibro.add(copertina, p);
 			infoLibro.addClickListener(click -> dialog.open());
