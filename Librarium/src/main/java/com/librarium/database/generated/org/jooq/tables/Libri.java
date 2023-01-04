@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -82,6 +82,11 @@ public class Libri extends TableImpl<LibriRecord> {
      */
     public final TableField<LibriRecord, String> CASA_EDITRICE = createField(DSL.name("Casa_Editrice"), SQLDataType.CLOB, this, "");
 
+    /**
+     * The column <code>Libri.Stato</code>.
+     */
+    public final TableField<LibriRecord, Integer> STATO = createField(DSL.name("Stato"), SQLDataType.INTEGER, this, "");
+
     private Libri(Name alias, Table<LibriRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -147,11 +152,11 @@ public class Libri extends TableImpl<LibriRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, String, String, Integer, String, String> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Integer, String, String, String, String, Integer, String, String, Integer> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

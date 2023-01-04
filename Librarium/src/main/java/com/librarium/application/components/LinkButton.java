@@ -13,7 +13,7 @@ public class LinkButton extends Button {
 		super(value);
 		
 		if(route != null && !route.isBlank())
-			addClickListener(e -> Navigation.navigateTo(this, "login"));
+			addClickListener(e -> Navigation.navigateTo(this, route));
 	}
 	
 	

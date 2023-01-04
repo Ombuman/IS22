@@ -1,5 +1,6 @@
 package com.librarium.application.components.catalogo;
 
+import com.librarium.application.components.BetterDialog;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -13,14 +14,11 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-public class BookDialog extends Dialog {
+public class BookDialog extends BetterDialog {
 	
 	public BookDialog(LibriRecord datiLibro) {
+		super();
 		setHeaderTitle(datiLibro.getTitolo());
-		Button closeButton = new Button(new Icon(VaadinIcon.CLOSE_SMALL), e -> close());
-		closeButton.getElement().setAttribute("aria-label", "Close");
-		closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-		getHeader().add(closeButton);
 		
 		VerticalLayout infoLibro = createInfoLibro(datiLibro);
 		add(infoLibro);

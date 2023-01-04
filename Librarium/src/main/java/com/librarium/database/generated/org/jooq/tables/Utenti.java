@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -71,6 +71,16 @@ public class Utenti extends TableImpl<UtentiRecord> {
      * The column <code>Utenti.password</code>.
      */
     public final TableField<UtentiRecord, String> PASSWORD = createField(DSL.name("password"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>Utenti.stato</code>.
+     */
+    public final TableField<UtentiRecord, String> STATO = createField(DSL.name("stato"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>Utenti.ruolo</code>.
+     */
+    public final TableField<UtentiRecord, String> RUOLO = createField(DSL.name("ruolo"), SQLDataType.CLOB, this, "");
 
     private Utenti(Name alias, Table<UtentiRecord> aliased) {
         this(alias, aliased, null);
@@ -147,11 +157,11 @@ public class Utenti extends TableImpl<UtentiRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Integer, String, String, String, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row7<Integer, String, String, String, String, String, String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

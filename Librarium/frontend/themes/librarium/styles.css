@@ -10,3 +10,8 @@ vaadin-button{
 vaadin-horizontal-layout.responsive{
 	flex-wrap: wrap;
 }
+
+.link-action{
+	cursor:pointer;
+	color: var(--lumo-primary-color);
+}
