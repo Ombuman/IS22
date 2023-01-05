@@ -55,3 +55,4 @@ vaadin-scroller[slot="drawer"][overflow~="bottom"] {
 [slot="drawer"]:is(header, footer):is(:empty) {
   display: none;
 }
+

@@ -1,4 +1,6 @@
-package com.librarium.application.authentication;
+package com.librarium.authentication;
+
+import com.librarium.database.security.EncryptionUtility;
 
 public class SignupInfo {
 	
@@ -45,6 +47,10 @@ public class SignupInfo {
 
 	public String getPassword() {
 		return password;
+	}
+	
+	public String getEncryptedPassword() {
+		return EncryptionUtility.encrpyt(password);
 	}
 
 	public void setPassword(String password) {

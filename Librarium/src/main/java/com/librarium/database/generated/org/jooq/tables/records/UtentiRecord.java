@@ -4,6 +4,7 @@
 package com.librarium.database.generated.org.jooq.tables.records;
 
 
+import com.librarium.database.enums.RuoloAccount;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 
 import org.jooq.Field;
@@ -326,4 +327,8 @@ public class UtentiRecord extends UpdatableRecordImpl<UtentiRecord> implements R
         setStato(stato);
         setRuolo(ruolo);
     }
+
+	public RuoloAccount getRuoloAsRuoloAccount() {
+		return RuoloAccount.valueOf(getRuolo());
+	}
 }

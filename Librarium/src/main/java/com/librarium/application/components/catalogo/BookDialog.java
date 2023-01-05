@@ -1,6 +1,8 @@
 package com.librarium.application.components.catalogo;
 
 import com.librarium.application.components.BetterDialog;
+import com.librarium.application.views.LoginPage;
+import com.librarium.authentication.session.SessionManager;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -25,6 +27,14 @@ public class BookDialog extends BetterDialog {
 		
 		Button prenotaButton = new Button("Prenota");
 		prenotaButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		prenotaButton.addClickListener(e -> {
+			if(SessionManager.isLogged()) {
+				System.out.println("OK");
+			} else {
+				LoginPage.getInstance().open();
+			}
+		});
+		
 		getFooter().add(prenotaButton);
 	}
 	

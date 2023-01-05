@@ -1,8 +1,13 @@
 package com.librarium.application.views;
 
-import com.librarium.application.authentication.LoginInfo;
 import com.librarium.application.components.BetterDialog;
 import com.librarium.application.navigate.Navigation;
+import com.librarium.authentication.LoginInfo;
+import com.librarium.authentication.session.SessionManager;
+import com.librarium.database.UsersManager;
+import com.librarium.database.generated.org.jooq.tables.Utenti;
+import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
+import com.librarium.database.security.EncryptionUtility;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -23,7 +28,7 @@ public class LoginPage extends BetterDialog {
 	
 	private static LoginPage instance;
 	
-	public static LoginPage getIstance() {
+	public static LoginPage getInstance() {
 		if(instance == null)
 			instance = new LoginPage();
 		
@@ -78,7 +83,7 @@ public class LoginPage extends BetterDialog {
 		linkRegistration.addClassName("link-action");
 		linkRegistration.addClickListener(e -> {
 			this.close();
-			SignupPage.getIstance().open();
+			SignupPage.getInstance().open();
 		});
 		
 		Span a;
@@ -130,10 +135,19 @@ public class LoginPage extends BetterDialog {
 		if(!binder.validate().isOk())
 			return;
 		
-		LoginInfo l = new LoginInfo();
+		LoginInfo datiAccesso = new LoginInfo();
 		try {
-			binder.writeBean(l);
-			System.out.println(l);
+			binder.writeBean(datiAccesso);
+			
+			UtentiRecord datiUtente = UsersManager.autenticaUtente(datiAccesso);
+			if(datiUtente != null) {
+				SessionManager.creaNuovaSessione(datiUtente);
+				this.close();
+			} else {
+				password.clear();
+				showErrorMessage("I dati inseriti sono errati");
+			}
+			
 		} catch (ValidationException e) {
 			showErrorMessage("Errore nel controllo dei dati");
 			//e.printStackTrace();

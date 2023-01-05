@@ -4,12 +4,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-import com.librarium.application.authentication.SignupInfo;
+import com.librarium.authentication.LoginInfo;
+import com.librarium.authentication.SignupInfo;
+import com.librarium.authentication.session.SessionManager;
 import com.librarium.database.enums.RuoloAccount;
 import com.librarium.database.enums.StatoAccountUtente;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
@@ -43,10 +46,32 @@ public class UsersManager extends DatabaseConnection {
 			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
 			
 			ctx.insertInto(Utenti.UTENTI, Utenti.UTENTI.NOME, Utenti.UTENTI.COGNOME, Utenti.UTENTI.EMAIL, Utenti.UTENTI.PASSWORD, Utenti.UTENTI.STATO, Utenti.UTENTI.RUOLO)
-			.values(datiUtente.getNome(), datiUtente.getCognome(), datiUtente.getEmail(), datiUtente.getPassword(), StatoAccountUtente.ATTIVO.toString(), RuoloAccount.UTENTE.toString())
+			.values(datiUtente.getNome(), datiUtente.getCognome(), datiUtente.getEmail(), datiUtente.getEncryptedPassword(), StatoAccountUtente.ATTIVO.toString(), RuoloAccount.UTENTE.toString())
 			.execute();
 		} catch(Exception e) {
 			throw e;
+		}
+	}
+	
+	public static UtentiRecord autenticaUtente(LoginInfo datiUtente) {
+		if(datiUtente == null)
+			return null;
+		
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			Result<Record> result = ctx.select()
+				.from(Utenti.UTENTI)
+				.where(
+					Utenti.UTENTI.EMAIL.eq(datiUtente.getEmail())
+					.and(Utenti.UTENTI.PASSWORD.eq(datiUtente.getEncryptedPassword()))
+				).fetch();
+			
+			return (result.size() > 0) ? result.get(0).into(Utenti.UTENTI) : null;
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	

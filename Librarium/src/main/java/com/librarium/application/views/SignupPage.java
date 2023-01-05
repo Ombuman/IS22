@@ -1,8 +1,8 @@
 package com.librarium.application.views;
 
-import com.librarium.application.authentication.LoginInfo;
-import com.librarium.application.authentication.SignupInfo;
 import com.librarium.application.components.BetterDialog;
+import com.librarium.authentication.LoginInfo;
+import com.librarium.authentication.SignupInfo;
 import com.librarium.database.DatabaseHelper;
 import com.librarium.database.UsersManager;
 import com.librarium.database.enums.StatoAccountUtente;
@@ -32,7 +32,7 @@ public class SignupPage extends BetterDialog {
 	
 	private static SignupPage instance;
 	
-	public static SignupPage getIstance() {
+	public static SignupPage getInstance() {
 		if(instance == null)
 			instance = new SignupPage();
 		
@@ -80,7 +80,7 @@ public class SignupPage extends BetterDialog {
 			
 			confermaPassword.setEnabled(value.getValue().length() != 0);
 		});
-		confermaPassword = new PasswordField("Confirm password");
+		confermaPassword = new PasswordField("Conferma password");
 		confermaPassword.setEnabled(false);
 		
 		// Pulsante 
@@ -130,7 +130,7 @@ public class SignupPage extends BetterDialog {
 	
 	private void mostraPaginaDiAccesso() {
 		this.close();
-		LoginPage.getIstance().open();
+		LoginPage.getInstance().open();
 	}
 
 	private void addBindingAndValidation() {
