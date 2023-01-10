@@ -1,0 +1,14 @@
+.card-prestito{
+	border:1px solid #eee;
+	border-radius: 10px;
+	padding:5px 15px;
+	margin-bottom:10px;
+	box-shadow: 0 0 0 #ddd;
+	
+	transition: 200ms ease;
+}
+
+.card-prestito:hover{
+	border:1px solid transparent;
+	box-shadow: 0 0 5px 5px rgba(0, 20, 200, 0.2);
+}

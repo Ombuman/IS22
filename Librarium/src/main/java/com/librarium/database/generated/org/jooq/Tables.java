@@ -6,6 +6,7 @@ package com.librarium.database.generated.org.jooq;
 
 import com.librarium.database.generated.org.jooq.tables.Generi;
 import com.librarium.database.generated.org.jooq.tables.Libri;
+import com.librarium.database.generated.org.jooq.tables.Prestiti;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 
 
@@ -24,6 +25,11 @@ public class Tables {
      * The table <code>Libri</code>.
      */
     public static final Libri LIBRI = Libri.LIBRI;
+
+    /**
+     * The table <code>Prestiti</code>.
+     */
+    public static final Prestiti PRESTITI = Prestiti.PRESTITI;
 
     /**
      * The table <code>Utenti</code>.

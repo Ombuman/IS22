@@ -85,7 +85,7 @@ public class Libri extends TableImpl<LibriRecord> {
     /**
      * The column <code>Libri.Stato</code>.
      */
-    public final TableField<LibriRecord, Integer> STATO = createField(DSL.name("Stato"), SQLDataType.INTEGER, this, "");
+    public final TableField<LibriRecord, String> STATO = createField(DSL.name("Stato"), SQLDataType.CLOB, this, "");
 
     private Libri(Name alias, Table<LibriRecord> aliased) {
         this(alias, aliased, null);
@@ -156,7 +156,7 @@ public class Libri extends TableImpl<LibriRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, String, String, String, String, Integer, String, String, Integer> fieldsRow() {
+    public Row9<Integer, String, String, String, String, Integer, String, String, String> fieldsRow() {
         return (Row9) super.fieldsRow();
     }
 }

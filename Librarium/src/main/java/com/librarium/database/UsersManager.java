@@ -12,7 +12,6 @@ import org.jooq.impl.DSL;
 
 import com.librarium.authentication.LoginInfo;
 import com.librarium.authentication.SignupInfo;
-import com.librarium.authentication.session.SessionManager;
 import com.librarium.database.enums.RuoloAccount;
 import com.librarium.database.enums.StatoAccountUtente;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
@@ -69,6 +68,23 @@ public class UsersManager extends DatabaseConnection {
 			
 			return (result.size() > 0) ? result.get(0).into(Utenti.UTENTI) : null;
 			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static StatoAccountUtente getStatoAccount(int idUtente) {
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			Result<Record1<String>> result = ctx.select(Utenti.UTENTI.STATO)
+				.from(Utenti.UTENTI)
+				.where(
+					Utenti.UTENTI.ID.eq(idUtente)
+				).fetch();
+			
+			return result.size() > 0 ? StatoAccountUtente.valueOf(result.get(0).component1()) : null;
 		} catch(Exception e) {
 			e.printStackTrace();
 			return null;

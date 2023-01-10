@@ -1,7 +1,8 @@
-package com.librarium.application.views;
+package com.librarium.application.views.base;
 
 import com.librarium.application.components.BetterDialog;
 import com.librarium.application.navigate.Navigation;
+import com.librarium.application.views.MainLayout;
 import com.librarium.authentication.LoginInfo;
 import com.librarium.authentication.session.SessionManager;
 import com.librarium.database.UsersManager;
@@ -9,6 +10,7 @@ import com.librarium.database.generated.org.jooq.tables.Utenti;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
 import com.librarium.database.security.EncryptionUtility;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -25,16 +27,6 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 //@Route("/login")
 public class LoginPage extends BetterDialog {
-	
-	private static LoginPage instance;
-	
-	public static LoginPage getInstance() {
-		if(instance == null)
-			instance = new LoginPage();
-		
-		return instance;
-	}
-	
 	private Binder<LoginInfo> binder;
 	
 	private EmailField email;
@@ -42,7 +34,7 @@ public class LoginPage extends BetterDialog {
 	
 	private Span errorMessage;
 	
-	private LoginPage() {
+	public LoginPage() {
 		super();
 		
 		addOpenedChangeListener(e -> {
@@ -83,7 +75,7 @@ public class LoginPage extends BetterDialog {
 		linkRegistration.addClassName("link-action");
 		linkRegistration.addClickListener(e -> {
 			this.close();
-			SignupPage.getInstance().open();
+			new SignupPage().open();
 		});
 		
 		Span a;
@@ -142,6 +134,7 @@ public class LoginPage extends BetterDialog {
 			UtentiRecord datiUtente = UsersManager.autenticaUtente(datiAccesso);
 			if(datiUtente != null) {
 				SessionManager.creaNuovaSessione(datiUtente);
+				MainLayout.updateAuthButtonsLayout();
 				this.close();
 			} else {
 				password.clear();
@@ -150,7 +143,7 @@ public class LoginPage extends BetterDialog {
 			
 		} catch (ValidationException e) {
 			showErrorMessage("Errore nel controllo dei dati");
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 }

@@ -13,12 +13,13 @@ import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
+import com.librarium.database.enums.StatoLibro;
 import com.librarium.database.generated.org.jooq.tables.Generi;
 import com.librarium.database.generated.org.jooq.tables.Libri;
 import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 
-public class DatabaseHelper extends DatabaseConnection{
+public class CatalogManager extends DatabaseConnection{
 
 	/*========================== LIBRI ===========================*/
 	
@@ -62,6 +63,20 @@ public class DatabaseHelper extends DatabaseConnection{
 		}
 	}
 	
+	public static void aggiornaStatoLibro(int idLibro, StatoLibro nuovoStato) {
+		
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			ctx.update(Libri.LIBRI)
+				.set(Libri.LIBRI.STATO, nuovoStato.name())
+				.where(Libri.LIBRI.ID.eq(idLibro))
+				.execute();
+		} catch(SQLException ex){
+			System.out.println(ex.getMessage());
+		}
+		
+	}
 	/*======================================================================*/
 	
 	public static List<GeneriRecord> leggiGeneri() {

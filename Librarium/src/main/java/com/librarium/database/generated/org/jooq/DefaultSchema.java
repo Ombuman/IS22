@@ -6,6 +6,7 @@ package com.librarium.database.generated.org.jooq;
 
 import com.librarium.database.generated.org.jooq.tables.Generi;
 import com.librarium.database.generated.org.jooq.tables.Libri;
+import com.librarium.database.generated.org.jooq.tables.Prestiti;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 
 import java.util.Arrays;
@@ -40,6 +41,11 @@ public class DefaultSchema extends SchemaImpl {
     public final Libri LIBRI = Libri.LIBRI;
 
     /**
+     * The table <code>Prestiti</code>.
+     */
+    public final Prestiti PRESTITI = Prestiti.PRESTITI;
+
+    /**
      * The table <code>Utenti</code>.
      */
     public final Utenti UTENTI = Utenti.UTENTI;
@@ -62,6 +68,7 @@ public class DefaultSchema extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Generi.GENERI,
             Libri.LIBRI,
+            Prestiti.PRESTITI,
             Utenti.UTENTI);
     }
 }

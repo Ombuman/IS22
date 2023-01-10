@@ -1,8 +1,10 @@
 package com.librarium.application.components.catalogo;
 
 import com.librarium.application.components.BetterDialog;
-import com.librarium.application.views.LoginPage;
+import com.librarium.application.views.base.LoginPage;
 import com.librarium.authentication.session.SessionManager;
+import com.librarium.database.PrestitiManager;
+import com.librarium.database.enums.StatoLibro;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -25,15 +27,28 @@ public class BookDialog extends BetterDialog {
 		VerticalLayout infoLibro = createInfoLibro(datiLibro);
 		add(infoLibro);
 		
-		Button prenotaButton = new Button("Prenota");
-		prenotaButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		prenotaButton.addClickListener(e -> {
-			if(SessionManager.isLogged()) {
-				System.out.println("OK");
-			} else {
-				LoginPage.getInstance().open();
-			}
-		});
+		Button prenotaButton = new Button("");
+		switch(StatoLibro.valueOf(datiLibro.getStato())) {
+			case DISPONIBILE:
+				prenotaButton.setText("Prenota");
+				prenotaButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+				prenotaButton.addClickListener(e -> {
+					if(SessionManager.isLogged()) {
+						// se il prestito va a buon fine
+						if(PrestitiManager.creaPrestito(SessionManager.getDatiUtente(), datiLibro)) {
+							Catalogo.aggiornaListaLibri(); // aggiorna la lista dei libri del catalogo
+							this.close(); // chiudi la finestra
+						}
+					} else {
+						new LoginPage().open();
+					}
+				});
+			break;
+			case NON_DISPONIBILE:
+				prenotaButton.setText("Non Disponibile");
+				prenotaButton.setEnabled(false);
+			break;
+		}
 		
 		getFooter().add(prenotaButton);
 	}

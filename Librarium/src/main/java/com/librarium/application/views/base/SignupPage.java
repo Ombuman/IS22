@@ -1,9 +1,9 @@
-package com.librarium.application.views;
+package com.librarium.application.views.base;
 
 import com.librarium.application.components.BetterDialog;
 import com.librarium.authentication.LoginInfo;
 import com.librarium.authentication.SignupInfo;
-import com.librarium.database.DatabaseHelper;
+import com.librarium.database.CatalogManager;
 import com.librarium.database.UsersManager;
 import com.librarium.database.enums.StatoAccountUtente;
 import com.vaadin.flow.component.Text;
@@ -29,16 +29,6 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 //@Route("/signup")
 public class SignupPage extends BetterDialog {
-	
-	private static SignupPage instance;
-	
-	public static SignupPage getInstance() {
-		if(instance == null)
-			instance = new SignupPage();
-		
-		return instance;
-	}
-	
 	private Binder<SignupInfo> binder;
 	
 	private TextField nome;
@@ -50,7 +40,7 @@ public class SignupPage extends BetterDialog {
 	private Button signupButton;
 	private Span errorMessage;
 	
-	private SignupPage() {
+	public SignupPage() {
 		super();
 		
 		addOpenedChangeListener(e -> {			
@@ -130,7 +120,7 @@ public class SignupPage extends BetterDialog {
 	
 	private void mostraPaginaDiAccesso() {
 		this.close();
-		LoginPage.getInstance().open();
+		new LoginPage().open();
 	}
 
 	private void addBindingAndValidation() {
@@ -168,6 +158,8 @@ public class SignupPage extends BetterDialog {
 	}
 	
 	private void tentaRegistrazione() {
+		hideErrorMessage();
+		
 		if(!binder.validate().isOk())
 			return;
 		
@@ -182,7 +174,7 @@ public class SignupPage extends BetterDialog {
 			mostraPaginaDiAccesso();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			//e.printStackTrace();
+			showErrorMessage("Si è verificato un errore. Riprova più tardi!");
 		} finally {
 			signupButton.setEnabled(true);
 		}

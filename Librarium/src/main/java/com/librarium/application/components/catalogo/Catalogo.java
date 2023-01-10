@@ -2,7 +2,7 @@ package com.librarium.application.components.catalogo;
 
 import java.util.List;
 
-import com.librarium.database.DatabaseHelper;
+import com.librarium.database.CatalogManager;
 import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 import com.vaadin.flow.component.Text;
@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -22,13 +23,12 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class Catalogo extends VerticalLayout {
 	
-	HorizontalLayout layoutFiltriNascosti;
-	CheckboxGroup<GeneriRecord> filtroCategoria;
-	Select<String> filtroCasaEditrice;
+	private HorizontalLayout layoutFiltriNascosti;
+	private static Select<GeneriRecord> filtroGenere;
+	private static Select<String> filtroCasaEditrice;
 	
-	Button annullaFiltri;
-	VerticalLayout listaCategorie;
-	TextField filtroNome;
+	private static VerticalLayout listaLibri;
+	private static TextField filtroNome;
 	
 	public Catalogo() {
 		this("");
@@ -36,34 +36,33 @@ public class Catalogo extends VerticalLayout {
 	
 	public Catalogo(String title) {
 		addClassName("catalogo");
-		addClassName(LumoUtility.Padding.SMALL);
+		addClassNames(LumoUtility.Padding.SMALL);
 		
 		if(title != null && !title.isBlank())
 			add(new H1(title));
 		
 		VerticalLayout filtri = creaFiltri();
 		filtri.addClassName("filtri");
-		listaCategorie = new VerticalLayout();
-		listaCategorie.addClassName(LumoUtility.Padding.NONE);
+		listaLibri = new VerticalLayout();
+		listaLibri.addClassNames(LumoUtility.Padding.NONE);
 		
-		filtraLibri();
+		aggiornaListaLibri();
 		
-		add(filtri, listaCategorie);
+		add(filtri, listaLibri);
 	}
 	
 	private VerticalLayout creaFiltri() {
 		VerticalLayout filtri = new VerticalLayout();
-		filtri.addClassName(LumoUtility.Padding.SMALL);
+		filtri.addClassName(LumoUtility.Padding.NONE);
+		
+		inizializzaFiltroGenere();
+		inizializzaFiltroCasaEditrice();
 		
 		layoutFiltriNascosti = new HorizontalLayout();
-		layoutFiltriNascosti.addClassName(LumoUtility.Padding.NONE);
-		layoutFiltriNascosti.addClassName(LumoUtility.FlexWrap.WRAP);
-		
-		layoutFiltriNascosti.add(
-				creaLayoutFiltroCategoria(),
-				creaLayoutFiltroCasaEditrice()
-			);
+		layoutFiltriNascosti.addClassNames(LumoUtility.Padding.SMALL, LumoUtility.FlexWrap.WRAP, LumoUtility.Gap.SMALL);
+		layoutFiltriNascosti.add(filtroGenere, filtroCasaEditrice);
 		layoutFiltriNascosti.setVisible(false);
+		layoutFiltriNascosti.setSizeUndefined();
 		
 		filtri.add(creaLayoutFiltroNome(), layoutFiltriNascosti);
 		filtri.setSizeFull();
@@ -77,13 +76,13 @@ public class Catalogo extends VerticalLayout {
 		nameFilterLayout.setAlignItems(Alignment.END);
 		
 		filtroNome = new TextField();
-		filtroNome.addClassName(LumoUtility.Padding.XSMALL);
-		filtroNome.setWidth("min(300px, 80vw)");
+		filtroNome.addClassName(LumoUtility.Padding.SMALL);
+		filtroNome.setWidth("min(300px, 90vw)");
 		filtroNome.setLabel("Ricerca per nome");
 		filtroNome.setPlaceholder("Cerca...");
 		filtroNome.setValueChangeMode(ValueChangeMode.LAZY);
 		filtroNome.addValueChangeListener(e -> {
-			filtraLibri();
+			aggiornaListaLibri();
 		});
 		filtroNome.setClearButtonVisible(true);
 		
@@ -94,88 +93,75 @@ public class Catalogo extends VerticalLayout {
 			layoutFiltriNascosti.setVisible(!layoutFiltriNascosti.isVisible());
 		});
 		
-		nameFilterLayout.add(toggleFiltriNascosti, filtroNome);
+		nameFilterLayout.add(filtroNome, toggleFiltriNascosti);
 		return nameFilterLayout;
 	}
 	
-	private Div creaLayoutFiltroCategoria() {
-		Div layoutFiltroCategoria = new Div();
-		layoutFiltroCategoria.addClassName(LumoUtility.Padding.NONE);
+	private void inizializzaFiltroGenere() {
+		filtroGenere = new Select<>();
+		filtroGenere.setLabel("Filtro Genere");
+		filtroGenere.addClassName(LumoUtility.Padding.NONE);
+		filtroGenere.setWidth("min(300px, 90vw)");
 		
-		filtroCategoria = new CheckboxGroup<>();
-		filtroCategoria.setLabel("Filtro Categoria");
-		filtroCategoria.addClassName(LumoUtility.Padding.SMALL);
+		List<GeneriRecord> generi = CatalogManager.leggiGeneri();
+		filtroGenere.setItems(generi);
+		filtroGenere.setItemLabelGenerator(genere -> {
+			return genere != null ? genere.getNome() : new String("");
+		});
+		filtroGenere.setEmptySelectionAllowed(true);
+		filtroGenere.setEmptySelectionCaption("- Qualsiasi -");
 		
-		List<GeneriRecord> categorie = DatabaseHelper.leggiGeneri();
-		filtroCategoria.setItems(categorie);
-		filtroCategoria.setItemLabelGenerator(categoria -> categoria.getNome());
-		filtroCategoria.select(categorie);
-		
-		filtroCategoria.addValueChangeListener(e -> filtraLibri());
-		
-		layoutFiltroCategoria.add(filtroCategoria);
-		
-		return layoutFiltroCategoria;
+		filtroGenere.addValueChangeListener(e -> aggiornaListaLibri());
 	}
 	
-	private Div creaLayoutFiltroCasaEditrice() {
-		Div layoutFiltroCasaEditrice = new Div();
-		layoutFiltroCasaEditrice.addClassName(LumoUtility.Padding.NONE);
-		
+	private void inizializzaFiltroCasaEditrice() {
 		filtroCasaEditrice = new Select<>();
-		filtroCasaEditrice.addClassName(LumoUtility.Padding.SMALL);
+		filtroCasaEditrice.addClassName(LumoUtility.Padding.NONE);
+		filtroCasaEditrice.setWidth("min(300px, 90vw)");
+		
 		filtroCasaEditrice.setLabel("Filtro Casa Editrice");
-		filtroCasaEditrice.setItems(DatabaseHelper.leggiCaseEditrici());
+		filtroCasaEditrice.setItems(CatalogManager.leggiCaseEditrici());
 		filtroCasaEditrice.setItemLabelGenerator(casaEditrice -> {
-			if(casaEditrice != null)
-				return casaEditrice;
-			
-			return new String("");
+			return casaEditrice != null ? casaEditrice: new String("");
 		});
 		filtroCasaEditrice.setEmptySelectionAllowed(true);
 		filtroCasaEditrice.setEmptySelectionCaption("- Qualsiasi -");
 		
 		filtroCasaEditrice.addValueChangeListener(e -> {
-			filtraLibri();
+			aggiornaListaLibri();
 		});
-		
-		layoutFiltroCasaEditrice.add(filtroCasaEditrice);
-		
-		return layoutFiltroCasaEditrice;
 	}
 	
-	private void filtraLibri() {
-		listaCategorie.removeAll();
+	public static void aggiornaListaLibri() {
+		listaLibri.removeAll();
 		
-		for(GeneriRecord categoria : filtroCategoria.getValue()) {
-			try {
-				String casaEditrice = filtroCasaEditrice.getValue();
-				List<LibriRecord> libriFiltrati = 
-					DatabaseHelper.leggiLibri(
-							filtroNome.getValue(),
-							categoria,
-							(casaEditrice == null || casaEditrice.isBlank()) ? null : casaEditrice
-						);
+		String testo = filtroNome.getValue() == null ? null : filtroNome.getValue();
+		GeneriRecord genere = filtroGenere.getValue();
+		String idGenere = genere == null ? null : genere.getId().toString();
+		String casaEditrice = filtroCasaEditrice.getValue() == null ? null : filtroCasaEditrice.getValue();
+		
+		try {
+			List<LibriRecord> libriFiltrati = CatalogManager.leggiLibri(testo, idGenere, casaEditrice);
+			
+			if(libriFiltrati.size() > 0) {
+				VerticalLayout layoutCategoria = new VerticalLayout();
+				layoutCategoria.addClassName(LumoUtility.Padding.SMALL);
 				
-				if(libriFiltrati.size() > 0) {
-					VerticalLayout layoutCategoria = new VerticalLayout();
-					
-					H1 titolo = new H1(new H1(categoria.getNome()));
-					ListaLibri listaLibri = new ListaLibri();
-					
-					listaLibri.setItems(libriFiltrati);
-					
-					layoutCategoria.setWidthFull();
-					layoutCategoria.add(titolo, listaLibri);
-					
-					listaCategorie.add(layoutCategoria);
-				}
-			}catch (Exception e) {
-				System.out.println(e.getMessage());
+				H1 titolo = new H1(genere == null ? "Tutti i libri" : genere.getNome());
+				ListaLibri lista = new ListaLibri();
+				
+				lista.setItems(libriFiltrati);
+				
+				layoutCategoria.setWidthFull();
+				layoutCategoria.add(titolo, lista);
+				
+				listaLibri.add(layoutCategoria);
 			}
+		}catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
 		
-		if(listaCategorie.getComponentCount() == 0)
-			listaCategorie.add(new Text("Nessun Risultato"));
+		if(listaLibri.getComponentCount() == 0)
+			listaLibri.add(new Text("Nessun Risultato"));
 	}
 }

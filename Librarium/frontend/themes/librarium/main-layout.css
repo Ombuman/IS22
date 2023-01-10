@@ -56,3 +56,21 @@ vaadin-scroller[slot="drawer"][overflow~="bottom"] {
   display: none;
 }
 
+.nav-link{
+	text-decoration:none !important;
+	color:var(--lumo-secondary-color);
+	transition: 100ms ease;
+}
+
+.nav-link:hover{
+	color:var(--lumo-primary-color);
+}
+
+.nav-link p{
+	margin:0;
+}
+
+.nav-link vaadin-icon{
+	width:min(18px, 30vw);
+	height:min(18px, 30vw);
+}

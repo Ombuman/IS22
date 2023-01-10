@@ -327,8 +327,8 @@ public class UtentiRecord extends UpdatableRecordImpl<UtentiRecord> implements R
         setStato(stato);
         setRuolo(ruolo);
     }
-
-	public RuoloAccount getRuoloAsRuoloAccount() {
+    
+    public RuoloAccount getRuoloAsRuoloAccount() {
 		return RuoloAccount.valueOf(getRuolo());
 	}
 }

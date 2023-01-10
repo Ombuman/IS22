@@ -36,13 +36,18 @@
   background: #555;
 }
 
-.lista-libri{
+/*.lista-libri{
+	box-sizing:block;
 	overflow: auto;
 	max-width:100%;
 	padding:10px 25px;
 	
 	-webkit-mask-image: linear-gradient(90deg, transparent 0%, black 2% 98%, transparent 100%);
 	mask-image: linear-gradient(45deg, black, transparent);
+}*/
+
+.lista-libri{
+	gap:15px;
 }
 
 .miniatura-libro{
@@ -53,25 +58,50 @@
 	cursor:pointer;
 	
 	background-color:white;
-	box-shadow: 0 0 0 black;
+	box-shadow: 0 0 0 transparent;
 	transition: 250ms ease-in-out;
 }
 
 .miniatura-libro:hover{
-	background-color: rgba(0, 40, 180, 0.2);
-	box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	background-color: rgba(0, 20, 200, 0.1);
+	box-shadow: 0 0 5px 5px rgba(0, 20, 200, 0.5);
 	border:1px solid transparent;
 }
 
 .miniatura-libro img{
 	align-self:center;
 	aspect-ratio: 3 / 4;
-	width:min(90vw, 150px);
+	width:min(30vw, 150px);
 }
 
 .miniatura-libro h5,
 .miniatura-libro p{
 	margin:0;
+}
+
+@media only screen and (max-width: 800px){
+	.lista-libri{
+		justify-content:center;
+		padding:0;
+		margin:0;
+		gap:10px;
+	}
+	
+	.miniatura-libro{
+		min-width:min(180px, 40vw);
+		max-width:min(180px, 40vw);
+	}
+	
+	.miniatura-libro img{
+		align-self:center;
+		aspect-ratio: 3 / 4;
+		min-width: 80px;
+		width:min(120px, 40vw);
+	}
+	
+	.miniatura-libro p{
+		font-size: var(--lumo-font-size-s);
+	}
 }
 
 /*========== INFO LIBRI ===========*/

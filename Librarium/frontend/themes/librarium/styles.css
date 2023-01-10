@@ -1,6 +1,7 @@
 @import url('./main-layout.css');
-@import url('./form.css');
-@import url('./catalogo.css');
+@import url('./components/form.css');
+@import url('./components/catalogo.css');
+@import url('./components/cards.css');
 @import url('line-awesome/dist/line-awesome/css/line-awesome.min.css');
 
 vaadin-button{

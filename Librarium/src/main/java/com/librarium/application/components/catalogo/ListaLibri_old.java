@@ -13,24 +13,20 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-public class ListaLibri extends FlexLayout{
+public class ListaLibri_old extends HorizontalLayout{
 	
 	//private List<LibriRecord> listaLibri;
 	
-	public ListaLibri() {
-		setFlexWrap(FlexWrap.WRAP);
-		//setJustifyContentMode(JustifyContentMode.START);
-		addClassNames("lista-libri");
-		setSizeFull();
+	public ListaLibri_old() {
+		addClassName("lista-libri");
 	}
 	
-	public ListaLibri(List<LibriRecord> listaLibri) {
+	public ListaLibri_old(List<LibriRecord> listaLibri) {
 		this();
 		
 		setItems(listaLibri);
@@ -55,7 +51,7 @@ public class ListaLibri extends FlexLayout{
 	
 	private VerticalLayout creaInfoLibro(LibriRecord datiLibro, BookDialog dialog) {		
 		VerticalLayout infoLibro = new VerticalLayout();
-		infoLibro.addClassNames("miniatura-libro");
+		infoLibro.addClassName("miniatura-libro");
 		
 		Image copertina = new Image();
 		copertina.setSrc(datiLibro.getCopertina());
@@ -68,12 +64,12 @@ public class ListaLibri extends FlexLayout{
 		
 		switch(StatoLibro.valueOf(datiLibro.getStato())) {
 		case DISPONIBILE:
-			statoLibro.add(new Span("Disponibile"));
-			statoLibro.getElement().getThemeList().add("badge primary success");
+			statoLibro.setText("⬤ Disponibile");
+			statoLibro.addClassName(LumoUtility.TextColor.SUCCESS);
 			break;
 		case NON_DISPONIBILE:
-			statoLibro.add(new Span("Non disponibile"));
-			statoLibro.getElement().getThemeList().add("badge primary error");
+			statoLibro.setText("⬤ Non disponibile");
+			statoLibro.addClassName(LumoUtility.TextColor.ERROR);
 			break;			
 		}
 		
