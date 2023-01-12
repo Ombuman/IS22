@@ -11,7 +11,7 @@
 
     <properties>
         <java.version>19</java.version>
-        <vaadin.version>23.2.10</vaadin.version>
+        <vaadin.version>23.3.3</vaadin.version>
         <!-- this parameter is needed as spring-boot bom overwrites it -->
         <selenium.version>4.5.3</selenium.version>
     </properties>
@@ -75,6 +75,21 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+            	<groupId>com.vaadin</groupId>
+            	<artifactId>vaadin</artifactId>
+            	<version>23.3.3</version>
+            </dependency>
+            <dependency>
+            	<groupId>io.github.bonigarcia</groupId>
+            	<artifactId>webdrivermanager</artifactId>
+            	<version>5.1.1</version>
+            </dependency>
+            <dependency>
+            	<groupId>org.jooq</groupId>
+            	<artifactId>jooq-meta-extensions</artifactId>
+            	<version>3.17.5</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -122,7 +137,6 @@
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
-            <version>5.1.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -144,7 +158,6 @@
 		<dependency>
 			<groupId>org.jooq</groupId>
 			<artifactId>jooq-meta-extensions</artifactId>
-			<version>3.17.5</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>

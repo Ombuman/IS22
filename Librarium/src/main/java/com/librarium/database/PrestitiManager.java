@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -27,15 +28,20 @@ import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
 
 public class PrestitiManager extends DatabaseConnection {
 	
-	public static ArrayList<Prestito> getPrestitiUtente(int idUtente) {		
+	public static ArrayList<Prestito> getPrestitiUtente(int idUtente, String stato) {		
 		try(Connection conn = connect()){
 			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			Condition condition = DSL.noCondition();
+			if(stato != null && !stato.isBlank())
+				condition = condition.and(Prestiti.PRESTITI.STATO.eq(stato));
 			
 			Result<Record> result = ctx.select()
 				.from(Prestiti.PRESTITI)
 				.join(Libri.LIBRI)
 				.on(Prestiti.PRESTITI.LIBRO.eq(Libri.LIBRI.ID))
 				.where(Prestiti.PRESTITI.UTENTE.eq(idUtente))
+				.and(condition)
 				.fetch();
 			
 			ArrayList<Prestito> prestitiUtente = new ArrayList<>();

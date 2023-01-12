@@ -133,7 +133,7 @@ public class MainLayout extends AppLayout{
     	icona.addClassName(LumoUtility.IconSize.SMALL);
     	
     	IconNavLink iMieiPrestitiLink = new IconNavLink("/miei-prestiti", VaadinIcon.BOOK, " I miei prestiti");
-        IconNavLink profiloLink = new IconNavLink("/", VaadinIcon.USER, " Profilo");
+        IconNavLink profiloLink = new IconNavLink("/profilo", VaadinIcon.USER, " Profilo");
     	
     	VerticalLayout links = new VerticalLayout(iMieiPrestitiLink, profiloLink);
     	links.addClassNames(LumoUtility.Padding.NONE, LumoUtility.Gap.XSMALL);

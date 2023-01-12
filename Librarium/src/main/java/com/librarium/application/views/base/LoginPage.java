@@ -37,7 +37,7 @@ public class LoginPage extends BetterDialog {
 	public LoginPage() {
 		super();
 		
-		addOpenedChangeListener(e -> {
+		/*addOpenedChangeListener(e -> {
 			if(errorMessage != null)
 				errorMessage.setVisible(false);
 			
@@ -45,7 +45,7 @@ public class LoginPage extends BetterDialog {
 				binder.getFields().forEach(f -> f.clear());
 				binder.refreshFields();
 			}
-		});
+		});*/
 		
 		/* Creazione Form */
 		
@@ -66,8 +66,7 @@ public class LoginPage extends BetterDialog {
 		
 		// Messaggio d'errore
 		errorMessage = new Span("");
-		errorMessage.addClassName(LumoUtility.TextColor.ERROR);
-		errorMessage.addClassName(LumoUtility.Padding.NONE);
+		errorMessage.addClassNames(LumoUtility.TextColor.ERROR, LumoUtility.Padding.NONE);
 		hideErrorMessage();
 		
 		// Link che riporta alla finestra di registrazione
@@ -77,8 +76,7 @@ public class LoginPage extends BetterDialog {
 			this.close();
 			new SignupPage().open();
 		});
-		
-		Span a;
+
 		Paragraph hint = new Paragraph(new Text("Non hai un account? "), linkRegistration);
 		
 		// Creo il form

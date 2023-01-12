@@ -1,9 +1,15 @@
 package com.librarium.application.components.cards;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Optional;
+
 import com.librarium.application.views.user.PrestitiUtentePage;
 import com.librarium.database.PrestitiManager;
 import com.librarium.database.entities.Prestito;
 import com.librarium.database.enums.StatoPrestito;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -19,23 +25,41 @@ import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class CardPrestito extends HorizontalLayout{
 	
 	private Prestito prestito;
-	public PrestitiUtentePage paginaPrestitiUtente;
+	public ConfirmDialog confirmDialog;
 	
-	public CardPrestito(Prestito prestito, PrestitiUtentePage paginaPrestitiUtente){
+	public CardPrestito(Prestito prestito){
 		this.prestito = prestito;
-		this.paginaPrestitiUtente = paginaPrestitiUtente;
-
+		
 		addClassName("card-prestito");
+		
+		inizializzaDialogo();
 		
 		Details details = new Details(creaHeaderPrestito(), creaInfoPrestito());
 		details.setSizeFull();
 		
 		add(details);
+	}
+	
+	private void inizializzaDialogo() {
+		confirmDialog = new ConfirmDialog();
+		confirmDialog.setHeader("Annullamento prenotazione");
+		confirmDialog.setText("Vuoi davvero cancellare la prenotazione per il libro \"" + prestito.getLibro().getTitolo() + "\"?");
+		confirmDialog.setRejectable(true);
+		
+		Button confirmButton = new Button("Sì, eliminala");
+		confirmButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+		
+		Button rejectButton = new Button("No, mantienila");
+		rejectButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		
+		confirmDialog.setConfirmButton(confirmButton);
+		confirmDialog.setRejectButton(rejectButton);
 	}
 	
 	private HorizontalLayout creaHeaderPrestito() {
@@ -52,7 +76,7 @@ public class CardPrestito extends HorizontalLayout{
 	private VerticalLayout creaInfoPrestito() {
 		Button annullaPrenotazione = new Button("Annulla prenotazione");
 		annullaPrenotazione.addThemeVariants(ButtonVariant.LUMO_ERROR);
-		annullaPrenotazione.addClickListener(e -> rimuoviPrenotazione());
+		annullaPrenotazione.addClickListener(e -> confirmDialog.open());
 		
 		String dataInizio = prestito.getDati().getDataInizio();
 		String dataFine = prestito.getDati().getDataFine();
@@ -60,9 +84,9 @@ public class CardPrestito extends HorizontalLayout{
 		VerticalLayout infoPrestito = new VerticalLayout(
 			new Hr(),
 			new Span("Data prenotazione: " + prestito.getDati().getDataPrenotazione()),
-			dataInizio != null ? new Span("Data inizio:" + dataInizio) : new Text(""),
-			dataFine != null ? new Span("Data fine: " + dataFine) : new Text(""),
-			getStatoPrestito() == StatoPrestito.PRENOTATO ? annullaPrenotazione : null
+			(dataInizio != null && !dataInizio.isBlank()) ? new Span("Data inizio:" + dataInizio) : new Text(""),
+			(dataFine != null && !dataFine.isBlank()) ? new Span("Data fine: " + dataFine) : new Text(""),
+			getStatoPrestito() == StatoPrestito.PRENOTATO ? annullaPrenotazione : new Text("")
 		);
 		
 		infoPrestito.addClassNames(LumoUtility.TextColor.SECONDARY, LumoUtility.Gap.SMALL, LumoUtility.Padding.SMALL);
@@ -99,33 +123,6 @@ public class CardPrestito extends HorizontalLayout{
 	
 	private StatoPrestito getStatoPrestito() {
 		return StatoPrestito.valueOf(prestito.getDati().getStato());
-	}
-	
-	private void rimuoviPrenotazione() {
-		ConfirmDialog dialog = new ConfirmDialog();
-		dialog.setHeader("Annullamento prenotazione");
-		dialog.setText("Vuoi davvero cancellare la prenotazione per il libro \"" + prestito.getLibro().getTitolo() + "\"?");
-		dialog.setRejectable(true);
-		
-		Button confirmButton = new Button("Sì, eliminala");
-		confirmButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-		
-		Button rejectButton = new Button("No, mantienila");
-		rejectButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-		
-		dialog.setConfirmButton(confirmButton);
-		dialog.setRejectButton(rejectButton);
-		
-		dialog.addConfirmListener(e -> {
-			try {
-				PrestitiManager.annullaPrenotazione(prestito);
-				paginaPrestitiUtente.aggiornaLista();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		});
-		
-		dialog.open();
 	}
 	
 }

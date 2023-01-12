@@ -21,7 +21,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
 public class Application implements AppShellConfigurator {
 
-    public static void main(String[] args) {
+    private static final long serialVersionUID = 222025686406846227L;
+
+	public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 

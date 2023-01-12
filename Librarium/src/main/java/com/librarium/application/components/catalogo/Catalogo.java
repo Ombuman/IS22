@@ -80,11 +80,13 @@ public class Catalogo extends VerticalLayout {
 		filtroNome.setWidth("min(300px, 90vw)");
 		filtroNome.setLabel("Ricerca per nome");
 		filtroNome.setPlaceholder("Cerca...");
-		filtroNome.setValueChangeMode(ValueChangeMode.LAZY);
-		filtroNome.addValueChangeListener(e -> {
-			aggiornaListaLibri();
-		});
+		filtroNome.getElement().setAttribute("aria-label", "search");
+		filtroNome.setPrefixComponent(VaadinIcon.SEARCH.create());
 		filtroNome.setClearButtonVisible(true);
+		
+		filtroNome.setValueChangeMode(ValueChangeMode.LAZY);
+		filtroNome.addValueChangeListener(e -> aggiornaListaLibri());
+		
 		
 		Button toggleFiltriNascosti = new Button(new Icon(VaadinIcon.FILTER));
 		toggleFiltriNascosti.addClassName(LumoUtility.Padding.NONE);
