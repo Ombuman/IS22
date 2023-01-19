@@ -1,10 +1,12 @@
-package com.librarium.application.views.base;
+package com.librarium.application.views.user;
 
 import java.util.List;
 import java.util.Map;
 
 import com.librarium.application.components.catalogo.Catalogo;
 import com.librarium.application.views.MainLayout;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -22,7 +24,6 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 @Route(value = "/", layout = MainLayout.class)
 public class CatalogoPage extends VerticalLayout{
 	public CatalogoPage() {
-		
 		Catalogo catalogo = new Catalogo();
 		addClassName(LumoUtility.Padding.NONE);
 		add(catalogo);

@@ -4,9 +4,15 @@
 package com.librarium.database.generated.org.jooq;
 
 
+import com.librarium.database.generated.org.jooq.tables.Generi;
+import com.librarium.database.generated.org.jooq.tables.Libri;
 import com.librarium.database.generated.org.jooq.tables.Prestiti;
+import com.librarium.database.generated.org.jooq.tables.Solleciti;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
+import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
+import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 import com.librarium.database.generated.org.jooq.tables.records.PrestitiRecord;
+import com.librarium.database.generated.org.jooq.tables.records.SollecitiRecord;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
 
 import org.jooq.TableField;
@@ -26,7 +32,10 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<GeneriRecord> PK_GENERI = Internal.createUniqueKey(Generi.GENERI, DSL.name("pk_Generi"), new TableField[] { Generi.GENERI.ID }, true);
+    public static final UniqueKey<LibriRecord> PK_LIBRI = Internal.createUniqueKey(Libri.LIBRI, DSL.name("pk_Libri"), new TableField[] { Libri.LIBRI.ID }, true);
     public static final UniqueKey<PrestitiRecord> PK_PRESTITI = Internal.createUniqueKey(Prestiti.PRESTITI, DSL.name("pk_Prestiti"), new TableField[] { Prestiti.PRESTITI.ID }, true);
+    public static final UniqueKey<SollecitiRecord> PK_SOLLECITI = Internal.createUniqueKey(Solleciti.SOLLECITI, DSL.name("pk_Solleciti"), new TableField[] { Solleciti.SOLLECITI.ID }, true);
     public static final UniqueKey<UtentiRecord> PK_UTENTI = Internal.createUniqueKey(Utenti.UTENTI, DSL.name("pk_Utenti"), new TableField[] { Utenti.UTENTI.ID }, true);
     public static final UniqueKey<UtentiRecord> SQLITE_AUTOINDEX_UTENTI_1 = Internal.createUniqueKey(Utenti.UTENTI, DSL.name("sqlite_autoindex_Utenti_1"), new TableField[] { Utenti.UTENTI.EMAIL }, true);
 }

@@ -1,4 +1,4 @@
-package com.librarium.application.views.base;
+package com.librarium.application.views.authentication;
 
 import com.librarium.application.components.BetterDialog;
 import com.librarium.application.navigate.Navigation;
@@ -6,6 +6,7 @@ import com.librarium.application.views.MainLayout;
 import com.librarium.authentication.LoginInfo;
 import com.librarium.authentication.session.SessionManager;
 import com.librarium.database.UsersManager;
+import com.librarium.database.enums.RuoloAccount;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
 import com.librarium.database.security.EncryptionUtility;
@@ -37,18 +38,11 @@ public class LoginPage extends BetterDialog {
 	public LoginPage() {
 		super();
 		
-		/*addOpenedChangeListener(e -> {
-			if(errorMessage != null)
-				errorMessage.setVisible(false);
-			
-			if(binder != null) {
-				binder.getFields().forEach(f -> f.clear());
-				binder.refreshFields();
-			}
-		});*/
-		
-		/* Creazione Form */
-		
+		creaFormAccesso();
+		addBindingAndValidation();
+	}
+	
+	private void creaFormAccesso() {
 		// Titolo
 		setHeaderTitle("Accesso");
 		
@@ -92,9 +86,6 @@ public class LoginPage extends BetterDialog {
 		
 		// aggiungo il container del form alla finestra
 		add(formContainer);
-		
-		/* Gestione dei Dati */
-		addBindingAndValidation();
 	}
 	
 	private void addBindingAndValidation() {
@@ -132,7 +123,11 @@ public class LoginPage extends BetterDialog {
 			UtentiRecord datiUtente = UsersManager.autenticaUtente(datiAccesso);
 			if(datiUtente != null) {
 				SessionManager.creaNuovaSessione(datiUtente);
-				MainLayout.updateAuthButtonsLayout();
+				
+				if(RuoloAccount.valueOf(datiUtente.getRuolo()) == RuoloAccount.BIBLIOTECARIO)
+					Navigation.navigateTo("/gestione-catalogo");
+				else
+					MainLayout.updateNavLayout();
 				this.close();
 			} else {
 				password.clear();

@@ -37,13 +37,11 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 /**
  * The main view is a top-level placeholder for other views.
  */
-public class MainLayout extends AppLayout{
+public class AdminLayout extends AppLayout{
     private String title;
     private H2 viewTitle;
     
-    private static VerticalLayout navLayout;
-    
-    public MainLayout() {
+    public AdminLayout() {
         //setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
@@ -66,17 +64,27 @@ public class MainLayout extends AppLayout{
         appName.addClassNames(LumoUtility.FontSize.XLARGE, LumoUtility.Margin.NONE);
         Header header = new Header(appName);
         
-        drawerContent.add(header, createNavigation(), createFooter());
+        Button logout = new Button("Logout");
+    	logout.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    	logout.addClickListener(e -> {
+    		SessionManager.eliminaSessione();
+    		Navigation.navigateTo("/");
+    	});
+
+        drawerContent.add(header, logout, new Hr(), createNavigation(), createFooter());
         addToDrawer(drawerContent);
     }
 
     private VerticalLayout createNavigation() {
-    	 navLayout = new VerticalLayout();
-    	 navLayout.addClassNames(LumoUtility.Padding.NONE, LumoUtility.Gap.SMALL);
-    	 
-    	 updateNavLayout();
-    	 
-    	 return navLayout;
+        VerticalLayout nav = new VerticalLayout();
+        nav.add(
+        	new IconNavLink("/gestione-catalogo", VaadinIcon.BOOK, " Gestione Catalogo"),
+        	new IconNavLink("/gestione-prestiti", VaadinIcon.CALENDAR, " Gestione Prestiti"),
+        	new IconNavLink("/gestione-utenti", VaadinIcon.USER, " Gestione Utenti")
+        );
+        nav.addClassNames(LumoUtility.Padding.XSMALL, LumoUtility.Gap.SMALL);
+        
+        return nav;
     }
 
     private Footer createFooter() {
@@ -95,64 +103,5 @@ public class MainLayout extends AppLayout{
     private String getCurrentPageTitle() {
         PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
         return title == null ? "" : title.value();
-    }
-    
-    public static void updateNavLayout() {
-    	navLayout.removeAll();
-    	
-    	if(!SessionManager.isLogged()) {
-    		Button loginButton = new Button("Accedi");
-            loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            loginButton.addClickListener(e -> {
-            	new LoginPage().open();
-            });
-            
-            Button signupButton = new Button("Registrati");
-            signupButton.addClickListener(e -> new SignupPage().open());
-            
-            HorizontalLayout authButtonsLayout = new HorizontalLayout(loginButton, signupButton);
-            authButtonsLayout.addClassNames(LumoUtility.FlexWrap.WRAP, LumoUtility.Margin.NONE);
-            
-            navLayout.add(authButtonsLayout);
-    	} else {
-    		navLayout.add(creaNavUtenteRegistrato());
-    	}
-    }
-    
-    private static VerticalLayout creaNavUtenteRegistrato() {
-    	Button logout = new Button("Logout");
-    	logout.addClassName(LumoUtility.Margin.Top.SMALL);
-    	logout.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    	logout.addClickListener(e -> {
-    		SessionManager.eliminaSessione();
-    		updateNavLayout();
-    		Navigation.navigateTo("/");
-    	});
-    	
-    	VerticalLayout links = new VerticalLayout(
-    		new IconNavLink("/miei-prestiti", VaadinIcon.BOOK, " I miei prestiti"), 
-    		new IconNavLink("/profilo", VaadinIcon.USER, " Profilo"),
-    		logout
-    	);
-    	links.addClassNames(LumoUtility.Padding.NONE, LumoUtility.Gap.XSMALL);
-    	
-    	Span testoBenvenuto = new Span("Benvenuto, " + SessionManager.getDatiUtente().getNome());
-    	testoBenvenuto.addClassNames(LumoUtility.FontSize.SMALL, LumoUtility.Padding.Right.SMALL);
-    	
-    	Details azioniUtente = new Details(testoBenvenuto, links);
-    	azioniUtente.addClassNames(LumoUtility.Padding.NONE);
-    	azioniUtente.addThemeVariants(DetailsVariant.REVERSE);
-    	azioniUtente.setOpened(true);
-    	
-    	VerticalLayout pagine = new VerticalLayout(
-    		new Hr(),
-    		new IconNavLink("/", VaadinIcon.OPEN_BOOK, " Catalogo")
-    	);
-    	pagine.addClassNames(LumoUtility.Padding.NONE, LumoUtility.Gap.XSMALL);
-    	
-    	VerticalLayout layoutUserNavigation = new VerticalLayout(azioniUtente, pagine);
-    	layoutUserNavigation.addClassNames(LumoUtility.Padding.NONE, LumoUtility.Gap.SMALL);
-    	
-		return layoutUserNavigation;
     }
 }

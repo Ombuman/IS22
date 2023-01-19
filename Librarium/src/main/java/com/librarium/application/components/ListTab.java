@@ -1,46 +1,55 @@
 package com.librarium.application.components;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.librarium.database.entities.Prestito;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-public class PrestitoTab extends TitledTab {
+public class ListTab<E> extends TitledTab {
 	
 	private static final long serialVersionUID = -8967484225053647583L;
 	
-	private List<Prestito> listaPrestiti;
+	private List<E> lista;
 	
-	public PrestitoTab(String title) {
-		super(title);
+	public ListTab(String title) {
+		this(title, "");
 	}
 	
-	public PrestitoTab(String title, String label) {
+	public ListTab(String title, String label) {
 		super(title, label);
+		lista = new ArrayList<>();
 	}
 	
-	public PrestitoTab(String title, Component... components) {
+	public ListTab(String title, Component... components) {
 		super(title, components);
+		lista = new ArrayList<>();
 	}
 	
-	public PrestitoTab(String title, List<Prestito> listaPrestiti) {
+	public ListTab(String title, List<E> lista) {
 		super(title);
-		setListaPrestiti(listaPrestiti);
+		setLista(lista);
 	}
 	
-	public void setListaPrestiti(List<Prestito> listaPrestiti) {
-		this.listaPrestiti = listaPrestiti;
+	public ListTab(String title, String label, List<E> lista) {
+		super(title, label);
+		setLista(lista);
+	}
+	
+	public void setLista(List<E> lista) {
+		this.lista = lista;
 		replace(new Span(title), createBadge(getListaPrestitiSize().toString()));
 	}
 	
-	public List<Prestito> getListaPrestiti(){
-		return listaPrestiti;
+	public List<E> getLista(){
+		return lista;
 	}
 	
 	public Integer getListaPrestitiSize() {
-		return Integer.valueOf(listaPrestiti.size());
+		return Integer.valueOf(lista.size());
 	}
 	
 	private Span createBadge(String text) {

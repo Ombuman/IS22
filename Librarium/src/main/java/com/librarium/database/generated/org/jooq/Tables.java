@@ -7,6 +7,8 @@ package com.librarium.database.generated.org.jooq;
 import com.librarium.database.generated.org.jooq.tables.Generi;
 import com.librarium.database.generated.org.jooq.tables.Libri;
 import com.librarium.database.generated.org.jooq.tables.Prestiti;
+import com.librarium.database.generated.org.jooq.tables.Solleciti;
+import com.librarium.database.generated.org.jooq.tables.SqliteSequence;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 
 
@@ -30,6 +32,16 @@ public class Tables {
      * The table <code>Prestiti</code>.
      */
     public static final Prestiti PRESTITI = Prestiti.PRESTITI;
+
+    /**
+     * The table <code>Solleciti</code>.
+     */
+    public static final Solleciti SOLLECITI = Solleciti.SOLLECITI;
+
+    /**
+     * The table <code>sqlite_sequence</code>.
+     */
+    public static final SqliteSequence SQLITE_SEQUENCE = SqliteSequence.SQLITE_SEQUENCE;
 
     /**
      * The table <code>Utenti</code>.

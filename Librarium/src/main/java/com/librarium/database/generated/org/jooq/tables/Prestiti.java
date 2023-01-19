@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -81,6 +81,11 @@ public class Prestiti extends TableImpl<PrestitiRecord> {
      * The column <code>Prestiti.utente</code>.
      */
     public final TableField<PrestitiRecord, Integer> UTENTE = createField(DSL.name("utente"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>Prestiti.data_ultimo_sollecito</code>.
+     */
+    public final TableField<PrestitiRecord, String> DATA_ULTIMO_SOLLECITO = createField(DSL.name("data_ultimo_sollecito"), SQLDataType.CLOB, this, "");
 
     private Prestiti(Name alias, Table<PrestitiRecord> aliased) {
         this(alias, aliased, null);
@@ -157,11 +162,11 @@ public class Prestiti extends TableImpl<PrestitiRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, String, String, Integer, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, String, String, String, String, Integer, Integer, String> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

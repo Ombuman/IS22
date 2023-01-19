@@ -7,6 +7,8 @@ package com.librarium.database.generated.org.jooq;
 import com.librarium.database.generated.org.jooq.tables.Generi;
 import com.librarium.database.generated.org.jooq.tables.Libri;
 import com.librarium.database.generated.org.jooq.tables.Prestiti;
+import com.librarium.database.generated.org.jooq.tables.Solleciti;
+import com.librarium.database.generated.org.jooq.tables.SqliteSequence;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 
 import java.util.Arrays;
@@ -46,6 +48,16 @@ public class DefaultSchema extends SchemaImpl {
     public final Prestiti PRESTITI = Prestiti.PRESTITI;
 
     /**
+     * The table <code>Solleciti</code>.
+     */
+    public final Solleciti SOLLECITI = Solleciti.SOLLECITI;
+
+    /**
+     * The table <code>sqlite_sequence</code>.
+     */
+    public final SqliteSequence SQLITE_SEQUENCE = SqliteSequence.SQLITE_SEQUENCE;
+
+    /**
      * The table <code>Utenti</code>.
      */
     public final Utenti UTENTI = Utenti.UTENTI;
@@ -69,6 +81,8 @@ public class DefaultSchema extends SchemaImpl {
             Generi.GENERI,
             Libri.LIBRI,
             Prestiti.PRESTITI,
+            Solleciti.SOLLECITI,
+            SqliteSequence.SQLITE_SEQUENCE,
             Utenti.UTENTI);
     }
 }

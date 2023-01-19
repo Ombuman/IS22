@@ -2,7 +2,7 @@ package com.librarium.application.views.user;
 
 import java.util.List;
 
-import com.librarium.application.components.PrestitoTab;
+import com.librarium.application.components.ListTab;
 import com.librarium.application.components.cards.CardPrestito;
 import com.librarium.application.views.MainLayout;
 import com.librarium.application.views.PrivatePage;
@@ -30,10 +30,10 @@ public class PrestitiUtentePage extends PrivatePage{
 	private VerticalLayout body;
 	private Tabs tabs;
 	
-	private PrestitoTab tutti;
-	private PrestitoTab prenotazioni;
-	private PrestitoTab attivi;
-	private PrestitoTab conclusi;
+	private ListTab<Prestito> tutti;
+	private ListTab<Prestito> prenotazioni;
+	private ListTab<Prestito> attivi;
+	private ListTab<Prestito> conclusi;
 
 	private VirtualList<Prestito> virtualListPrestiti;
 	
@@ -51,10 +51,10 @@ public class PrestitiUtentePage extends PrivatePage{
 	private void inizializzaTabs() {
 		tabs = new Tabs();
 		
-		tutti = new PrestitoTab("Tutti", getListaPrestiti());
-		prenotazioni = new PrestitoTab("Prenotazioni", getListaPrenotazioni());
-		attivi = new PrestitoTab("Attivi", getListaAttivi());
-		conclusi = new PrestitoTab("Conclusi", getListaConclusi());
+		tutti = new ListTab<Prestito>("Tutti", getListaPrestiti());
+		prenotazioni = new ListTab<Prestito>("Prenotazioni", getListaPrenotazioni());
+		attivi = new ListTab<Prestito>("Attivi", getListaAttivi());
+		conclusi = new ListTab<Prestito>("Conclusi", getListaConclusi());
 		
 		tabs.add(
 			tutti,
@@ -106,20 +106,21 @@ public class PrestitiUtentePage extends PrivatePage{
 	private void aggiornaVirtualList() {
 		body.removeAll();
 		
-		PrestitoTab tabAttuale = (PrestitoTab) tabs.getSelectedTab();
+		@SuppressWarnings("unchecked")
+		ListTab<Prestito> tabAttuale = (ListTab<Prestito>) tabs.getSelectedTab();
 		
 		if(tabAttuale.getListaPrestitiSize() == 0) {
 			body.add("Nessun prestito disponibile");
 			return;
 		}
 		
-		virtualListPrestiti.setItems(tabAttuale.getListaPrestiti());
+		virtualListPrestiti.setItems(tabAttuale.getLista());
 		body.add(virtualListPrestiti);
 	}
 
 	public void aggiornaListe() {
-		tutti.setListaPrestiti(getListaPrestiti());
-		prenotazioni.setListaPrestiti(getListaPrenotazioni());
+		tutti.setLista(getListaPrestiti());
+		prenotazioni.setLista(getListaPrenotazioni());
 		
 		aggiornaVirtualList();
 	}

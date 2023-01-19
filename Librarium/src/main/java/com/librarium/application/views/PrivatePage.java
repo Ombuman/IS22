@@ -13,14 +13,18 @@ public abstract class PrivatePage extends VerticalLayout implements BeforeEnterO
 	
 	// La classe che estende questa classe deve chiamare uno di questi metodi
 	public void beforeEnter(BeforeEnterEvent event, RuoloAccount permissionRole) {
-		if(!SessionManager.isLogged() || SessionManager.getDatiUtente().getRuoloAsRuoloAccount() != permissionRole) {
+		if(!SessionManager.isLogged() || getRuoloAsRuoloAccount(SessionManager.getDatiUtente().getRuolo()) != permissionRole) {
 			event.forwardTo(defaultRoute);
 		}
 	}
 	
 	public void beforeEnter(BeforeEnterEvent event, String route, RuoloAccount permissionRole) {
-		if(!SessionManager.isLogged() || SessionManager.getDatiUtente().getRuoloAsRuoloAccount() != permissionRole) {
+		if(!SessionManager.isLogged() || getRuoloAsRuoloAccount(SessionManager.getDatiUtente().getRuolo()) != permissionRole) {
 			event.forwardTo(route);
 		}
+	}
+	
+	public RuoloAccount getRuoloAsRuoloAccount(String ruolo) {
+		return RuoloAccount.valueOf(ruolo);
 	}
 }

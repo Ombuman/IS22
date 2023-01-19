@@ -1,4 +1,4 @@
-package com.librarium.application.views.base;
+package com.librarium.application.views.authentication;
 
 import com.librarium.application.components.BetterDialog;
 import com.librarium.authentication.LoginInfo;
@@ -43,18 +43,11 @@ public class SignupPage extends BetterDialog {
 	public SignupPage() {
 		super();
 		
-		addOpenedChangeListener(e -> {			
-			if(errorMessage != null)
-				errorMessage.setVisible(false);
-			
-			if(binder != null) {
-				binder.getFields().forEach(f -> f.clear());
-				binder.refreshFields();
-			}
-		});
-		
-		/* Creazione Form */
-		
+		creaFormRegistrazione();
+		addBindingAndValidation();
+	}
+	
+	private void creaFormRegistrazione() {
 		// Titolo
 		setHeaderTitle("Registrazione");
 		
@@ -113,11 +106,8 @@ public class SignupPage extends BetterDialog {
 		
 		// aggiungo il container del form alla pagina
 		add(formContainer);
-		
-		/* Gestione dei Dati */
-		addBindingAndValidation();
 	}
-	
+
 	private void mostraPaginaDiAccesso() {
 		this.close();
 		new LoginPage().open();

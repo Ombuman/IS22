@@ -1,5 +1,7 @@
 package com.librarium.application.components;
 
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -26,6 +28,10 @@ public class BetterDialog extends Dialog {
 	
 	public void showCloseDialogButton() {
 		closeDialog.setVisible(true);
+	}
+	
+	public void addCloseListener(ComponentEventListener<ClickEvent<Button>> event) {
+		closeDialog.addClickListener(event);
 	}
 	
 }

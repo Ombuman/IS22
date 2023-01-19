@@ -2,7 +2,10 @@ package com.librarium.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -10,12 +13,20 @@ import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
+import com.librarium.application.utility.DateUtility;
 import com.librarium.authentication.LoginInfo;
 import com.librarium.authentication.SignupInfo;
 import com.librarium.database.entities.InfoProfiloUtente;
+import com.librarium.database.entities.Prestito;
+import com.librarium.database.entities.Sollecito;
+import com.librarium.database.entities.Utente;
 import com.librarium.database.enums.RuoloAccount;
 import com.librarium.database.enums.StatoAccountUtente;
+import com.librarium.database.generated.org.jooq.tables.Libri;
+import com.librarium.database.generated.org.jooq.tables.Prestiti;
+import com.librarium.database.generated.org.jooq.tables.Solleciti;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
+import com.librarium.database.generated.org.jooq.tables.records.SollecitiRecord;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
 
 public class UsersManager extends DatabaseConnection {
@@ -75,7 +86,66 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
-	public static StatoAccountUtente getStatoAccount(int idUtente) {
+	public static List<Utente> getUtenti(){
+		return getUtenti(null, RuoloAccount.UTENTE.name());
+	}
+	
+	public static List<Utente> getUtentiSospesi(){
+		return getUtenti(StatoAccountUtente.SOSPESO.name(), RuoloAccount.UTENTE.name());
+	}
+	
+	private static List<Utente> getUtenti(String statoAccount, String ruoloAccount) {
+		try(Connection conn = connect()){
+			
+			Condition condition = DSL.noCondition();
+			if(statoAccount != null && !statoAccount.isBlank())
+				condition = condition.and(Utenti.UTENTI.STATO.eq(statoAccount));
+			
+			if(ruoloAccount != null && !ruoloAccount.isBlank())
+				condition = condition.and(Utenti.UTENTI.RUOLO.eq(ruoloAccount));
+			
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			Result<Record> result = ctx.select(Utenti.UTENTI.asterisk(), DSL.count(Prestiti.PRESTITI).as("nPrestiti"), DSL.count(Solleciti.SOLLECITI).as("nSolleciti"))
+					.from(Utenti.UTENTI)
+					.leftJoin(Prestiti.PRESTITI)
+					.on(Utenti.UTENTI.ID.eq(Prestiti.PRESTITI.UTENTE))
+					.leftJoin(Solleciti.SOLLECITI)
+					.on(Utenti.UTENTI.ID.eq(Solleciti.SOLLECITI.UTENTE))
+					.where(condition)
+					.groupBy(Utenti.UTENTI.ID)
+					.fetch();
+			
+			ArrayList<Utente> utenti = new ArrayList<>();
+			result.forEach(utente -> {
+				utenti.add(
+					new Utente(utente.into(Utenti.UTENTI), utente.get("nPrestiti"), utente.get("nSolleciti"))
+				);
+			});
+			
+			return utenti;
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static void setStatoAccount(Integer idUtente, String nuovoStato) {
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			ctx.update(Utenti.UTENTI)
+				.set(Utenti.UTENTI.STATO, nuovoStato)
+				.where(Utenti.UTENTI.ID.eq(idUtente))
+				.execute();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return;
+		}
+	}
+	
+	public static StatoAccountUtente getStatoAccount(Integer idUtente) {
 		try(Connection conn = connect()){
 			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
 			
@@ -92,7 +162,7 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
-	public static UtentiRecord aggiornaAccountUtente(int idUtente, InfoProfiloUtente datiUtente) {
+	public static UtentiRecord aggiornaAccountUtente(Integer idUtente, InfoProfiloUtente datiUtente) {
 		if(datiUtente == null)
 			return null;
 		
@@ -114,6 +184,94 @@ public class UsersManager extends DatabaseConnection {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static void inviaSollecito(Prestito prestito) {
+		if(prestito == null) 
+			return;
+		
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			String oggi = DateUtility.getDataOggi();
+			
+			ctx.insertInto(Solleciti.SOLLECITI, Solleciti.SOLLECITI.UTENTE, Solleciti.SOLLECITI.LIBRO, Solleciti.SOLLECITI.DATA)
+				.values(prestito.getIdUtente(), prestito.getIdLibro(), oggi)
+				.execute();
+			
+			// imposta la data dell'ultimo sollecito nel prestito
+			PrestitiManager.aggiornaDataUltimoSollecito(prestito.getId(), oggi);
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return;
+		}
+	}
+	
+	public static List<Sollecito> getSollecitiUtente(Integer idUtente) {
+		if(idUtente == null)
+			return null;
+		
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			Result<Record> result = ctx.select()
+				.from(Solleciti.SOLLECITI)
+				.where(Solleciti.SOLLECITI.UTENTE.eq(idUtente))
+				.fetch();
+			
+			ArrayList<Sollecito> sollecitiUtente = new ArrayList<>();
+			result.forEach(sollecito -> {
+				sollecitiUtente.add(new Sollecito(sollecito.into(Solleciti.SOLLECITI)));
+			});
+			
+			return sollecitiUtente;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static List<Sollecito> getSollecitiUtenteLibro(Integer idUtente, Integer idLibro) {
+		if(idUtente == null)
+			return null;
+		
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			Result<Record> result = ctx.select()
+				.from(Solleciti.SOLLECITI)
+				.where(Solleciti.SOLLECITI.UTENTE.eq(idUtente).and(Solleciti.SOLLECITI.LIBRO.eq(idLibro)))
+				.fetch();
+			
+			ArrayList<Sollecito> sollecitiUtente = new ArrayList<>();
+			result.forEach(sollecito -> {
+				sollecitiUtente.add(new Sollecito(sollecito.into(Solleciti.SOLLECITI)));
+			});
+			
+			return sollecitiUtente;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static void rimuoviSolleciti(Integer idUtente, Integer idLibro) {
+		if(idUtente == null || idLibro == null)
+			return;
+		
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			ctx.deleteFrom(Solleciti.SOLLECITI)
+				.where(Solleciti.SOLLECITI.UTENTE.eq(idUtente).and(Solleciti.SOLLECITI.LIBRO.eq(idLibro)))
+				.execute();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		
 	}
 	
 }

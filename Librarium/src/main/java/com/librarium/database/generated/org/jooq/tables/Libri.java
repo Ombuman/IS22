@@ -5,10 +5,15 @@ package com.librarium.database.generated.org.jooq.tables;
 
 
 import com.librarium.database.generated.org.jooq.DefaultSchema;
+import com.librarium.database.generated.org.jooq.Keys;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row9;
@@ -16,6 +21,7 @@ import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -45,7 +51,7 @@ public class Libri extends TableImpl<LibriRecord> {
     /**
      * The column <code>Libri.ID</code>.
      */
-    public final TableField<LibriRecord, Integer> ID = createField(DSL.name("ID"), SQLDataType.INTEGER, this, "");
+    public final TableField<LibriRecord, Integer> ID = createField(DSL.name("ID"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>Libri.Titolo</code>.
@@ -70,7 +76,7 @@ public class Libri extends TableImpl<LibriRecord> {
     /**
      * The column <code>Libri.Anno</code>.
      */
-    public final TableField<LibriRecord, Integer> ANNO = createField(DSL.name("Anno"), SQLDataType.INTEGER, this, "");
+    public final TableField<LibriRecord, String> ANNO = createField(DSL.name("Anno"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>Libri.Autore</code>.
@@ -126,6 +132,21 @@ public class Libri extends TableImpl<LibriRecord> {
     }
 
     @Override
+    public Identity<LibriRecord, Integer> getIdentity() {
+        return (Identity<LibriRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
+    public UniqueKey<LibriRecord> getPrimaryKey() {
+        return Keys.PK_LIBRI;
+    }
+
+    @Override
+    public List<UniqueKey<LibriRecord>> getKeys() {
+        return Arrays.<UniqueKey<LibriRecord>>asList(Keys.PK_LIBRI);
+    }
+
+    @Override
     public Libri as(String alias) {
         return new Libri(DSL.name(alias), this);
     }
@@ -156,7 +177,7 @@ public class Libri extends TableImpl<LibriRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, String, String, String, String, Integer, String, String, String> fieldsRow() {
+    public Row9<Integer, String, String, String, String, String, String, String, String> fieldsRow() {
         return (Row9) super.fieldsRow();
     }
 }

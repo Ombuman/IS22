@@ -1,12 +1,15 @@
 package com.librarium.application.components.catalogo;
 
 import com.librarium.application.components.BetterDialog;
-import com.librarium.application.views.base.LoginPage;
+import com.librarium.application.views.authentication.LoginPage;
 import com.librarium.authentication.session.SessionManager;
 import com.librarium.database.PrestitiManager;
+import com.librarium.database.entities.Libro;
+import com.librarium.database.enums.StatoAccountUtente;
 import com.librarium.database.enums.StatoLibro;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -20,29 +23,40 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class BookDialog extends BetterDialog {
 	
-	public BookDialog(LibriRecord datiLibro) {
+	public BookDialog(Libro datiLibro) {
 		super();
-		setHeaderTitle(datiLibro.getTitolo());
+		setHeaderTitle(datiLibro.getLibro().getTitolo());
 		
-		VerticalLayout infoLibro = createInfoLibro(datiLibro);
+		VerticalLayout infoLibro = createInfoLibro(datiLibro.getLibro());
 		add(infoLibro);
 		
 		Button prenotaButton = new Button("");
-		switch(StatoLibro.valueOf(datiLibro.getStato())) {
+		switch(StatoLibro.valueOf(datiLibro.getLibro().getStato())) {
 			case DISPONIBILE:
 				prenotaButton.setText("Prenota");
 				prenotaButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 				prenotaButton.addClickListener(e -> {
-					if(SessionManager.isLogged()) {
-						// se il prestito va a buon fine
-						if(PrestitiManager.creaPrestito(SessionManager.getDatiUtente(), datiLibro)) {
-							Catalogo.aggiornaListaLibri(); // aggiorna la lista dei libri del catalogo
-							this.close(); // chiudi la finestra
+					if(SessionManager.getDatiUtente().getStato().equals(StatoAccountUtente.SOSPESO.name())) {
+						Dialog dialog = new Dialog();
+						dialog.setWidth("min(90vw, 500px)");
+						dialog.setHeaderTitle("Account Sospeso");
+						dialog.add("Non puoi prenotare libri finchè il tuo account è sospeso.\nRestutisci tutti i libri per riattivare il tuo account");
+						dialog.open();
+					}
+					else {
+						if(SessionManager.isLogged()) {
+							// se il prestito va a buon fine
+							if(PrestitiManager.creaPrestito(SessionManager.getDatiUtente(), datiLibro.getLibro())) {
+								Catalogo.aggiornaListaLibri(); // aggiorna la lista dei libri del catalogo
+								this.close(); // chiudi la finestra
+							}
+						} else {
+							this.close(); 
+							new LoginPage().open();
 						}
-					} else {
-						new LoginPage().open();
 					}
 				});
+					
 			break;
 			case NON_DISPONIBILE:
 				prenotaButton.setText("Non Disponibile");

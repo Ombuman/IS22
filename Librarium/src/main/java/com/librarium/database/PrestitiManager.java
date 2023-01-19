@@ -5,16 +5,15 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
-import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
+import com.librarium.application.utility.DateUtility;
 import com.librarium.database.entities.Prestito;
 import com.librarium.database.enums.StatoAccountUtente;
 import com.librarium.database.enums.StatoLibro;
@@ -23,10 +22,44 @@ import com.librarium.database.generated.org.jooq.tables.Libri;
 import com.librarium.database.generated.org.jooq.tables.Prestiti;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
-import com.librarium.database.generated.org.jooq.tables.records.PrestitiRecord;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
 
 public class PrestitiManager extends DatabaseConnection {
+	
+	public static ArrayList<Prestito> getPrestiti(String stato) {		
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			Condition condition = DSL.noCondition();
+			if(stato != null && !stato.isBlank())
+				condition = condition.and(Prestiti.PRESTITI.STATO.eq(stato));
+			
+			Result<Record> result = ctx.select()
+				.from(Prestiti.PRESTITI)
+				.join(Libri.LIBRI)
+				.on(Prestiti.PRESTITI.LIBRO.eq(Libri.LIBRI.ID))
+				.join(Utenti.UTENTI)
+				.on(Prestiti.PRESTITI.UTENTE.eq(Utenti.UTENTI.ID))
+				.and(condition)
+				.orderBy(Prestiti.PRESTITI.DATA_PRENOTAZIONE.desc(), Prestiti.PRESTITI.ID.desc())
+				.fetch();
+			
+			ArrayList<Prestito> prestiti = new ArrayList<>();
+			result.forEach(prestito -> {
+				prestiti.add(new Prestito(
+					prestito.into(Prestiti.PRESTITI),
+					prestito.into(Utenti.UTENTI),
+					prestito.into(Libri.LIBRI)
+				));
+			});
+			
+			return prestiti;
+			
+		} catch(SQLException ex){
+			System.out.println(ex.getMessage());
+			return null;
+		}
+	}
 	
 	public static ArrayList<Prestito> getPrestitiUtente(int idUtente, String stato) {		
 		try(Connection conn = connect()){
@@ -42,6 +75,7 @@ public class PrestitiManager extends DatabaseConnection {
 				.on(Prestiti.PRESTITI.LIBRO.eq(Libri.LIBRI.ID))
 				.where(Prestiti.PRESTITI.UTENTE.eq(idUtente))
 				.and(condition)
+				.orderBy(Prestiti.PRESTITI.DATA_PRENOTAZIONE.desc(), Prestiti.PRESTITI.ID.desc())
 				.fetch();
 			
 			ArrayList<Prestito> prestitiUtente = new ArrayList<>();
@@ -74,9 +108,7 @@ public class PrestitiManager extends DatabaseConnection {
 			if(StatoLibro.valueOf(libro.getStato()) == StatoLibro.NON_DISPONIBILE)
 				return false;
 			
-			// data di oggi
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			String oggi = dtf.format(LocalDateTime.now()).toString();
+			String oggi = DateUtility.getDataOggi();
 			
 			//aggiungi il prestito
 			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
@@ -106,8 +138,83 @@ public class PrestitiManager extends DatabaseConnection {
 			
 			CatalogManager.aggiornaStatoLibro(prestito.getLibro().getId(), StatoLibro.DISPONIBILE);
 			
-		} catch(SQLException ex){
-			throw ex;
+		} catch(SQLException e){
+			throw e;
+		}
+	}
+
+	public static void rimuoviPrestiti(int idLibro) {
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			ctx.deleteFrom(Prestiti.PRESTITI)
+				.where(Prestiti.PRESTITI.LIBRO.eq(idLibro))
+				.execute();
+			
+		} catch(SQLException e){
+			System.out.println(e);
+		}
+	}
+	
+	public static void attivaPrestito(Prestito prestito) {
+		if(prestito == null)
+			return;
+		
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			String nuovoStato = StatoPrestito.RITIRATO.name();
+			String oggi = DateUtility.getDataOggi();
+			
+			ctx.update(Prestiti.PRESTITI)
+				.set(Prestiti.PRESTITI.STATO, nuovoStato)
+				.set(Prestiti.PRESTITI.DATA_INIZIO, oggi)
+				.where(Prestiti.PRESTITI.ID.eq(prestito.getId()))
+				.execute();
+			
+		} catch(SQLException e){
+			System.out.println(e);
+		}
+	}
+	
+	public static void concludiPrestito(Prestito prestito) {
+		if(prestito == null)
+			return;
+		
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			String nuovoStato = StatoPrestito.CONCLUSO.name();
+			String oggi = DateUtility.getDataOggi();
+			
+			ctx.update(Prestiti.PRESTITI)
+				.set(Prestiti.PRESTITI.STATO, nuovoStato)
+				.set(Prestiti.PRESTITI.DATA_FINE, oggi)
+				.where(Prestiti.PRESTITI.ID.eq(prestito.getId()))
+				.execute();
+			
+			// aggiorna lo stato del libro
+			CatalogManager.aggiornaStatoLibro(prestito.getLibro().getId(), StatoLibro.DISPONIBILE);
+			
+			// rimuovi tutti i solleciti collegati a questo prestito
+			UsersManager.rimuoviSolleciti(prestito.getIdUtente(), prestito.getIdLibro());
+			
+		} catch(SQLException e){
+			System.out.println(e);
+		}
+	}
+
+	public static void aggiornaDataUltimoSollecito(Integer id, String oggi) {		
+		try(Connection conn = connect()){
+			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			
+			ctx.update(Prestiti.PRESTITI)
+				.set(Prestiti.PRESTITI.DATA_ULTIMO_SOLLECITO, oggi)
+				.where(Prestiti.PRESTITI.ID.eq(id))
+				.execute();
+			
+		} catch(SQLException e){
+			System.out.println(e);
 		}
 	}
 	

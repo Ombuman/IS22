@@ -5,10 +5,15 @@ package com.librarium.database.generated.org.jooq.tables;
 
 
 import com.librarium.database.generated.org.jooq.DefaultSchema;
+import com.librarium.database.generated.org.jooq.Keys;
 import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -16,6 +21,7 @@ import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -45,7 +51,7 @@ public class Generi extends TableImpl<GeneriRecord> {
     /**
      * The column <code>Generi.ID</code>.
      */
-    public final TableField<GeneriRecord, Integer> ID = createField(DSL.name("ID"), SQLDataType.INTEGER, this, "");
+    public final TableField<GeneriRecord, Integer> ID = createField(DSL.name("ID"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>Generi.Nome</code>.
@@ -88,6 +94,21 @@ public class Generi extends TableImpl<GeneriRecord> {
     @Override
     public Schema getSchema() {
         return DefaultSchema.DEFAULT_SCHEMA;
+    }
+
+    @Override
+    public Identity<GeneriRecord, Integer> getIdentity() {
+        return (Identity<GeneriRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
+    public UniqueKey<GeneriRecord> getPrimaryKey() {
+        return Keys.PK_GENERI;
+    }
+
+    @Override
+    public List<UniqueKey<GeneriRecord>> getKeys() {
+        return Arrays.<UniqueKey<GeneriRecord>>asList(Keys.PK_GENERI);
     }
 
     @Override
