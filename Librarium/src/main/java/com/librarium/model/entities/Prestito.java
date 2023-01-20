@@ -1,6 +1,6 @@
 package com.librarium.model.entities;
 
-import com.librarium.application.utility.DateUtility;
+import com.librarium.controller.utility.DateUtility;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 import com.librarium.database.generated.org.jooq.tables.records.PrestitiRecord;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;

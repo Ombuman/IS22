@@ -13,13 +13,13 @@ import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-import com.librarium.application.utility.DateUtility;
-import com.librarium.authentication.LoginInfo;
-import com.librarium.authentication.SignupInfo;
+import com.librarium.controller.utility.DateUtility;
 import com.librarium.database.generated.org.jooq.tables.Prestiti;
 import com.librarium.database.generated.org.jooq.tables.Solleciti;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
+import com.librarium.model.authentication.LoginInfo;
+import com.librarium.model.authentication.SignupInfo;
 import com.librarium.model.entities.InfoProfiloUtente;
 import com.librarium.model.entities.Prestito;
 import com.librarium.model.entities.Sollecito;
