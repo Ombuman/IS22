@@ -103,14 +103,15 @@ public class UsersManager extends DatabaseConnection {
 				condition = condition.and(Utenti.UTENTI.RUOLO.eq(ruoloAccount));
 			
 			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
-			Result<Record> result = ctx.select(Utenti.UTENTI.asterisk(), DSL.count(Prestiti.PRESTITI).as("nPrestiti"), DSL.count(Solleciti.SOLLECITI).as("nSolleciti"))
+			
+			Result<Record> result = 
+					ctx.select(
+						Utenti.UTENTI.asterisk(), 
+						DSL.selectCount().from(Prestiti.PRESTITI).where(Utenti.UTENTI.ID.eq(Prestiti.PRESTITI.UTENTE)).asField("nPrestiti"), 
+						DSL.selectCount().from(Solleciti.SOLLECITI).where(Utenti.UTENTI.ID.eq(Solleciti.SOLLECITI.UTENTE)).asField("nSolleciti")
+					)
 					.from(Utenti.UTENTI)
-					.leftJoin(Prestiti.PRESTITI)
-					.on(Utenti.UTENTI.ID.eq(Prestiti.PRESTITI.UTENTE))
-					.leftJoin(Solleciti.SOLLECITI)
-					.on(Utenti.UTENTI.ID.eq(Solleciti.SOLLECITI.UTENTE))
 					.where(condition)
-					.groupBy(Utenti.UTENTI.ID)
 					.fetch();
 			
 			ArrayList<Utente> utenti = new ArrayList<>();
@@ -170,6 +171,7 @@ public class UsersManager extends DatabaseConnection {
 			ctx.update(Utenti.UTENTI)
 				.set(Utenti.UTENTI.NOME, datiUtente.getNome())
 				.set(Utenti.UTENTI.COGNOME, datiUtente.getCognome())
+				.where(Utenti.UTENTI.ID.eq(idUtente))
 				.execute();
 			
 			Result<Record> result = ctx.select()
