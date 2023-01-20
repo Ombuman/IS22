@@ -1,12 +1,9 @@
 package com.librarium.application.components.catalogo;
 
-import java.util.EventListener;
 import java.util.List;
-import java.util.function.Consumer;
 
 import com.librarium.database.CatalogManager;
 import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
-import com.vaadin.flow.component.HasValue.ValueChangeEvent;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.button.Button;
@@ -21,6 +18,8 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class FiltriLibri extends VerticalLayout{
+	
+	private static final long serialVersionUID = -2744684770420629871L;
 	
 	private HorizontalLayout layoutFiltriNascosti;
 	private TextField filtroTesto;

@@ -7,10 +7,8 @@ import java.util.regex.Pattern;
 
 import com.librarium.application.components.BetterDialog;
 import com.librarium.database.CatalogManager;
-import com.librarium.database.entities.Libro;
 import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
+import com.librarium.model.entities.Libro;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
@@ -23,7 +21,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class DialogoInserimentoLibro extends BetterDialog {

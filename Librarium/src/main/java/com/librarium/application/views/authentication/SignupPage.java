@@ -1,34 +1,29 @@
 package com.librarium.application.views.authentication;
 
 import com.librarium.application.components.BetterDialog;
-import com.librarium.authentication.LoginInfo;
 import com.librarium.authentication.SignupInfo;
-import com.librarium.database.CatalogManager;
 import com.librarium.database.UsersManager;
-import com.librarium.database.enums.StatoAccountUtente;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-//@Route("/signup")
 public class SignupPage extends BetterDialog {
+
+	private static final long serialVersionUID = 1L;
+
 	private Binder<SignupInfo> binder;
 	
 	private TextField nome;

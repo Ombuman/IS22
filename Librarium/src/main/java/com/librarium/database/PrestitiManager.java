@@ -2,8 +2,6 @@ package com.librarium.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import org.jooq.Condition;
@@ -14,15 +12,15 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 import com.librarium.application.utility.DateUtility;
-import com.librarium.database.entities.Prestito;
-import com.librarium.database.enums.StatoAccountUtente;
-import com.librarium.database.enums.StatoLibro;
-import com.librarium.database.enums.StatoPrestito;
 import com.librarium.database.generated.org.jooq.tables.Libri;
 import com.librarium.database.generated.org.jooq.tables.Prestiti;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
+import com.librarium.model.entities.Prestito;
+import com.librarium.model.enums.StatoAccountUtente;
+import com.librarium.model.enums.StatoLibro;
+import com.librarium.model.enums.StatoPrestito;
 
 public class PrestitiManager extends DatabaseConnection {
 	

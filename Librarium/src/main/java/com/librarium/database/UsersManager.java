@@ -16,18 +16,16 @@ import org.jooq.impl.DSL;
 import com.librarium.application.utility.DateUtility;
 import com.librarium.authentication.LoginInfo;
 import com.librarium.authentication.SignupInfo;
-import com.librarium.database.entities.InfoProfiloUtente;
-import com.librarium.database.entities.Prestito;
-import com.librarium.database.entities.Sollecito;
-import com.librarium.database.entities.Utente;
-import com.librarium.database.enums.RuoloAccount;
-import com.librarium.database.enums.StatoAccountUtente;
-import com.librarium.database.generated.org.jooq.tables.Libri;
 import com.librarium.database.generated.org.jooq.tables.Prestiti;
 import com.librarium.database.generated.org.jooq.tables.Solleciti;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
-import com.librarium.database.generated.org.jooq.tables.records.SollecitiRecord;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
+import com.librarium.model.entities.InfoProfiloUtente;
+import com.librarium.model.entities.Prestito;
+import com.librarium.model.entities.Sollecito;
+import com.librarium.model.entities.Utente;
+import com.librarium.model.enums.RuoloAccount;
+import com.librarium.model.enums.StatoAccountUtente;
 
 public class UsersManager extends DatabaseConnection {
 	

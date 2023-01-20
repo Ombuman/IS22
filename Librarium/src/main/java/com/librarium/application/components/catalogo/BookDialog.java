@@ -4,25 +4,24 @@ import com.librarium.application.components.BetterDialog;
 import com.librarium.application.views.authentication.LoginPage;
 import com.librarium.authentication.session.SessionManager;
 import com.librarium.database.PrestitiManager;
-import com.librarium.database.entities.Libro;
-import com.librarium.database.enums.StatoAccountUtente;
-import com.librarium.database.enums.StatoLibro;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
+import com.librarium.model.entities.Libro;
+import com.librarium.model.enums.StatoAccountUtente;
+import com.librarium.model.enums.StatoLibro;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class BookDialog extends BetterDialog {
 	
+	private static final long serialVersionUID = -7939567460963187013L;
+
 	public BookDialog(Libro datiLibro) {
 		super();
 		setHeaderTitle(datiLibro.getLibro().getTitolo());

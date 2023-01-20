@@ -1,6 +1,6 @@
 package com.librarium.authentication;
 
-import com.librarium.database.security.EncryptionUtility;
+import com.librarium.application.utility.EncryptionUtility;
 
 public class SignupInfo {
 	

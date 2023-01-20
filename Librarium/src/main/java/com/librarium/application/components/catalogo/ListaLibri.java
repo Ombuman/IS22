@@ -2,9 +2,9 @@ package com.librarium.application.components.catalogo;
 
 import java.util.List;
 
-import com.librarium.database.entities.Libro;
-import com.librarium.database.enums.StatoLibro;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
+import com.librarium.model.entities.Libro;
+import com.librarium.model.enums.StatoLibro;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.Image;
@@ -15,7 +15,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class ListaLibri extends FlexLayout{
-	
+
+	private static final long serialVersionUID = 5166941203668841334L;
+
 	public ListaLibri() {
 		setFlexWrap(FlexWrap.WRAP);
 		//setJustifyContentMode(JustifyContentMode.START);

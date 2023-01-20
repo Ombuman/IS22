@@ -2,9 +2,7 @@ package com.librarium.application.components;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
-import com.librarium.database.entities.Prestito;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.theme.lumo.LumoUtility;

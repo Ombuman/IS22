@@ -1,4 +1,4 @@
-package com.librarium.database.entities;
+package com.librarium.model.entities;
 
 import java.util.ArrayList;
 import java.util.HashSet;

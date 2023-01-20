@@ -9,6 +9,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 
 public class BetterDialog extends Dialog {
+	private static final long serialVersionUID = -3736456847457802536L;
 	
 	private Button closeDialog;
 	

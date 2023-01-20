@@ -1,4 +1,4 @@
-package com.librarium.database.security;
+package com.librarium.application.utility;
 
 import org.apache.commons.codec.digest.DigestUtils;
 

@@ -1,4 +1,4 @@
-package com.librarium.database.entities;
+package com.librarium.model.entities;
 
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
 

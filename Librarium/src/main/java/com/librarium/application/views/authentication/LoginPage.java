@@ -6,12 +6,9 @@ import com.librarium.application.views.MainLayout;
 import com.librarium.authentication.LoginInfo;
 import com.librarium.authentication.session.SessionManager;
 import com.librarium.database.UsersManager;
-import com.librarium.database.enums.RuoloAccount;
-import com.librarium.database.generated.org.jooq.tables.Utenti;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
-import com.librarium.database.security.EncryptionUtility;
+import com.librarium.model.enums.RuoloAccount;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -26,8 +23,10 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-//@Route("/login")
 public class LoginPage extends BetterDialog {
+
+	private static final long serialVersionUID = 1488015700942243211L;
+
 	private Binder<LoginInfo> binder;
 	
 	private EmailField email;

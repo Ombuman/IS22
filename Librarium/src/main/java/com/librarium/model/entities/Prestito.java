@@ -1,14 +1,4 @@
-package com.librarium.database.entities;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+package com.librarium.model.entities;
 
 import com.librarium.application.utility.DateUtility;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;

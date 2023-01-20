@@ -3,7 +3,6 @@ package com.librarium.application.components.admin;
 import java.util.List;
 
 import com.librarium.application.components.BetterDialog;
-import com.librarium.application.views.admin.GestioneCatalogoPage;
 import com.librarium.database.CatalogManager;
 import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
 import com.vaadin.flow.component.button.Button;

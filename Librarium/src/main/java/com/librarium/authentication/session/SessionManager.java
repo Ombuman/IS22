@@ -1,9 +1,8 @@
 package com.librarium.authentication.session;
 
 import com.librarium.database.UsersManager;
-import com.librarium.database.entities.InfoProfiloUtente;
-import com.librarium.database.enums.StatoAccountUtente;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
+import com.librarium.model.entities.InfoProfiloUtente;
 import com.vaadin.flow.server.VaadinSession;
 
 public class SessionManager {

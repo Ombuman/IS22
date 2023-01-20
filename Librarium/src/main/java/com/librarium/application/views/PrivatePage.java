@@ -1,13 +1,14 @@
 package com.librarium.application.views;
 
 import com.librarium.authentication.session.SessionManager;
-import com.librarium.database.enums.RuoloAccount;
-import com.vaadin.flow.component.UI;
+import com.librarium.model.enums.RuoloAccount;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 
 public abstract class PrivatePage extends VerticalLayout implements BeforeEnterObserver {
+
+	private static final long serialVersionUID = 2832631662086495111L;
 	
 	private final String defaultRoute = "/";
 	

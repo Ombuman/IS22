@@ -6,16 +6,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.librarium.database.CatalogManager;
-import com.librarium.database.entities.Libro;
-import com.librarium.database.enums.StatoLibro;
 import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
+import com.librarium.model.entities.Libro;
+import com.librarium.model.enums.StatoLibro;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;

@@ -3,8 +3,7 @@ package com.librarium.application.components.catalogo;
 import java.util.List;
 
 import com.librarium.database.CatalogManager;
-import com.librarium.database.entities.Libro;
-import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
+import com.librarium.model.entities.Libro;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;

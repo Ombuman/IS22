@@ -13,12 +13,12 @@ import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-import com.librarium.database.entities.Libro;
-import com.librarium.database.enums.StatoLibro;
 import com.librarium.database.generated.org.jooq.tables.Generi;
 import com.librarium.database.generated.org.jooq.tables.Libri;
 import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
+import com.librarium.model.entities.Libro;
+import com.librarium.model.enums.StatoLibro;
 
 public class CatalogManager extends DatabaseConnection{
 

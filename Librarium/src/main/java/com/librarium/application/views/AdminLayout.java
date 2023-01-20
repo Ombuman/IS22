@@ -1,35 +1,18 @@
 package com.librarium.application.views;
 
-
-import java.util.Optional;
-
-import com.librarium.application.components.BetterDialog;
-import com.librarium.application.components.LinkButton;
 import com.librarium.application.components.nav.IconNavLink;
 import com.librarium.application.navigate.Navigation;
-import com.librarium.application.views.authentication.LoginPage;
-import com.librarium.application.views.authentication.SignupPage;
 import com.librarium.authentication.session.SessionManager;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentUtil;
-import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.details.Details;
-import com.vaadin.flow.component.details.DetailsVariant;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Hr;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -38,7 +21,10 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
  * The main view is a top-level placeholder for other views.
  */
 public class AdminLayout extends AppLayout{
-    private String title;
+	
+	private static final long serialVersionUID = 5516654098584989643L;
+    
+	private String title;
     private H2 viewTitle;
     
     public AdminLayout() {
