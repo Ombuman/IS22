@@ -16,7 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @Theme(value = "librarium")
 @PWA(name = "Librarium", shortName = "Librarium", offlineResources = {})
-@NpmPackage(value = "line-awesome", version = "1.3.0")
+@NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
 @NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
 public class Application implements AppShellConfigurator {
 
