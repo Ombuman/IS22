@@ -130,7 +130,7 @@ public class SignupDialog extends BetterDialog {
 	}
 	
 	private boolean validateEmail(String email) {
-		return UsersManager.verificaValiditaEmail(email);
+		return UsersManager.getInstance().verificaDisponibilitaEmail(email);
 	}
 	
 	private void hideErrorMessage() {
@@ -154,11 +154,10 @@ public class SignupDialog extends BetterDialog {
 			SignupInfo datiUtente = new SignupInfo();
 			binder.writeBean(datiUtente);
 			
-			UsersManager.aggiungiUtente(datiUtente);
+			UsersManager.getInstance().aggiungiUtente(datiUtente);
 			
 			mostraPaginaDiAccesso();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			showErrorMessage("Si è verificato un errore. Riprova più tardi!");
 		} finally {
 			signupButton.setEnabled(true);

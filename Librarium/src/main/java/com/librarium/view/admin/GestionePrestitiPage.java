@@ -132,9 +132,9 @@ public class GestionePrestitiPage extends PrivatePage{
 	}
 	
 	private void aggiornaListe() {
-		tabPrenotazioni.setLista(PrestitiManager.getPrestiti(StatoPrestito.PRENOTATO.name()));
-		tabAttivi.setLista(PrestitiManager.getPrestiti(StatoPrestito.RITIRATO.name()));
-		tabConclusi.setLista(PrestitiManager.getPrestiti(StatoPrestito.CONCLUSO.name()));
+		tabPrenotazioni.setLista(PrestitiManager.getInstance().getPrestiti(StatoPrestito.PRENOTATO.name()));
+		tabAttivi.setLista(PrestitiManager.getInstance().getPrestiti(StatoPrestito.RITIRATO.name()));
+		tabConclusi.setLista(PrestitiManager.getInstance().getPrestiti(StatoPrestito.CONCLUSO.name()));
 		
 		// aggiorna i dati visualizzati nella grid
 		aggiornaGrid();
@@ -150,7 +150,7 @@ public class GestionePrestitiPage extends PrivatePage{
 				confermaAttivazione.setRejectable(true);
 				
 				confermaAttivazione.addConfirmListener(confirm -> {
-					PrestitiManager.attivaPrestito(prestito);
+					PrestitiManager.getInstance().attivaPrestito(prestito);
 					// aggiorna le liste dei prestiti dei vari tab
 					aggiornaListe();
 				});
@@ -176,7 +176,7 @@ public class GestionePrestitiPage extends PrivatePage{
 				
 				confermaAnnullamento.addConfirmListener(confirm -> {
 					try {
-						PrestitiManager.annullaPrenotazione(prestito);
+						PrestitiManager.getInstance().annullaPrenotazione(prestito);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -201,7 +201,7 @@ public class GestionePrestitiPage extends PrivatePage{
 				confermaConclusione.setRejectable(true);
 				
 				confermaConclusione.addConfirmListener(confirm -> {
-					PrestitiManager.concludiPrestito(prestito);
+					PrestitiManager.getInstance().concludiPrestito(prestito);
 					// aggiorna le liste dei prestiti dei vari tab
 					aggiornaListe();
 				});
@@ -225,13 +225,13 @@ public class GestionePrestitiPage extends PrivatePage{
 				azione.setEnabled(false);
 			} else {
 				// se l'utente ha già 3 solleciti (sullo stesso libro?) mostro il pulsante per bloccare l'account
-				List<Sollecito> sollecitiUtente = UsersManager.getSollecitiUtenteLibro(prestito.getIdUtente(), prestito.getIdLibro());
+				List<Sollecito> sollecitiUtente = UsersManager.getInstance().getSollecitiUtenteLibro(prestito.getIdUtente(), prestito.getIdLibro());
 				
 				if(sollecitiUtente.size() >= 3) {
 					azione.setText("Sospendi Account");
 					azione.addClickListener(e -> {
 						// sospendi l'account utente
-						UsersManager.setStatoAccount(prestito.getIdUtente(), StatoAccountUtente.SOSPESO.name());
+						UsersManager.getInstance().setStatoAccount(prestito.getIdUtente(), StatoAccountUtente.SOSPESO.name());
 						aggiornaListe();
 					});
 				}
@@ -240,7 +240,7 @@ public class GestionePrestitiPage extends PrivatePage{
 					azione.setText("Invia sollecito");
 					azione.setEnabled(prestito.isInvioSollecitoPossibile());
 					azione.addClickListener(e -> {
-						UsersManager.inviaSollecito(prestito);
+						UsersManager.getInstance().inviaSollecito(prestito);
 						aggiornaListe();
 					});
 				}

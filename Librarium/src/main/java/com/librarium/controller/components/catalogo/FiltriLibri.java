@@ -76,7 +76,7 @@ public class FiltriLibri extends VerticalLayout{
 		filtroGenere.addClassName(LumoUtility.Padding.NONE);
 		filtroGenere.setWidth("min(300px, 90vw)");
 		
-		List<GeneriRecord> generi = CatalogManager.leggiGeneri();
+		List<GeneriRecord> generi = CatalogManager.getInstance().leggiGeneri();
 		filtroGenere.setItems(generi);
 		filtroGenere.setItemLabelGenerator(genere -> {
 			return genere != null ? genere.getNome() : new String("");
@@ -91,7 +91,7 @@ public class FiltriLibri extends VerticalLayout{
 		filtroCasaEditrice.setWidth("min(300px, 90vw)");
 		
 		filtroCasaEditrice.setLabel("Filtro Casa Editrice");
-		filtroCasaEditrice.setItems(CatalogManager.leggiCaseEditrici());
+		filtroCasaEditrice.setItems(CatalogManager.getInstance().leggiCaseEditrici());
 		filtroCasaEditrice.setItemLabelGenerator(casaEditrice -> {
 			return casaEditrice != null ? casaEditrice: new String("");
 		});

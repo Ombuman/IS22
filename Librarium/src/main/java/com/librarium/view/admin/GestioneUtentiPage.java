@@ -103,7 +103,7 @@ public class GestioneUtentiPage extends PrivatePage{
 					confirmDialog.setHeader("Sospensione Account");
 					confirmDialog.add("Vuoi davvero sospendere l'account di " + utente.getNome() + " " + utente.getCognome() + "?");
 					confirmDialog.addConfirmListener(confirm -> {
-						UsersManager.setStatoAccount(utente.getId(), StatoAccountUtente.SOSPESO.name());
+						UsersManager.getInstance().setStatoAccount(utente.getId(), StatoAccountUtente.SOSPESO.name());
 						aggiornaListe();
 					});
 					break;
@@ -113,7 +113,7 @@ public class GestioneUtentiPage extends PrivatePage{
 					confirmDialog.setHeader("Riattivazione Account");
 					confirmDialog.add("Vuoi davvero riattivare l'account di " + utente.getNome() + " " + utente.getCognome() + "?");
 					confirmDialog.addConfirmListener(confirm -> {
-						UsersManager.setStatoAccount(utente.getId(), StatoAccountUtente.ATTIVO.name());
+						UsersManager.getInstance().setStatoAccount(utente.getId(), StatoAccountUtente.ATTIVO.name());
 						aggiornaListe();
 					});
 					break;
@@ -134,8 +134,8 @@ public class GestioneUtentiPage extends PrivatePage{
 	}
 	
 	private void aggiornaListe() {
-		tabTutti.setLista(UsersManager.getUtenti());
-		tabSospesi.setLista(UsersManager.getUtentiSospesi());
+		tabTutti.setLista(UsersManager.getInstance().getUtenti());
+		tabSospesi.setLista(UsersManager.getInstance().getUtentiSospesi());
 		
 		// aggiorna il tab attivo
 		cambiaTab();

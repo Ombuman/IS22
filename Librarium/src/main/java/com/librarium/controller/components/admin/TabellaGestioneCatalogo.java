@@ -49,8 +49,8 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 	
 	public TabellaGestioneCatalogo() {
 		// inizializza i dati
-		listaLibri = CatalogManager.leggiLibri("", "", "");
-		listaGeneri = CatalogManager.leggiGeneri();
+		listaLibri = CatalogManager.getInstance().leggiLibri("", "", "");
+		listaGeneri = CatalogManager.getInstance().leggiGeneri();
 		
 		setMultiSort(true, MultiSortPriority.APPEND);
 		
@@ -155,7 +155,7 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		
 		editor.addSaveListener(e -> {
 			// aggiorna il libro
-			CatalogManager.aggiornaLibro(e.getItem());
+			CatalogManager.getInstance().aggiornaLibro(e.getItem());
 		});
 		
 		bindTitolo();
@@ -271,22 +271,22 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 	
 	public void aggiungiLibro(Libro libro) {
 		// inserisci il libro e ricava l'ID
-		int idLibro = CatalogManager.aggiungiLibro(libro);
+		int idLibro = CatalogManager.getInstance().aggiungiLibro(libro);
 		// aggiungi alla lista il libro appena inserito
-		listaLibri.add(0, CatalogManager.leggiLibro(idLibro));
+		listaLibri.add(0, CatalogManager.getInstance().leggiLibro(idLibro));
 		// aggiorna la lista
 		setItems(listaLibri);
 	}
 	
 	private void rimuoviLibro(Libro libro) {
 		// rimuovi il libro e aggiorna la lista
-		CatalogManager.rimuoviLibro(libro.getLibro().getId());
+		CatalogManager.getInstance().rimuoviLibro(libro.getLibro().getId());
 		listaLibri.remove(libro);
 		setItems(listaLibri);
 	}
 	
 	public void aggiornaListaGeneri() {
-		listaGeneri = CatalogManager.leggiGeneri();
+		listaGeneri = CatalogManager.getInstance().leggiGeneri();
 		Set<GeneriRecord> generiSelezionati = generiField.getSelectedItems();
 		generiField.setItems(listaGeneri);
 		generiField.select(generiSelezionati);

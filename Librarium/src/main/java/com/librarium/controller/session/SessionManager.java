@@ -20,7 +20,7 @@ public class SessionManager {
 	}
 	
 	public static void aggiornaDatiUtente(InfoProfiloUtente datiUtente) {
-		setDatiUtente(UsersManager.aggiornaAccountUtente(getDatiUtente().getId(), datiUtente));
+		setDatiUtente(UsersManager.getInstance().aggiornaAccountUtente(getDatiUtente().getId(), datiUtente));
 	}
 	
 	public static UtentiRecord getDatiUtente() {

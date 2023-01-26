@@ -90,7 +90,7 @@ public class PrestitiUtentePage extends PrivatePage{
 				CardPrestito card = new CardPrestito(prestito);
 				card.confirmDialog.addConfirmListener(e -> {
 					try {
-						PrestitiManager.annullaPrenotazione(prestito);
+						PrestitiManager.getInstance().annullaPrenotazione(prestito);
 						aggiornaListe();
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -126,18 +126,18 @@ public class PrestitiUtentePage extends PrivatePage{
 	}
 	
 	private List<Prestito> getListaPrestiti() {
-		return PrestitiManager.getPrestitiUtente(SessionManager.getDatiUtente().getId(), null);
+		return PrestitiManager.getInstance().getPrestitiUtente(SessionManager.getDatiUtente().getId(), null);
 	}
 	
 	private List<Prestito> getListaPrenotazioni() {
-		return PrestitiManager.getPrestitiUtente(SessionManager.getDatiUtente().getId(), StatoPrestito.PRENOTATO.name());
+		return PrestitiManager.getInstance().getPrestitiUtente(SessionManager.getDatiUtente().getId(), StatoPrestito.PRENOTATO.name());
 	}
 	
 	private List<Prestito> getListaAttivi() {
-		return PrestitiManager.getPrestitiUtente(SessionManager.getDatiUtente().getId(), StatoPrestito.RITIRATO.name());
+		return PrestitiManager.getInstance().getPrestitiUtente(SessionManager.getDatiUtente().getId(), StatoPrestito.RITIRATO.name());
 	}
 	
 	private List<Prestito> getListaConclusi() {
-		return PrestitiManager.getPrestitiUtente(SessionManager.getDatiUtente().getId(), StatoPrestito.CONCLUSO.name());
+		return PrestitiManager.getInstance().getPrestitiUtente(SessionManager.getDatiUtente().getId(), StatoPrestito.CONCLUSO.name());
 	}
 }

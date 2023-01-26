@@ -34,7 +34,7 @@ public class DialogoGestioneGeneri extends BetterDialog{
 		creaAggiuntaGenere();
 		creaGrid();
 		
-		listaGeneri = CatalogManager.leggiGeneri();
+		listaGeneri = CatalogManager.getInstance().leggiGeneri();
 		gridGeneri.setItems(listaGeneri);
 		
 		add(gridGeneri);
@@ -55,7 +55,7 @@ public class DialogoGestioneGeneri extends BetterDialog{
 					GeneriRecord genere = new GeneriRecord();
 					binder.writeBean(genere);
 					
-					int id = CatalogManager.aggiungiGenere(genere);
+					int id = CatalogManager.getInstance().aggiungiGenere(genere);
 					genere.setId(id);
 					listaGeneri.add(genere);
 					gridGeneri.setItems(listaGeneri);
@@ -86,7 +86,7 @@ public class DialogoGestioneGeneri extends BetterDialog{
 		buttonRimuovi.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		
 		buttonRimuovi.addClickListener(e -> {
-			int numeroLibriGenere = CatalogManager.getNumeroLibriGenere(genere.getId());
+			int numeroLibriGenere = CatalogManager.getInstance().getNumeroLibriGenere(genere.getId());
 			
 			if(numeroLibriGenere > 0) {
 				Dialog dialog = new Dialog();
@@ -117,7 +117,7 @@ public class DialogoGestioneGeneri extends BetterDialog{
 		dialogConferma.setRejectButton(annulla);
 		
 		dialogConferma.addConfirmListener(ev -> {
-			CatalogManager.rimuoviGenere(genere.getId());
+			CatalogManager.getInstance().rimuoviGenere(genere.getId());
 			listaGeneri.remove(genere);
 			gridGeneri.setItems(listaGeneri);
 		});

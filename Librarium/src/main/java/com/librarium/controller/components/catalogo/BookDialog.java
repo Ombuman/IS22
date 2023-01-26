@@ -45,7 +45,7 @@ public class BookDialog extends BetterDialog {
 							dialog.open();
 						}
 						// se il prestito va a buon fine
-						else if(PrestitiManager.creaPrestito(SessionManager.getDatiUtente(), datiLibro.getLibro())) {
+						else if(PrestitiManager.getInstance().creaPrestito(SessionManager.getDatiUtente(), datiLibro.getLibro())) {
 							Catalogo.aggiornaListaLibri(); // aggiorna la lista dei libri del catalogo
 							this.close(); // chiudi la finestra
 						}

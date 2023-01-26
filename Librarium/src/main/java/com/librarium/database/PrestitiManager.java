@@ -1,7 +1,5 @@
 package com.librarium.database;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.jooq.Condition;
@@ -24,9 +22,18 @@ import com.librarium.model.enums.StatoPrestito;
 
 public class PrestitiManager extends DatabaseConnection {
 	
-	public static ArrayList<Prestito> getPrestiti(String stato) {		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	private static PrestitiManager instance;
+	
+	public static PrestitiManager getInstance() {
+		if(instance == null)
+			instance = new PrestitiManager();
+		
+		return instance;
+	}
+	
+	public ArrayList<Prestito> getPrestiti(String stato) {		
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			Condition condition = DSL.noCondition();
 			if(stato != null && !stato.isBlank())
@@ -53,15 +60,15 @@ public class PrestitiManager extends DatabaseConnection {
 			
 			return prestiti;
 			
-		} catch(SQLException ex){
-			System.out.println(ex.getMessage());
+		} catch(Exception e){
+			System.out.println(e.getMessage());
 			return null;
 		}
 	}
 	
-	public static ArrayList<Prestito> getPrestitiUtente(int idUtente, String stato) {		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public ArrayList<Prestito> getPrestitiUtente(int idUtente, String stato) {		
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			Condition condition = DSL.noCondition();
 			if(stato != null && !stato.isBlank())
@@ -86,20 +93,20 @@ public class PrestitiManager extends DatabaseConnection {
 			
 			return prestitiUtente;
 			
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 			return null;
 		}
 	}
 	
-	public static boolean creaPrestito(UtentiRecord utente, LibriRecord libro) {
+	public boolean creaPrestito(UtentiRecord utente, LibriRecord libro) {
 		// verifico che i dati inseriti non siano nulli
 		if(utente == null || libro == null)
 			return false;
 		
-		try(Connection conn = connect()){
+		try{
 			// controllo se l'utente non è sospeso
-			if(UsersManager.getStatoAccount(utente.getId()) == StatoAccountUtente.SOSPESO)
+			if(UsersManager.getInstance().getStatoAccount(utente.getId()) == StatoAccountUtente.SOSPESO)
 				return false;
 			
 			// verifico se il libro sia realmente disponibile
@@ -109,57 +116,57 @@ public class PrestitiManager extends DatabaseConnection {
 			String oggi = DateUtility.getDataOggi();
 			
 			//aggiungi il prestito
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			ctx.insertInto(Prestiti.PRESTITI, Prestiti.PRESTITI.DATA_PRENOTAZIONE, Prestiti.PRESTITI.STATO, Prestiti.PRESTITI.LIBRO, Prestiti.PRESTITI.UTENTE)
 				.values(oggi, StatoPrestito.PRENOTATO.toString(), libro.getId(), utente.getId())
 				.execute();
 			
 			// aggiorna lo stato del libro
-			CatalogManager.aggiornaStatoLibro(libro.getId(), StatoLibro.NON_DISPONIBILE);
+			CatalogManager.getInstance().aggiornaStatoLibro(libro.getId(), StatoLibro.NON_DISPONIBILE);
 			
 			return true;
 			
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 			return false;
 		}
 	}
 	
-	public static void annullaPrenotazione(Prestito prestito) throws Exception{
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public void annullaPrenotazione(Prestito prestito) throws Exception{
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			ctx.deleteFrom(Prestiti.PRESTITI)
 				.where(Prestiti.PRESTITI.ID.eq(prestito.getDati().getId()))
 				.and(Prestiti.PRESTITI.STATO.eq(StatoPrestito.PRENOTATO.name()))
 				.execute();
 			
-			CatalogManager.aggiornaStatoLibro(prestito.getLibro().getId(), StatoLibro.DISPONIBILE);
+			CatalogManager.getInstance().aggiornaStatoLibro(prestito.getLibro().getId(), StatoLibro.DISPONIBILE);
 			
-		} catch(SQLException e){
+		} catch(Exception e){
 			throw e;
 		}
 	}
 
-	public static void rimuoviPrestiti(int idLibro) {
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public void rimuoviPrestiti(int idLibro) {
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			ctx.deleteFrom(Prestiti.PRESTITI)
 				.where(Prestiti.PRESTITI.LIBRO.eq(idLibro))
 				.execute();
 			
-		} catch(SQLException e){
+		} catch(Exception e){
 			System.out.println(e);
 		}
 	}
 	
-	public static void attivaPrestito(Prestito prestito) {
+	public void attivaPrestito(Prestito prestito) {
 		if(prestito == null)
 			return;
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			String nuovoStato = StatoPrestito.RITIRATO.name();
 			String oggi = DateUtility.getDataOggi();
@@ -170,17 +177,17 @@ public class PrestitiManager extends DatabaseConnection {
 				.where(Prestiti.PRESTITI.ID.eq(prestito.getId()))
 				.execute();
 			
-		} catch(SQLException e){
+		} catch(Exception e){
 			System.out.println(e);
 		}
 	}
 	
-	public static void concludiPrestito(Prestito prestito) {
+	public void concludiPrestito(Prestito prestito) {
 		if(prestito == null)
 			return;
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			String nuovoStato = StatoPrestito.CONCLUSO.name();
 			String oggi = DateUtility.getDataOggi();
@@ -192,26 +199,26 @@ public class PrestitiManager extends DatabaseConnection {
 				.execute();
 			
 			// aggiorna lo stato del libro
-			CatalogManager.aggiornaStatoLibro(prestito.getLibro().getId(), StatoLibro.DISPONIBILE);
+			CatalogManager.getInstance().aggiornaStatoLibro(prestito.getLibro().getId(), StatoLibro.DISPONIBILE);
 			
 			// rimuovi tutti i solleciti collegati a questo prestito
-			UsersManager.rimuoviSolleciti(prestito.getIdUtente(), prestito.getIdLibro());
+			UsersManager.getInstance().rimuoviSolleciti(prestito.getIdUtente(), prestito.getIdLibro());
 			
-		} catch(SQLException e){
+		} catch(Exception e){
 			System.out.println(e);
 		}
 	}
 
-	public static void aggiornaDataUltimoSollecito(Integer id, String oggi) {		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public void aggiornaDataUltimoSollecito(Integer id, String oggi) {		
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			ctx.update(Prestiti.PRESTITI)
 				.set(Prestiti.PRESTITI.DATA_ULTIMO_SOLLECITO, oggi)
 				.where(Prestiti.PRESTITI.ID.eq(id))
 				.execute();
 			
-		} catch(SQLException e){
+		} catch(Exception e){
 			System.out.println(e);
 		}
 	}

@@ -38,7 +38,7 @@ public class DialogoInserimentoLibro extends BetterDialog {
 	public DialogoInserimentoLibro(DialogoGestioneGeneri gestioneGeneri) {
 		this.gestioneGeneri = gestioneGeneri;
 		
-		listaGeneri = CatalogManager.leggiGeneri();
+		listaGeneri = CatalogManager.getInstance().leggiGeneri();
 		
 		setHeaderTitle("Aggiunta Libro");
 		add(creaFormInserimentoDatiLibro());
@@ -187,7 +187,7 @@ public class DialogoInserimentoLibro extends BetterDialog {
 	}
 	
 	public void aggiornaListaGeneri() {
-		listaGeneri = CatalogManager.leggiGeneri();
+		listaGeneri = CatalogManager.getInstance().leggiGeneri();
 		Set<GeneriRecord> generiSelezionati = generiField.getSelectedItems();
 		generiField.setItems(listaGeneri);
 		generiField.select(generiSelezionati);

@@ -12,13 +12,12 @@ public class BetterConfirmDialog extends ConfirmDialog{
 	
 	private static final long serialVersionUID = 6078775775889467184L;
 	
-	private Button confirmButton;
-	private Button rejectButton;
+	private Button confirmButton; // Pulsante di conferma
+	private Button rejectButton; // Pulsante di rifiuto
 	
 	public BetterConfirmDialog() {
 		creaPulsanti();
 	}
-	
 	
 	/**
 	 * @param header il titolo della finestra di dialogo

@@ -1,7 +1,5 @@
 package com.librarium.database;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +27,21 @@ import com.librarium.model.enums.StatoAccountUtente;
 
 public class UsersManager extends DatabaseConnection {
 	
-	public static boolean verificaValiditaEmail(String email) {
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	private static UsersManager instance;
+	
+	public static UsersManager getInstance() {
+		if(instance == null)
+			instance = new UsersManager();
+		
+		return instance;
+	}
+	
+	public boolean verificaDisponibilitaEmail(String email) {
+		if(email == null || email.isBlank())
+			return false;
+		
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			Result<Record1<String>> result = 
 				ctx.select(Utenti.UTENTI.EMAIL)
 					.from(Utenti.UTENTI)
@@ -41,42 +51,45 @@ public class UsersManager extends DatabaseConnection {
 			// se l'email è già presente nel database ritorna false, altrimenti true
 			return result.size() == 0;
 			
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 			return false;
 		}
 	}
 	
-	public static void aggiungiUtente(SignupInfo datiUtente) throws Exception {
-		if(datiUtente == null)
-			throw new Exception("Dati utente non inseriti");
-		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
-			
-			ctx.insertInto(Utenti.UTENTI, Utenti.UTENTI.NOME, Utenti.UTENTI.COGNOME, Utenti.UTENTI.EMAIL, Utenti.UTENTI.PASSWORD, Utenti.UTENTI.STATO, Utenti.UTENTI.RUOLO)
-			.values(datiUtente.getNome(), datiUtente.getCognome(), datiUtente.getEmail(), datiUtente.getEncryptedPassword(), StatoAccountUtente.ATTIVO.toString(), RuoloAccount.UTENTE.toString())
-			.execute();
-		} catch(Exception e) {
-			throw e;
-		}
-	}
-	
-	public static UtentiRecord autenticaUtente(LoginInfo datiUtente) {
+	public Integer aggiungiUtente(SignupInfo datiUtente) {
 		if(datiUtente == null)
 			return null;
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
-			Result<Record> result = ctx.select()
+			Record1<Integer> result = ctx.insertInto(Utenti.UTENTI, Utenti.UTENTI.NOME, Utenti.UTENTI.COGNOME, Utenti.UTENTI.EMAIL, Utenti.UTENTI.PASSWORD, Utenti.UTENTI.STATO, Utenti.UTENTI.RUOLO)
+					.values(datiUtente.getNome(), datiUtente.getCognome(), datiUtente.getEmail(), datiUtente.getEncryptedPassword(), StatoAccountUtente.ATTIVO.toString(), RuoloAccount.UTENTE.toString())
+					.returningResult(Utenti.UTENTI.ID)
+					.fetchOne();
+			
+			return result.get(Utenti.UTENTI.ID);
+		} catch(Exception e) {
+			return null;
+		}
+	}
+	
+	public UtentiRecord autenticaUtente(LoginInfo datiUtente) {
+		if(datiUtente == null)
+			return null;
+		
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
+			
+			Record result = ctx.select()
 				.from(Utenti.UTENTI)
 				.where(
 					Utenti.UTENTI.EMAIL.eq(datiUtente.getEmail())
 					.and(Utenti.UTENTI.PASSWORD.eq(datiUtente.getEncryptedPassword()))
-				).fetch();
+				).fetchOne();
 			
-			return (result.size() > 0) ? result.get(0).into(Utenti.UTENTI) : null;
+			return result != null ? result.into(Utenti.UTENTI) : null;
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -84,16 +97,40 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
-	public static List<Utente> getUtenti(){
+	public Utente getUtente(Integer idUtente) {
+		if(idUtente == null)
+			return null;
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
+			
+			Record result = ctx.select(
+					Utenti.UTENTI.asterisk(), 
+					DSL.selectCount().from(Prestiti.PRESTITI).where(Utenti.UTENTI.ID.eq(Prestiti.PRESTITI.UTENTE)).asField("nPrestiti"), 
+					DSL.selectCount().from(Solleciti.SOLLECITI).where(Utenti.UTENTI.ID.eq(Solleciti.SOLLECITI.UTENTE)).asField("nSolleciti")
+				)
+				.from(Utenti.UTENTI)
+				.where(Utenti.UTENTI.ID.eq(idUtente))
+				.fetchOne();
+			
+			return result == null ? null : new Utente(result.into(Utenti.UTENTI), result.get("nPrestiti"), result.get("nSolleciti"));
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	public List<Utente> getUtenti(){
 		return getUtenti(null, RuoloAccount.UTENTE.name());
 	}
 	
-	public static List<Utente> getUtentiSospesi(){
+	public List<Utente> getUtentiSospesi(){
 		return getUtenti(StatoAccountUtente.SOSPESO.name(), RuoloAccount.UTENTE.name());
 	}
 	
-	private static List<Utente> getUtenti(String statoAccount, String ruoloAccount) {
-		try(Connection conn = connect()){
+	public List<Utente> getUtenti(String statoAccount, String ruoloAccount) {
+		try{
 			
 			Condition condition = DSL.noCondition();
 			if(statoAccount != null && !statoAccount.isBlank())
@@ -102,7 +139,7 @@ public class UsersManager extends DatabaseConnection {
 			if(ruoloAccount != null && !ruoloAccount.isBlank())
 				condition = condition.and(Utenti.UTENTI.RUOLO.eq(ruoloAccount));
 			
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			Result<Record> result = 
 					ctx.select(
@@ -129,9 +166,9 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
-	public static void setStatoAccount(Integer idUtente, String nuovoStato) {
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public void setStatoAccount(Integer idUtente, String nuovoStato) {
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			ctx.update(Utenti.UTENTI)
 				.set(Utenti.UTENTI.STATO, nuovoStato)
@@ -144,15 +181,14 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
-	public static StatoAccountUtente getStatoAccount(Integer idUtente) {
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public StatoAccountUtente getStatoAccount(Integer idUtente) {
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			Result<Record1<String>> result = ctx.select(Utenti.UTENTI.STATO)
 				.from(Utenti.UTENTI)
-				.where(
-					Utenti.UTENTI.ID.eq(idUtente)
-				).fetch();
+				.where(Utenti.UTENTI.ID.eq(idUtente))
+				.fetch();
 			
 			return result.size() > 0 ? StatoAccountUtente.valueOf(result.get(0).component1()) : null;
 		} catch(Exception e) {
@@ -161,12 +197,12 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
-	public static UtentiRecord aggiornaAccountUtente(Integer idUtente, InfoProfiloUtente datiUtente) {
+	public UtentiRecord aggiornaAccountUtente(Integer idUtente, InfoProfiloUtente datiUtente) {
 		if(datiUtente == null)
 			return null;
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			ctx.update(Utenti.UTENTI)
 				.set(Utenti.UTENTI.NOME, datiUtente.getNome())
@@ -186,12 +222,12 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 
-	public static void inviaSollecito(Prestito prestito) {
+	public void inviaSollecito(Prestito prestito) {
 		if(prestito == null) 
 			return;
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			String oggi = DateUtility.getDataOggi();
 			
@@ -200,7 +236,7 @@ public class UsersManager extends DatabaseConnection {
 				.execute();
 			
 			// imposta la data dell'ultimo sollecito nel prestito
-			PrestitiManager.aggiornaDataUltimoSollecito(prestito.getId(), oggi);
+			PrestitiManager.getInstance().aggiornaDataUltimoSollecito(prestito.getId(), oggi);
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -208,12 +244,12 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
-	public static List<Sollecito> getSollecitiUtente(Integer idUtente) {
+	public List<Sollecito> getSollecitiUtente(Integer idUtente) {
 		if(idUtente == null)
 			return null;
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			Result<Record> result = ctx.select()
 				.from(Solleciti.SOLLECITI)
@@ -232,12 +268,12 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
-	public static List<Sollecito> getSollecitiUtenteLibro(Integer idUtente, Integer idLibro) {
+	public List<Sollecito> getSollecitiUtenteLibro(Integer idUtente, Integer idLibro) {
 		if(idUtente == null)
 			return null;
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			Result<Record> result = ctx.select()
 				.from(Solleciti.SOLLECITI)
@@ -256,12 +292,12 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 
-	public static void rimuoviSolleciti(Integer idUtente, Integer idLibro) {
+	public void rimuoviSolleciti(Integer idUtente, Integer idLibro) {
 		if(idUtente == null || idLibro == null)
 			return;
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			ctx.deleteFrom(Solleciti.SOLLECITI)
 				.where(Solleciti.SOLLECITI.UTENTE.eq(idUtente).and(Solleciti.SOLLECITI.LIBRO.eq(idLibro)))

@@ -1,7 +1,5 @@
 package com.librarium.database;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,16 +20,25 @@ import com.librarium.model.enums.StatoLibro;
 
 public class CatalogManager extends DatabaseConnection{
 
+	private static CatalogManager instance;
+	
+	public static CatalogManager getInstance() {
+		if(instance == null)
+			instance = new CatalogManager();
+		
+		return instance;
+	}
+	
 	/*========================== LIBRI ===========================*/
 	
-	public static List<Libro> leggiLibri(String filtroParole, GeneriRecord Generi, String casaEditrice){
+	public List<Libro> leggiLibri(String filtroParole, GeneriRecord Generi, String casaEditrice){
 		return leggiLibri(filtroParole, Generi.getId().toString(), casaEditrice);
 	}
 	
-	public static List<Libro> leggiLibri(String filtroParole, String filtroGeneri, String casaEditrice) {
+	public List<Libro> leggiLibri(String filtroParole, String filtroGeneri, String casaEditrice) {
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			Condition condition = DSL.noCondition();
 			
@@ -54,13 +61,13 @@ public class CatalogManager extends DatabaseConnection{
 					.fetch();
 			
 			return listaRecordToLibri(result);
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 			return null;
 		}
 	}
 	
-	private static List<Libro> listaRecordToLibri(Result<Record> result) {
+	private List<Libro> listaRecordToLibri(Result<Record> result) {
 		List<GeneriRecord> listaGeneri = leggiGeneri();
 		List<Libro> libri = new ArrayList<>();
 		
@@ -73,7 +80,7 @@ public class CatalogManager extends DatabaseConnection{
 		return libri;
 	}
 	
-	private static Libro recordToLibro(Record result) {
+	private Libro recordToLibro(Record result) {
 		List<GeneriRecord> listaGeneri = leggiGeneri();
 		
 		LibriRecord recordLibro = result.into(Libri.LIBRI);
@@ -81,9 +88,12 @@ public class CatalogManager extends DatabaseConnection{
 		return new Libro(recordLibro, generi);
 	}
 	
-	public static Libro leggiLibro(int idLibro) {
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public Libro leggiLibro(Integer idLibro) {
+		if(idLibro == null)
+			return null;
+		
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			Record result = 
 			ctx.select()
@@ -93,20 +103,20 @@ public class CatalogManager extends DatabaseConnection{
 			
 			return recordToLibro(result);
 			
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 			return null;
 		}
 	}
 	
-	public static Integer aggiungiLibro(Libro libro) {
+	public Integer aggiungiLibro(Libro libro) {
 		if(libro == null)
 			return null;
 		
 		libro.setStato(StatoLibro.DISPONIBILE.name());
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			Record1<Integer> result = ctx.insertInto(Libri.LIBRI, 
 				Libri.LIBRI.TITOLO, Libri.LIBRI.DESCRIZIONE, Libri.LIBRI.COPERTINA, Libri.LIBRI.AUTORE, Libri.LIBRI.CASA_EDITRICE, Libri.LIBRI.ANNO, Libri.LIBRI.GENERE, Libri.LIBRI.STATO)
@@ -116,31 +126,31 @@ public class CatalogManager extends DatabaseConnection{
 			
 			// ritorna l'id del libro inserito
 			return result.getValue(Libri.LIBRI.ID);
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 			return null;
 		}
 	}
 	
-	public static void rimuoviLibro(int idLibro) {		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public void rimuoviLibro(int idLibro) {		
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			ctx.deleteFrom(Libri.LIBRI)
 				.where(Libri.LIBRI.ID.eq(idLibro))
 				.execute();
 			
 			// dopo aver rimosso il libro rimuovi anche tutti i prestiti con tale libro collegato
-			PrestitiManager.rimuoviPrestiti(idLibro);
+			PrestitiManager.getInstance().rimuoviPrestiti(idLibro);
 			
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 		}
 	}
 	
-	public static void aggiornaLibro(Libro libro) {
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public void aggiornaLibro(Libro libro) {
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			ctx.update(Libri.LIBRI)
 				.set(Libri.LIBRI.TITOLO, libro.getTitolo())
@@ -152,29 +162,29 @@ public class CatalogManager extends DatabaseConnection{
 				.set(Libri.LIBRI.ANNO, libro.getAnno())
 				.where(Libri.LIBRI.ID.eq(libro.getLibro().getId()))
 				.execute();
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 		}
 	}
 	
-	public static void aggiornaStatoLibro(int idLibro, StatoLibro nuovoStato) {
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public void aggiornaStatoLibro(int idLibro, StatoLibro nuovoStato) {
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			ctx.update(Libri.LIBRI)
 				.set(Libri.LIBRI.STATO, nuovoStato.name())
 				.where(Libri.LIBRI.ID.eq(idLibro))
 				.execute();
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 		}
 	}
 	/*======================================================================*/
 	
-	public static List<GeneriRecord> leggiGeneri() {
+	public List<GeneriRecord> leggiGeneri() {
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			Result<Record> result = 
 				ctx.select()
 					.from(Generi.GENERI)
@@ -186,18 +196,18 @@ public class CatalogManager extends DatabaseConnection{
 			result.forEach(genere -> generi.add(genere.into(Generi.GENERI)));
 			
 			return generi;
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 			return null;
 		}
 	}
 	
-	public static Integer aggiungiGenere(GeneriRecord genere) {
+	public Integer aggiungiGenere(GeneriRecord genere) {
 		if(genere == null)
 			return null;
 		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			Record1<Integer> result = ctx.insertInto(Generi.GENERI, Generi.GENERI.NOME)
 			.values(genere.getNome())
@@ -206,28 +216,28 @@ public class CatalogManager extends DatabaseConnection{
 			
 			// ritorna l'id del libro inserito
 			return result.getValue(Generi.GENERI.ID);
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 			return null;
 		}
 	}
 	
-	public static void rimuoviGenere(Integer idGenere){		
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public void rimuoviGenere(Integer idGenere){		
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			ctx.deleteFrom(Generi.GENERI)
 				.where(Generi.GENERI.ID.eq(idGenere))
 				.execute();
 			
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 		}
 	}
 	
-	public static Integer getNumeroLibriGenere(Integer idGenere) {
-		try(Connection conn = connect()){
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+	public Integer getNumeroLibriGenere(Integer idGenere) {
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
 			Result<Record> result = ctx.select()
 					.from(Libri.LIBRI)
@@ -236,7 +246,7 @@ public class CatalogManager extends DatabaseConnection{
 			
 			return result.size();
 			
-		} catch(SQLException ex){
+		} catch(Exception ex){
 			System.out.println(ex.getMessage());
 			return null;
 		}
@@ -244,10 +254,10 @@ public class CatalogManager extends DatabaseConnection{
 	
 	/*========================== CASE EDITRICI ===========================*/
 	
-	public static ArrayList<String> leggiCaseEditrici() {
-		try (Connection conn = connect()) {
+	public ArrayList<String> leggiCaseEditrici() {
+		try  {
 
-			DSLContext ctx = DSL.using(conn, SQLDialect.SQLITE);
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			Result<Record1<String>> result = ctx.selectDistinct(Libri.LIBRI.CASA_EDITRICE)
 					.from(Libri.LIBRI)
 					.orderBy(Libri.LIBRI.CASA_EDITRICE)
@@ -259,7 +269,7 @@ public class CatalogManager extends DatabaseConnection{
 			}
 			
 			return caseEditrici;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return null;
 		}

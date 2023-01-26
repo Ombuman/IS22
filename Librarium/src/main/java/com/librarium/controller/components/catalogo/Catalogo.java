@@ -40,7 +40,7 @@ public class Catalogo extends VerticalLayout {
 		String casaEditrice = filtri.getFiltroCasaEditriceValue();
 		
 		try {
-			List<Libro> libriFiltrati = CatalogManager.leggiLibri(testo, idGenere, casaEditrice);
+			List<Libro> libriFiltrati = CatalogManager.getInstance().leggiLibri(testo, idGenere, casaEditrice);
 			
 			if(libriFiltrati.size() > 0) {
 				VerticalLayout layoutCategoria = new VerticalLayout();

@@ -119,7 +119,7 @@ public class LoginDialog extends BetterDialog {
 		try {
 			binder.writeBean(datiAccesso);
 			
-			UtentiRecord datiUtente = UsersManager.autenticaUtente(datiAccesso);
+			UtentiRecord datiUtente = UsersManager.getInstance().autenticaUtente(datiAccesso);
 			if(datiUtente != null) {
 				SessionManager.creaNuovaSessione(datiUtente);
 				

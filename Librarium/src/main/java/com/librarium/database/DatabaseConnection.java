@@ -5,18 +5,22 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public abstract class DatabaseConnection {
-	private static final String DATABASE_PATH = "/data/librarium.db";
+	private final String DB_PATH = "jdbc:sqlite:" + System.getProperty("user.dir") + "/data/librarium.db";
+	protected Connection connection;
 	
-	protected static Connection connect() {
-		String url = "jdbc:sqlite:" + System.getProperty("user.dir") + DATABASE_PATH;
-		Connection conn = null;
-
+	protected DatabaseConnection() {
 		try {
-			conn = DriverManager.getConnection(url);
+			connection = DriverManager.getConnection(DB_PATH);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
-		
-		return conn;
+	}
+	
+	public void setAutoCommit(boolean active) throws SQLException {
+		connection.setAutoCommit(active);
+	}
+	
+	public void rollback() throws SQLException {
+		connection.rollback();
 	}
 }
