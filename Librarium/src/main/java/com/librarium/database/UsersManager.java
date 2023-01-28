@@ -16,7 +16,6 @@ import com.librarium.database.generated.org.jooq.tables.Prestiti;
 import com.librarium.database.generated.org.jooq.tables.Solleciti;
 import com.librarium.database.generated.org.jooq.tables.Utenti;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
-import com.librarium.model.authentication.LoginInfo;
 import com.librarium.model.authentication.SignupInfo;
 import com.librarium.model.entities.InfoProfiloUtente;
 import com.librarium.model.entities.Prestito;
@@ -36,27 +35,6 @@ public class UsersManager extends DatabaseConnection {
 		return instance;
 	}
 	
-	public boolean verificaDisponibilitaEmail(String email) {
-		if(email == null || email.isBlank())
-			return false;
-		
-		try{
-			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
-			Result<Record1<String>> result = 
-				ctx.select(Utenti.UTENTI.EMAIL)
-					.from(Utenti.UTENTI)
-					.where(Utenti.UTENTI.EMAIL.eq(email))
-					.fetch();
-			
-			// se l'email è già presente nel database ritorna false, altrimenti true
-			return result.size() == 0;
-			
-		} catch(Exception ex){
-			System.out.println(ex.getMessage());
-			return false;
-		}
-	}
-	
 	public Integer aggiungiUtente(SignupInfo datiUtente) {
 		if(datiUtente == null)
 			return null;
@@ -71,28 +49,6 @@ public class UsersManager extends DatabaseConnection {
 			
 			return result.get(Utenti.UTENTI.ID);
 		} catch(Exception e) {
-			return null;
-		}
-	}
-	
-	public UtentiRecord autenticaUtente(LoginInfo datiUtente) {
-		if(datiUtente == null)
-			return null;
-		
-		try{
-			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
-			
-			Record result = ctx.select()
-				.from(Utenti.UTENTI)
-				.where(
-					Utenti.UTENTI.EMAIL.eq(datiUtente.getEmail())
-					.and(Utenti.UTENTI.PASSWORD.eq(datiUtente.getEncryptedPassword()))
-				).fetchOne();
-			
-			return result != null ? result.into(Utenti.UTENTI) : null;
-			
-		} catch(Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
@@ -167,6 +123,9 @@ public class UsersManager extends DatabaseConnection {
 	}
 	
 	public void setStatoAccount(Integer idUtente, String nuovoStato) {
+		if(idUtente == null || nuovoStato == null || nuovoStato.isBlank())
+			return;
+		
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
@@ -239,7 +198,7 @@ public class UsersManager extends DatabaseConnection {
 			PrestitiManager.getInstance().aggiornaDataUltimoSollecito(prestito.getId(), oggi);
 			
 		} catch(Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return;
 		}
 	}
@@ -269,7 +228,7 @@ public class UsersManager extends DatabaseConnection {
 	}
 	
 	public List<Sollecito> getSollecitiUtenteLibro(Integer idUtente, Integer idLibro) {
-		if(idUtente == null)
+		if(idUtente == null || idLibro == null)
 			return null;
 		
 		try{

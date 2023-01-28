@@ -1,47 +1,28 @@
 package librarium.autenticazione;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.sql.SQLException;
-
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Test;
 
+import com.librarium.database.AuthenticationManager;
 import com.librarium.database.UsersManager;
 import com.librarium.model.authentication.SignupInfo;
 import com.librarium.model.entities.Utente;
 
-public class TestRegistrazione {
+import librarium.TestDB;
 
-	@Before
-	public void initTest() {		
-		try {
-			UsersManager.getInstance().setAutoCommit(false);
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-	}
-	
-	@AfterClass
-	public static void endTest() {
-		try {
-			UsersManager.getInstance().rollback();
-			UsersManager.getInstance().setAutoCommit(true);
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-	}
-	
+public class TestRegistrazione extends TestDB{
+
 	@Test
 	public void testDisponibilitaEmail() {
-		UsersManager gestioneUtenti = UsersManager.getInstance();
+		AuthenticationManager autenticazioneUtenti = AuthenticationManager.getInstance();
 		
-		boolean disponibile = gestioneUtenti.verificaDisponibilitaEmail("nonvalida@gmail.com");
-		boolean nonDisponibile = gestioneUtenti.verificaDisponibilitaEmail("prova@gmail.com");
-		boolean emailNull = gestioneUtenti.verificaDisponibilitaEmail(null);
-		boolean emailEmpty = gestioneUtenti.verificaDisponibilitaEmail("");
-		boolean emailBlank = gestioneUtenti.verificaDisponibilitaEmail(" ");
+		boolean disponibile = autenticazioneUtenti.verificaDisponibilitaEmail("nonvalida@gmail.com");
+		boolean nonDisponibile = autenticazioneUtenti.verificaDisponibilitaEmail("prova@gmail.com");
+		boolean emailNull = autenticazioneUtenti.verificaDisponibilitaEmail(null);
+		boolean emailEmpty = autenticazioneUtenti.verificaDisponibilitaEmail("");
+		boolean emailBlank = autenticazioneUtenti.verificaDisponibilitaEmail(" ");
 		
 		assertEquals(disponibile, true);
 		assertEquals(nonDisponibile, false);
@@ -53,14 +34,23 @@ public class TestRegistrazione {
 	@Test
 	public void testRegistrazione() {
 		Utente nuovoUtente = null;
+		Utente utenteNull = null;
 		
 		try {
-			int idUtente = UsersManager.getInstance().aggiungiUtente(new SignupInfo("Pippo", "Rossi", "pippo@test.it", "pippo"));
+			Integer idUtente = AuthenticationManager.getInstance().registraUtente(new SignupInfo("Pippo", "Rossi", "pippo@test.it", "pippo"));
 			nuovoUtente = UsersManager.getInstance().getUtente(idUtente);
 		} catch (Exception e) {}
+		
+		try {
+			Integer idUtente = AuthenticationManager.getInstance().registraUtente(null);
+			utenteNull = UsersManager.getInstance().getUtente(idUtente);
+		} catch (Exception e) {}
+		
 		
 		assertEquals(nuovoUtente.getNome(), "Pippo");
 		assertEquals(nuovoUtente.getCognome(), "Rossi");
 		assertEquals(nuovoUtente.getEmail(), "pippo@test.it");
+
+		assertNull(utenteNull);
 	}
 }

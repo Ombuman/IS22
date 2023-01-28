@@ -36,7 +36,6 @@ public class CatalogManager extends DatabaseConnection{
 	}
 	
 	public List<Libro> leggiLibri(String filtroParole, String filtroGeneri, String casaEditrice) {
-		
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
@@ -81,6 +80,9 @@ public class CatalogManager extends DatabaseConnection{
 	}
 	
 	private Libro recordToLibro(Record result) {
+		if(result == null)
+			return null;
+		
 		List<GeneriRecord> listaGeneri = leggiGeneri();
 		
 		LibriRecord recordLibro = result.into(Libri.LIBRI);
@@ -132,7 +134,10 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	
-	public void rimuoviLibro(int idLibro) {		
+	public void rimuoviLibro(Integer idLibro) {
+		if(idLibro == null)
+			return;
+		
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
@@ -167,7 +172,7 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	
-	public void aggiornaStatoLibro(int idLibro, StatoLibro nuovoStato) {
+	public void aggiornaStatoLibro(Integer idLibro, StatoLibro nuovoStato) {
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
@@ -180,6 +185,24 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	/*======================================================================*/
+	
+	public GeneriRecord leggiGenere(Integer idGenere) {
+		if(idGenere == null)
+			return null;
+		
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
+			Record result = 
+				ctx.select()
+					.from(Generi.GENERI)
+					.where(Generi.GENERI.ID.eq(idGenere))
+					.fetchOne();
+			
+			return result.into(Generi.GENERI);
+		} catch(Exception ex){
+			return null;
+		}
+	}
 	
 	public List<GeneriRecord> leggiGeneri() {
 		
@@ -236,6 +259,9 @@ public class CatalogManager extends DatabaseConnection{
 	}
 	
 	public Integer getNumeroLibriGenere(Integer idGenere) {
+		if(idGenere == null)
+			return null;
+		
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			

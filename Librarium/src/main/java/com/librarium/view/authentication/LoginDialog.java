@@ -3,7 +3,7 @@ package com.librarium.view.authentication;
 import com.librarium.controller.components.BetterDialog;
 import com.librarium.controller.navigate.Navigation;
 import com.librarium.controller.session.SessionManager;
-import com.librarium.database.UsersManager;
+import com.librarium.database.AuthenticationManager;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
 import com.librarium.model.authentication.LoginInfo;
 import com.librarium.model.enums.RuoloAccount;
@@ -119,7 +119,7 @@ public class LoginDialog extends BetterDialog {
 		try {
 			binder.writeBean(datiAccesso);
 			
-			UtentiRecord datiUtente = UsersManager.getInstance().autenticaUtente(datiAccesso);
+			UtentiRecord datiUtente = AuthenticationManager.getInstance().autenticaUtente(datiAccesso);
 			if(datiUtente != null) {
 				SessionManager.creaNuovaSessione(datiUtente);
 				

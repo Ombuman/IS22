@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -21,7 +22,7 @@ import com.librarium.model.enums.StatoLibro;
 import com.librarium.model.enums.StatoPrestito;
 
 public class PrestitiManager extends DatabaseConnection {
-	
+
 	private static PrestitiManager instance;
 	
 	public static PrestitiManager getInstance() {
@@ -29,6 +30,31 @@ public class PrestitiManager extends DatabaseConnection {
 			instance = new PrestitiManager();
 		
 		return instance;
+	}
+	
+	public Prestito getPrestito(Integer idPrestito) {		
+		if(idPrestito == null)
+			return null;
+		
+		try{
+			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
+			
+			Record result = ctx.select()
+				.from(Prestiti.PRESTITI)
+				.join(Libri.LIBRI)
+				.on(Prestiti.PRESTITI.LIBRO.eq(Libri.LIBRI.ID))
+				.join(Utenti.UTENTI)
+				.on(Prestiti.PRESTITI.UTENTE.eq(Utenti.UTENTI.ID))
+				.where(Prestiti.PRESTITI.ID.eq(idPrestito))
+				.orderBy(Prestiti.PRESTITI.DATA_PRENOTAZIONE.desc(), Prestiti.PRESTITI.ID.desc())
+				.fetchOne();
+			
+			return new Prestito(result.into(Prestiti.PRESTITI), result.into(Utenti.UTENTI), result.into(Libri.LIBRI));
+			
+		} catch(Exception e){
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 	
 	public ArrayList<Prestito> getPrestiti(String stato) {		
@@ -66,6 +92,10 @@ public class PrestitiManager extends DatabaseConnection {
 		}
 	}
 	
+	public ArrayList<Prestito> getPrestitiUtente(int idUtente) {
+		return getPrestitiUtente(idUtente, null);
+	}
+	
 	public ArrayList<Prestito> getPrestitiUtente(int idUtente, String stato) {		
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
@@ -99,40 +129,44 @@ public class PrestitiManager extends DatabaseConnection {
 		}
 	}
 	
-	public boolean creaPrestito(UtentiRecord utente, LibriRecord libro) {
+	public Integer creaPrestito(UtentiRecord utente, LibriRecord libro) {
 		// verifico che i dati inseriti non siano nulli
 		if(utente == null || libro == null)
-			return false;
+			return null;
 		
 		try{
 			// controllo se l'utente non è sospeso
 			if(UsersManager.getInstance().getStatoAccount(utente.getId()) == StatoAccountUtente.SOSPESO)
-				return false;
+				return null;
 			
 			// verifico se il libro sia realmente disponibile
 			if(StatoLibro.valueOf(libro.getStato()) == StatoLibro.NON_DISPONIBILE)
-				return false;
+				return null;
 			
 			String oggi = DateUtility.getDataOggi();
 			
 			//aggiungi il prestito
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
-			ctx.insertInto(Prestiti.PRESTITI, Prestiti.PRESTITI.DATA_PRENOTAZIONE, Prestiti.PRESTITI.STATO, Prestiti.PRESTITI.LIBRO, Prestiti.PRESTITI.UTENTE)
+			Record1<Integer> result = ctx.insertInto(Prestiti.PRESTITI, Prestiti.PRESTITI.DATA_PRENOTAZIONE, Prestiti.PRESTITI.STATO, Prestiti.PRESTITI.LIBRO, Prestiti.PRESTITI.UTENTE)
 				.values(oggi, StatoPrestito.PRENOTATO.toString(), libro.getId(), utente.getId())
-				.execute();
+				.returningResult(Prestiti.PRESTITI.ID)
+				.fetchOne();
 			
 			// aggiorna lo stato del libro
 			CatalogManager.getInstance().aggiornaStatoLibro(libro.getId(), StatoLibro.NON_DISPONIBILE);
 			
-			return true;
+			return result.getValue(Prestiti.PRESTITI.ID);
 			
 		} catch(Exception ex){
 			System.out.println(ex.getMessage());
-			return false;
+			return null;
 		}
 	}
 	
-	public void annullaPrenotazione(Prestito prestito) throws Exception{
+	public boolean annullaPrenotazione(Prestito prestito){
+		if(prestito == null)
+			return false;
+		
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			
@@ -143,8 +177,10 @@ public class PrestitiManager extends DatabaseConnection {
 			
 			CatalogManager.getInstance().aggiornaStatoLibro(prestito.getLibro().getId(), StatoLibro.DISPONIBILE);
 			
+			return true;
+			
 		} catch(Exception e){
-			throw e;
+			return false;
 		}
 	}
 

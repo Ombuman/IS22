@@ -4,6 +4,7 @@ import com.librarium.controller.utility.DateUtility;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 import com.librarium.database.generated.org.jooq.tables.records.PrestitiRecord;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
+import com.librarium.model.enums.StatoPrestito;
 
 public class Prestito {
 	
@@ -40,6 +41,10 @@ public class Prestito {
 	
 	public String getDataFine() {
 		return dati.getDataFine();
+	}
+	
+	public StatoPrestito getStato() {
+		return StatoPrestito.valueOf(dati.getStato());
 	}
 	
 	public boolean isInvioSollecitoPossibile() {

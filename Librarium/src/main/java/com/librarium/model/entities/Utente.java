@@ -14,6 +14,10 @@ public class Utente {
 		this.numeroSolleciti = (Integer)numeroSolleciti;
 	}
 	
+	public UtentiRecord getDatiUtente() {
+		return datiUtente;
+	}
+	
 	public Integer getId() {
 		return datiUtente.getId();
 	}

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import com.librarium.database.UsersManager;
+import com.librarium.database.AuthenticationManager;
 import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
 import com.librarium.model.authentication.LoginInfo;
 
@@ -18,12 +18,12 @@ public class TestAccesso {
 		LoginInfo credenzialiEmpty = new LoginInfo("", "");
 		LoginInfo credenzialiNull = null;
 		
-		UsersManager gestioneUtenti = UsersManager.getInstance();
+		AuthenticationManager autenticazioneUtenti = AuthenticationManager.getInstance();
 		
-		UtentiRecord utenteAutenticato = gestioneUtenti.autenticaUtente(credenzialiValide);
-		UtentiRecord utenteErrato = gestioneUtenti.autenticaUtente(credenzialiErrate);
-		UtentiRecord utenteEmpty = gestioneUtenti.autenticaUtente(credenzialiEmpty);
-		UtentiRecord utenteNull = gestioneUtenti.autenticaUtente(credenzialiNull);
+		UtentiRecord utenteAutenticato = autenticazioneUtenti.autenticaUtente(credenzialiValide);
+		UtentiRecord utenteErrato = autenticazioneUtenti.autenticaUtente(credenzialiErrate);
+		UtentiRecord utenteEmpty = autenticazioneUtenti.autenticaUtente(credenzialiEmpty);
+		UtentiRecord utenteNull = autenticazioneUtenti.autenticaUtente(credenzialiNull);
 		
 		assertNotNull(utenteAutenticato);
 		assertNull(utenteErrato);

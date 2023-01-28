@@ -1,7 +1,7 @@
 package com.librarium.view.authentication;
 
 import com.librarium.controller.components.BetterDialog;
-import com.librarium.database.UsersManager;
+import com.librarium.database.AuthenticationManager;
 import com.librarium.model.authentication.SignupInfo;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -130,7 +130,7 @@ public class SignupDialog extends BetterDialog {
 	}
 	
 	private boolean validateEmail(String email) {
-		return UsersManager.getInstance().verificaDisponibilitaEmail(email);
+		return AuthenticationManager.getInstance().verificaDisponibilitaEmail(email);
 	}
 	
 	private void hideErrorMessage() {
@@ -154,7 +154,7 @@ public class SignupDialog extends BetterDialog {
 			SignupInfo datiUtente = new SignupInfo();
 			binder.writeBean(datiUtente);
 			
-			UsersManager.getInstance().aggiungiUtente(datiUtente);
+			AuthenticationManager.getInstance().registraUtente(datiUtente);
 			
 			mostraPaginaDiAccesso();
 		} catch (Exception e) {

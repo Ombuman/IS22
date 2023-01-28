@@ -49,6 +49,10 @@ public class Libro {
 		return "Libro [libro=" + libro + ", genere=" + generi.toArray().toString() + "]";
 	}
 	
+	public Integer getID() {
+		return getLibro().getId();
+	}
+	
 	public String getTitolo() {
 		return getLibro().getTitolo();
 	}
