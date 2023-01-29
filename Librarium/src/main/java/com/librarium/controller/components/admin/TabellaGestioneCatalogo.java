@@ -26,7 +26,10 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-
+/**
+ * TabellaGestioneCatalogo è la tabella di gestione del catalogo utilizzata dal bibliotecario
+ * 
+ */
 public class TabellaGestioneCatalogo extends Grid<Libro>{
 	private static final long serialVersionUID = 527429669895603123L;
 
@@ -76,7 +79,11 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		setItems(listaLibri);
 		//GridListDataView<Libro> dataView = setItems(listaLibri);
 	}
-	
+	/**
+	 * creaColonnaCopertina aggiunge la colonna relativa alla copertina del libro passato come parametro
+	 * @param libro
+	 * @return copertina del libro passato come paramero alla funzione
+	 */
 	private HorizontalLayout creaColonnaCopertina(Libro libro){
 		Span linkCopertina = new Span(libro.getCopertina());
 		linkCopertina.addClassNames(LumoUtility.Overflow.HIDDEN, LumoUtility.TextOverflow.ELLIPSIS);
@@ -96,7 +103,11 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		
 		return container;
 	}
-	
+	/**
+	 * creaBadgeStato è un tag che indica se lo stato del libro è Disponibile o Non disponibile
+	 * @param libro
+	 * @return stato del libro passato come parametro alla funzione
+	 */
 	private Span creaBadgeStato(Libro libro) {
 		Span badge = new Span("");
 		switch(StatoLibro.valueOf(libro.getLibro().getStato())) {
@@ -113,6 +124,12 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		return badge;
 	}
 	
+	/**
+	 * creaColonnaAzioni crea pulsanti per modificare o rimuovere un libro dal catalogo.
+	 * Questi pulsanti sono disponibili solo per il bibliotecario
+	 * @param libro
+	 * @return
+	 */
 	private HorizontalLayout creaColonnaAzioni(Libro libro) {
 		Button editButton = new Button(new Icon(VaadinIcon.PENCIL));
 		editButton.addClickListener(e -> {
@@ -146,6 +163,10 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		return new HorizontalLayout(editButton, deleteButton);
 	}
 
+	/**
+	 * creaBinder collega i dati contenuti nei campi della tabella, con l'oggetto di tipo libro
+	 * a cui essi fanno riferimento
+	 */
 	private void creaBinder() {
 		binder = new Binder<>(Libro.class);
 		
@@ -167,7 +188,10 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		bindAnno();
 		bindModifica();
 	}
-
+    /**
+     * bindTitolo ha lo scopo di verificare che 
+     * non venga inserita una stringa vuota nel campo titolo riferito a un libro
+     */
 	private void bindTitolo() {
 		TextField titoloField = new TextField();
 		titoloField.setWidthFull();
@@ -176,7 +200,10 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 			.bind(Libro::getTitolo, Libro::setTitolo);
 		colonnaTitolo.setEditorComponent(titoloField);
 	}
-	
+	/**
+     * bindDescrizione ha lo scopo di verificare che 
+     * non venga inserita una stringa vuota nel campo descrizione riferita a un libro
+     */
 	private void bindDescrizione() {
 		TextArea descrizioneField = new TextArea();
 		descrizioneField.setMaxHeight("100px");
@@ -186,7 +213,10 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 			.bind(Libro::getDescrizione, Libro::setDescrizione);
 		colonnaDescrizione.setEditorComponent(descrizioneField);
 	}
-	
+	/**
+     * bindDescrizione ha lo scopo di verificare che 
+     * venga inserita un immagine nel campo copertina riferita a un libro
+     */
 	private void bindCopertina() {
 		TextField copertinaField = new TextField();
 		copertinaField.setWidthFull();
@@ -201,7 +231,10 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 			.bind(Libro::getCopertina, Libro::setCopertina);
 		colonnaCopertina.setEditorComponent(copertinaField);
 	}
-	
+	/**
+     * bindAutore ha lo scopo di verificare che non
+     * venga inserita una stringa vuota nel campo autore riferito a un libro
+     */
 	private void bindAutore() {
 		TextField autoreField = new TextField();
 		autoreField.setWidthFull();
@@ -211,6 +244,10 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		colonnaAutore.setEditorComponent(autoreField);
 	}
 	
+	/**
+     * bindCasaEditrice ha lo scopo di verificare che non
+     * venga inserita una stringa vuota nel campo casa editrice riferita a un libro
+     */
 	private void bindCasaEditrice() {
 		TextField casaEditriceField = new TextField();
 		casaEditriceField.setWidthFull();
@@ -220,6 +257,10 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		colonnaCasaEditrice.setEditorComponent(casaEditriceField);
 	}
 	
+	/**
+     * bindAnno ha lo scopo di verificare che non
+     * venga inserita una stringa vuota nel campo anno riferito a un libro
+     */
 	private void bindAnno() {
 		TextField annoField = new TextField();
 		annoField.setAllowedCharPattern("[\\d*]");
@@ -230,6 +271,9 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		colonnaAnno.setEditorComponent(annoField);
 	}
 	
+	/**
+     * bindGeneri ha lo scopo di verificare che sia stato selezionato almeno un genere riferita a un libro
+     */
 	private void bindGeneri() {
 		generiField = new MultiSelectComboBox<GeneriRecord>();
 		generiField.setSizeFull();
@@ -253,6 +297,10 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		colonnaGeneri.setEditorComponent(new HorizontalLayout(generiField, aggiungiGenere));
 	}
 	
+	/**
+	 * bindModifica: premuto il pulsante di modifica mostra i campi del libro di interesse. 
+	 * e ne permette la modifica 
+	 */
 	private void bindModifica() {
 		Button saveButton = new Button(new Icon(VaadinIcon.CHECK), e -> {
 			//modifica il libro
@@ -268,7 +316,10 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		actions.setPadding(false);
 		colonnaAzioni.setEditorComponent(actions);
 	}
-	
+	/**
+	 * aggiungiLibro è una funzione utilizzata dal bibliotecario per aggiungere un nuovo libro nel catalogo
+	 * @param libro
+	 */
 	public void aggiungiLibro(Libro libro) {
 		// inserisci il libro e ricava l'ID
 		int idLibro = CatalogManager.getInstance().aggiungiLibro(libro);
@@ -277,7 +328,10 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		// aggiorna la lista
 		setItems(listaLibri);
 	}
-	
+	/**
+	 * rimuoviLibro è una funzione utilizzata dal bibliotecario per rimuovere un libro presente nel catalogo
+	 * @param libro
+	 */
 	private void rimuoviLibro(Libro libro) {
 		// rimuovi il libro e aggiorna la lista
 		CatalogManager.getInstance().rimuoviLibro(libro.getLibro().getId());
@@ -285,6 +339,11 @@ public class TabellaGestioneCatalogo extends Grid<Libro>{
 		setItems(listaLibri);
 	}
 	
+	/**
+	 * aggiornaListaGeneri è una funzione utilizzata dal bibliotecario per aggiornare i generi associati a 
+	 * un libro presente nel catalogo
+	 * @param libro
+	 */
 	public void aggiornaListaGeneri() {
 		listaGeneri = CatalogManager.getInstance().leggiGeneri();
 		Set<GeneriRecord> generiSelezionati = generiField.getSelectedItems();
