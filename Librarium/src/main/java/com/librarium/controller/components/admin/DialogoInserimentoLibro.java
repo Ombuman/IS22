@@ -22,7 +22,10 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-
+/**
+ * DialogoInserimentoLibro è l'estensione della classe BetterDialog.
+ * Permette di inserire un libro nel catalogo
+ */
 public class DialogoInserimentoLibro extends BetterDialog {
 	
 	private static final long serialVersionUID = 908501892196802025L;
@@ -44,6 +47,11 @@ public class DialogoInserimentoLibro extends BetterDialog {
 		add(creaFormInserimentoDatiLibro());
 	}
 	
+	/**
+	 * creaFormInserimentoDatiLibro è un form layout che permette di 
+	 * inserire i dati del libro da aggiungere
+	 *
+	 */
 	private FormLayout creaFormInserimentoDatiLibro() {
 		binder = new Binder<>(Libro.class);
 		
@@ -81,6 +89,11 @@ public class DialogoInserimentoLibro extends BetterDialog {
 		return form;
 	}
 	
+	/**
+	 * creaFieldTitolo è un campo per inserire il titolo del libro.
+	 * Effettua il bind dei dati attraverso il campo di testo.
+	 * @return campo di inserimento testuale per il titolo del libro da inserire
+	 */
 	private TextField creaFieldTitolo() {
 		TextField titoloField = new TextField("Titolo", "Inserisci il titolo");
 		titoloField.setWidthFull();
@@ -91,6 +104,11 @@ public class DialogoInserimentoLibro extends BetterDialog {
 		return titoloField;
 	}
 	
+	/**
+	 * creaFieldDescrizione è un campo per inserire la descrizione del libro. 
+	 * Effettua il bind dei dati attraverso il campo di testo.
+	 * @return campo di inserimento testuale per la descrizione del libro da inserire
+	 */
 	private TextArea creaFieldDescrizione() {
 		TextArea descrizioneField = new TextArea("Descrizione", "Inserisci la descrizione");
 		descrizioneField.setMaxHeight("100px");
@@ -101,6 +119,11 @@ public class DialogoInserimentoLibro extends BetterDialog {
 		
 		return descrizioneField;
 	}
+	/**
+	 * creaFieldCopertina è un campo per inserire la copertina del libro. 
+	 * Effettua il bind dei dati attraverso il campo di testo.
+	 * @return campo di inserimento testuale per la copertina del libro da inserire
+	 */
 	
 	private TextField creaFieldCopertina() {
 		TextField copertinaField = new TextField("Copertina", "Inserisci il link della copertina");
@@ -118,6 +141,11 @@ public class DialogoInserimentoLibro extends BetterDialog {
 		return copertinaField;
 	}
 	
+	/**
+	 * creaFieldAutore è un campo per inserire l'autore del libro. 
+	 * Effettua il bind dei dati attraverso il campo di testo.
+	 * @return campo di inserimento testuale per l'autore del libro da inserire
+	 */
 	private TextField creaFieldAutore() {
 		TextField autoreField = new TextField("Autore", "Inserisci il nome dell'autore");
 		autoreField.setWidthFull();
@@ -127,7 +155,11 @@ public class DialogoInserimentoLibro extends BetterDialog {
 		
 		return autoreField;
 	}
-	
+	/**
+	 * creaFieldCasaEditrice è un campo per inserire la casa editrice del libro. 
+	 * Effettua il bind dei dati attraverso il campo di testo.
+	 * @return campo di inserimento testuale per la casa editrice del libro da inserire
+	 */
 	private TextField creaFieldCasaEditrice() {
 		TextField casaEditriceField = new TextField("Casa Editrice", "Inserisci il nome della casa editrice");
 		casaEditriceField.setWidthFull();
@@ -138,6 +170,11 @@ public class DialogoInserimentoLibro extends BetterDialog {
 		return casaEditriceField;
 	}
 	
+	/**
+	 * creaFieldAnno è un campo per inserire l'anno di pubblicazione del libro. 
+	 * Effettua il bind dei dati attraverso il campo di testo.
+	 * @return campo di inserimento testuale per l'anno di pubblicazione del libro da inserire
+	 */
 	private TextField creaFieldAnno() {
 		TextField annoField = new TextField("Anno", "Inserisci l'anno di pubblicazione");
 		annoField.setAllowedCharPattern("[\\d*]");
@@ -147,7 +184,11 @@ public class DialogoInserimentoLibro extends BetterDialog {
 			.bind(Libro::getAnno, Libro::setAnno);
 		return annoField;
 	}
-	
+	/**
+	 * creaFieldGeneri è un campo per inserire il genere del libro. 
+	 * Effettua il bind dei dati attraverso il campo di testo.
+	 * @return campo di inserimento testuale per il genere del libro da inserire
+	 */
 	private HorizontalLayout creaFieldGeneri() {
 		generiField = new MultiSelectComboBox<GeneriRecord>("Generi");
 		generiField.setPlaceholder("Seleziona i generi");
@@ -175,7 +216,10 @@ public class DialogoInserimentoLibro extends BetterDialog {
 		layout.setAlignItems(Alignment.END);
 		return layout;
 	}
-	
+	/**
+	 * getLibro controlla che i dati inseriti nel form siano corretti 
+	 * @return il libro con i dati inseriti nel form
+	 */
 	public Libro getLibro() throws Exception{
 		if(!binder.validate().isOk())
 			return null;
@@ -186,6 +230,9 @@ public class DialogoInserimentoLibro extends BetterDialog {
 		return libro;
 	}
 	
+	/**
+	 * aggiornaListaGeneri legge i dati dal Database e aggiorna la lista dei generi
+	 */
 	public void aggiornaListaGeneri() {
 		listaGeneri = CatalogManager.getInstance().leggiGeneri();
 		Set<GeneriRecord> generiSelezionati = generiField.getSelectedItems();

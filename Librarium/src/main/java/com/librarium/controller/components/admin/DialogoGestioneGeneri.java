@@ -17,7 +17,11 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-
+/**
+ * DialogoGestioneGeneri è l'estensione della classe BetterDialog
+ * è la finestra che permette digestire i generi
+ *
+ */
 public class DialogoGestioneGeneri extends BetterDialog{
 	
 	private static final long serialVersionUID = -4011142881661210008L;
@@ -26,6 +30,7 @@ public class DialogoGestioneGeneri extends BetterDialog{
 	
 	private Grid<GeneriRecord> gridGeneri;
 	private Binder<GeneriRecord> binder;
+	
 	
 	public DialogoGestioneGeneri() {
 		setHeaderTitle("Gestione Generi");
@@ -40,6 +45,9 @@ public class DialogoGestioneGeneri extends BetterDialog{
 		add(gridGeneri);
 	}
 	
+	/** 
+	 * creaAggiuntaGenere crea un campo per l'inserimento del nome e un pulsante per aggiungere il genere
+	 */
 	private void creaAggiuntaGenere() {
 		binder = new Binder<>(GeneriRecord.class);
 		
@@ -70,6 +78,9 @@ public class DialogoGestioneGeneri extends BetterDialog{
 		add(new HorizontalLayout(nomeField, aggiungiGenere));
 	}
 	
+	/** 
+	 * creaGrid è la tabella dei generi
+	 */
 	private void creaGrid() {
 		gridGeneri = new Grid<GeneriRecord>();
 		gridGeneri.setMaxHeight("min(300px, 80vh)");
@@ -81,6 +92,10 @@ public class DialogoGestioneGeneri extends BetterDialog{
 		}).setHeader("Azioni").setWidth("100px");
 	}
 	
+	/** 
+	 * creaPulsanteRimuoviGenere è un pulsante che permette di rimuovere il genere dal catalogo
+	 * se non ha libri associati. 
+	 */
 	private Button creaPulsanteRimuoviGenere(GeneriRecord genere){
 		Button buttonRimuovi = new Button(new Icon(VaadinIcon.TRASH));
 		buttonRimuovi.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -101,6 +116,9 @@ public class DialogoGestioneGeneri extends BetterDialog{
 		return buttonRimuovi;
 	}
 	
+	/** 
+	 * creaDialogoConferma è la finestra di dialogo che permette di rimuovere il genere
+	 */
 	private void creaDialogoConferma(GeneriRecord genere) {
 		ConfirmDialog dialogConferma = new ConfirmDialog();
 		dialogConferma.setHeader("Elimina Genere");
