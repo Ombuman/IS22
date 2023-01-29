@@ -10,6 +10,10 @@ public class Sollecito {
 		this.datiSollecito = datiSollecito;
 	}
 	
+	public Integer getId() {
+		return datiSollecito.getId();
+	}
+	
 	public Integer getIdUtente() {
 		return datiSollecito.getUtente();
 	}
@@ -20,6 +24,14 @@ public class Sollecito {
 	
 	public String getData() {
 		return datiSollecito.getData();
+	}
+	
+	public void setIdUtente(Integer idUtente) {
+		datiSollecito.setUtente(idUtente);
+	}
+	
+	public void setIdLibro(Integer idLibro) {
+		datiSollecito.setLibro(idLibro);
 	}
 	
 	public void setData(String data) {
