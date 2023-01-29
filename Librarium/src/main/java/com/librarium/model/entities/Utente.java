@@ -62,53 +62,43 @@ public class Utente {
 	}
 	
 	public void setNome(String nome) {
-		if(nome != null && !nome.isBlank())
-			datiUtente.setNome(nome);
+		datiUtente.setNome(nome);
 	}
 	
 	public void setCognome(String cognome) {
-		if(cognome != null && !cognome.isBlank())
-			datiUtente.setCognome(cognome);
+		datiUtente.setCognome(cognome);
 	}
 	
 	public void setEmail(String email) {
-		if(email != null && !email.isBlank())
-			datiUtente.setEmail(email);
+		datiUtente.setEmail(email);
 	}
 	
 	public void setPassword(String password) {
-		if(password != null && !password.isBlank())
-			datiUtente.setPassword(password);
+		datiUtente.setPassword(password);
 	}
 	
 	public void setStato(String stato) {
-		if(stato != null && !stato.isBlank())
-			datiUtente.setStato(stato);
+		datiUtente.setStato(stato);
 	}
 	
 	public void setStato(StatoAccountUtente stato) {
-		if(stato != null)
-			datiUtente.setStato(stato.name());
+		datiUtente.setStato(stato.name());
 	}
 	
 	public void setRuolo(String ruolo) {
-		if(ruolo != null && !ruolo.isBlank())
-			datiUtente.setRuolo(ruolo);
+		datiUtente.setRuolo(ruolo);
 	}
 	
 	public void setRuolo(RuoloAccount ruolo) {
-		if(ruolo != null)
-			datiUtente.setRuolo(ruolo.name());
+		datiUtente.setRuolo(ruolo.name());
 	}
 	
 	public void setNumeroPrestiti(Integer numeroPrestiti) {
-		if(numeroPrestiti != null)
-			this.numeroPrestiti = numeroPrestiti;
+		this.numeroPrestiti = numeroPrestiti;
 	}
 	
 	public void setNumeroSolleciti(Integer numeroSolleciti) {
-		if(numeroSolleciti != null)
-			this.numeroSolleciti = numeroSolleciti;
+		this.numeroSolleciti = numeroSolleciti;
 	}
 	
 }

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.librarium.database.generated.org.jooq.tables.records.GeneriRecord;
 import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
+import com.librarium.model.enums.StatoLibro;
 
 public class Libro {
 	
@@ -101,6 +102,11 @@ public class Libro {
 		return ris;
 	}
 	
+	public void setId(Integer id) {
+		if(id != null)
+			getLibro().setId(id);
+	}
+	
 	public void setTitolo(String titolo) {
 		getLibro().setTitolo(titolo);
 	}
@@ -127,6 +133,10 @@ public class Libro {
 	
 	public void setStato(String stato) {
 		getLibro().setStato(stato);
+	}
+	
+	public void setStato(StatoLibro stato) {
+		getLibro().setStato(stato.name());
 	}
 	
 }
