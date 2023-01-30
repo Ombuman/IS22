@@ -17,6 +17,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
+/**
+
+Classe che rappresenta i filtri per la ricerca di libri.
+
+@extends VerticalLayout
+*/
 public class FiltriLibri extends VerticalLayout{
 	
 	private static final long serialVersionUID = -2744684770420629871L;
@@ -42,6 +48,12 @@ public class FiltriLibri extends VerticalLayout{
 		setSizeFull();
 	}
 	
+	/**
+
+	Crea il layout per il filtro nome.
+
+	@return il layout creato
+	*/
 	private HorizontalLayout creaLayoutFiltroNome() {
 		HorizontalLayout nameFilterLayout = new HorizontalLayout();
 		nameFilterLayout.addClassName(LumoUtility.Padding.NONE);
@@ -70,6 +82,15 @@ public class FiltriLibri extends VerticalLayout{
 		return nameFilterLayout;
 	}
 	
+	/**
+
+	Inizializza il filtro genere come un oggetto Select.
+	Aggiunge la classe "NONE" del package LumoUtility.Padding.
+	Imposta la larghezza minima a 300px o 90vw.
+	Assegna la lista dei generi letta da CatalogManager.
+	Imposta la label per ciascun elemento genere come il nome del genere.
+	Consenti la selezione vuota con caption "- Qualsiasi -".
+	*/
 	private void inizializzaFiltroGenere() {
 		filtroGenere = new Select<>();
 		filtroGenere.setLabel("Filtro Genere");
@@ -85,6 +106,15 @@ public class FiltriLibri extends VerticalLayout{
 		filtroGenere.setEmptySelectionCaption("- Qualsiasi -");
 	}
 	
+	/**
+
+	Inizializza il filtro casa editrice come un oggetto Select.
+	Aggiunge la classe "NONE" del package LumoUtility.Padding.
+	Imposta la larghezza minima a 300px o 90vw.
+	Assegna la lista delle case editrici lette da CatalogManager.
+	Imposta la label per ciascun elemento casa editrice come il nome della casa editrice.
+	Consenti la selezione vuota con caption "- Qualsiasi -".
+	*/
 	private void inizializzaFiltroCasaEditrice() {
 		filtroCasaEditrice = new Select<>();
 		filtroCasaEditrice.addClassName(LumoUtility.Padding.NONE);
@@ -99,30 +129,65 @@ public class FiltriLibri extends VerticalLayout{
 		filtroCasaEditrice.setEmptySelectionCaption("- Qualsiasi -");
 	}
 	
+	/**
+
+	Imposta un listener per il filtro di testo.
+	@param listener il listener da impostare
+	*/
 	public void setFiltroTestoListener(ValueChangeListener<? super ComponentValueChangeEvent<TextField, String>> listener) {
 		filtroTesto.addValueChangeListener(listener);
 	}
 	
+	/**
+
+	Imposta un listener per il filtro di genere.
+	@param listener il listener da impostare
+	*/
 	public void setFiltroGenereListener(ValueChangeListener<? super ComponentValueChangeEvent<Select<GeneriRecord>, GeneriRecord>> listener) {
 		filtroGenere.addValueChangeListener(listener);
 	}
 	
+	/**
+
+	Imposta un listener per il filtro di casa editrice.
+	@param listener il listener da impostare
+	*/
 	public void setFiltroCasaEditriceListener(ValueChangeListener<? super ComponentValueChangeEvent<Select<String>, String>> listener) {
 		filtroCasaEditrice.addValueChangeListener(listener);
 	}
 	
+	/**
+
+	Restituisce il valore del filtro di testo.
+	@return il valore del filtro di testo
+	*/
 	public String getFiltroTestoValue() {
 		return filtroTesto.getValue() == null ? null : filtroTesto.getValue();
 	}
 	
+	/**
+
+	Restituisce il valore del filtro di genere.
+	@return il valore del filtro di genere
+	*/
 	public GeneriRecord getFiltroGenereValue() {
 		return filtroGenere.getValue();
 	}
 	
+	/**
+
+	Restituisce l'ID del filtro di genere.
+	@return l'ID del filtro di genere
+	*/
 	public String getFiltroGenereId() {
 		return getFiltroGenereValue() == null ? null : getFiltroGenereValue().getId().toString();
 	}
 	
+	/**
+
+	Restituisce il valore del filtro di casa editrice.
+	@return il valore del filtro di casa editrice
+	*/
 	public String getFiltroCasaEditriceValue() {
 		return filtroCasaEditrice.getValue() == null ? null : filtroCasaEditrice.getValue();
 	}
