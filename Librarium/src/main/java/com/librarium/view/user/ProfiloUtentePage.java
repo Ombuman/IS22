@@ -20,25 +20,60 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
+/**
+*
+*Classe che gestisce la visualizzazione della pagina del profilo utente.
+*
+*/
+
 @PageTitle("Profilo")
 @Route(value = "/profilo", layout = MainLayout.class)
 public class ProfiloUtentePage extends PrivatePage{
 
 	private static final long serialVersionUID = -8997253279837988823L;
 	
+	/**
+	 * Form per la visualizzazione dei dati del profilo
+	 */
 	private FormLayout formDatiUtente;
+	
+	/**
+	 * Campo per la visualizzazione dell'email dell'utente
+	 */
 	private TextField email;
+	
+	/**
+	 * Campo per la visualizzazione e la modifica del nome dell'utente
+	 */
 	private TextField nome;
+	
+	/**
+	 * Campo per la visualizzazione e la modifica del cognome dell'utente
+	 */
 	private TextField cognome;
+	
+	/**
+	 * Bottone per la conferma della modifica del profilo
+	 */
 	private Button conferma;
 	
+	/**
+	 * Binder per la gestione dei dati del profilo
+	 */
 	private Binder<InfoProfiloUtente> binder;
 	
+	/**
+	 * Metodo che gestisce l'accesso alla pagina, verificando se l'utente loggato ha
+	 * il ruolo di utente.
+	 */
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
 		super.beforeEnter(event, "/", RuoloAccount.UTENTE);
 	}
 	
+	/**
+	 * Costruttore della classe. Inizializza i componenti della pagina.
+	 */
 	public ProfiloUtentePage() {
 		
 		Span title = new Span("Modifica profilo");
@@ -82,6 +117,14 @@ public class ProfiloUtentePage extends PrivatePage{
 		binder.setBean(new InfoProfiloUtente(datiUtente.getEmail(), datiUtente.getNome(), datiUtente.getCognome()));
 	}
 	
+	/**
+	*
+    * Modifica i dati del profilo dell'utente corrente.
+    * Questo metodo valida i dati inseriti nel binder e, in caso di successo, li scrive nel profilo dell'utente corrente e
+    * li aggiorna tramite il SessionManager. Se i dati inseriti non sono validi, il metodo non esegue alcuna azione.
+    * In caso di successo, il metodo aggiorna anche il MainLayout.
+    * 
+    */
 	private void modificaProfilo() {
 		if(!binder.validate().isOk())
 			return;
