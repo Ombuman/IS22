@@ -23,6 +23,12 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
+/**
+*
+*Classe che rappresenta la finestra di dialogo per l'accesso.
+*Estende la classe BetterDialog.
+*
+*/
 public class LoginDialog extends BetterDialog {
 
 	private static final long serialVersionUID = 1488015700942243211L;
@@ -34,6 +40,10 @@ public class LoginDialog extends BetterDialog {
 	
 	private Span errorMessage;
 	
+	/**
+	*
+	*Costruttore che inizializza la finestra di dialogo per l'accesso.
+	*/
 	public LoginDialog() {
 		super();
 		
@@ -41,6 +51,10 @@ public class LoginDialog extends BetterDialog {
 		addBindingAndValidation();
 	}
 	
+	/**
+	*
+	*Crea il form per l'accesso.
+	*/
 	private void creaFormAccesso() {
 		// Titolo
 		setHeaderTitle("Accesso");
@@ -87,6 +101,12 @@ public class LoginDialog extends BetterDialog {
 		add(formContainer);
 	}
 	
+	/**
+	*
+	*Questo metodo crea un binder per gestire e salvare i dati inseriti dall'utente.
+	*Il binder viene associato ai campi email e password e impostato come richiesto.
+	*Viene inoltre applicato un validatore di email al campo email.
+	*/
 	private void addBindingAndValidation() {
 		// Creo il binder per salvare e gestire i dati inseriti
 		binder = new Binder<>(LoginInfo.class);
@@ -100,15 +120,33 @@ public class LoginDialog extends BetterDialog {
 		binder.forField(password).asRequired().bind(LoginInfo::getPassword, LoginInfo::setPassword);
 	}
 	
+	/**
+	*
+	*Questo metodo nasconde il messaggio di errore.
+	*/
 	private void hideErrorMessage() {
 		errorMessage.setVisible(false);
 	}
 	
+	/**
+	*
+	*Questo metodo mostra il messaggio di errore con il testo specificato.
+	*@param errorText testo del messaggio di errore da visualizzare
+	*/
 	private void showErrorMessage(String errorText) {
 		errorMessage.setVisible(true);
 		errorMessage.setText(errorText);
 	}
 	
+	
+	/**
+	*
+	*Questo metodo tenta di autenticare l'utente.
+	*Verifica la validità dei dati inseriti, effettua la chiamata di autenticazione e
+	*gestisce il risultato. In caso di successo, crea una nuova sessione utente e naviga verso
+	*la pagina di gestione del catalogo o il layout principale, a seconda del ruolo dell'utente.
+	*In caso di fallimento, mostra un messaggio di errore e pulisce il campo password.
+	*/
 	private void tentaAccesso() {
 		hideErrorMessage();
 		

@@ -94,81 +94,81 @@ public class Libro {
 	}
 	
 	/**
-
-	Restituisce l'ID del libro.
-	@return L'ID del libro.
+	*
+	*Restituisce l'ID del libro.
+	*@return L'ID del libro.
 	*/
 	public Integer getID() {
 		return getLibro().getId();
 	}
 	
 	/**
-
-	Restituisce il titolo del libro.
-	@return Il titolo del libro.
+	*
+	*Restituisce il titolo del libro.
+	*@return Il titolo del libro.
 	*/
 	public String getTitolo() {
 		return getLibro().getTitolo();
 	}
 	
 	/**
-
-	Restituisce la descrizione del libro.
-	@return La descrizione del libro.
+	*
+	*Restituisce la descrizione del libro.
+	*@return La descrizione del libro.
 	*/
 	public String getDescrizione() {
 		return getLibro().getDescrizione();
 	}
 	
 	/**
-
-	Restituisce il path della copertina del libro.
-	@return Il path della copertina del libro.
+	*
+	*Restituisce il path della copertina del libro.
+	*@return Il path della copertina del libro.
 	*/
 	public String getCopertina() {
 		return getLibro().getCopertina();
 	}
 	
 	/**
-
-	Restituisce l'autore del libro.
-	@return L'autore del libro.
+	*
+	*Restituisce l'autore del libro.
+	*@return L'autore del libro.
 	*/
 	public String getAutore() {
 		return getLibro().getAutore();
 	}
 	
 	/**
-
-	Restituisce la casa editrice del libro.
-	@return La casa editrice del libro.
+	*
+	*Restituisce la casa editrice del libro.
+	*@return La casa editrice del libro.
 	*/
 	public String getCasaEditrice() {
 		return getLibro().getCasaEditrice();
 	}
 	
 	/**
-
-	Restituisce l'anno di pubblicazione del libro.
-	@return L'anno di pubblicazione del libro.
+	*
+	*Restituisce l'anno di pubblicazione del libro.
+	*@return L'anno di pubblicazione del libro.
 	*/
 	public String getAnno() {
 		return getLibro().getAnno();
 	}
 	
 	/**
-
-	Restituisce lo stato del libro.
-	@return Lo stato del libro.
+	*
+	*Restituisce lo stato del libro.
+	*@return Lo stato del libro.
 	*/
 	public String getStato() {
 		return getLibro().getStato();
 	}
 	
 	/**
-
-	Restituisce la lista dei generi del libro come stringa separata da virgole.
-	@return La lista dei generi del libro come stringa separata da virgole.
+	*
+	*Restituisce la lista dei generi del libro come stringa separata da virgole.
+	*@return La lista dei generi del libro come stringa separata da virgole.
 	*/
 	public String getGeneriString() {
 		String ris = new String("");
@@ -181,9 +181,9 @@ public class Libro {
 	}
 	
 	/**
-
-	Restituisce la lista degli ID dei generi del libro come stringa separata da virgole.
-	@return La lista degli ID dei generi del libro come stringa separata da virgole.
+	*
+	*Restituisce la lista degli ID dei generi del libro come stringa separata da virgole.
+	*@return La lista degli ID dei generi del libro come stringa separata da virgole.
 	*/
 	public String getGeneriID() {
 		String ris = new String("");
@@ -196,9 +196,9 @@ public class Libro {
 	}
 	
 	/**
-
-	Imposta l'ID del libro.
-	@param id L'ID del libro.
+	*
+	*Imposta l'ID del libro.
+	*@param id L'ID del libro.
 	*/
 	public void setId(Integer id) {
 		if(id != null)
@@ -206,36 +206,36 @@ public class Libro {
 	}
 	
 	/**
-
-	Imposta il titolo del libro.
-	@param titolo Il titolo del libro.
+	*
+	*Imposta il titolo del libro.
+	*@param titolo Il titolo del libro.
 	*/
 	public void setTitolo(String titolo) {
 		getLibro().setTitolo(titolo);
 	}
 	
 	/**
-
-	Imposta la descrizione del libro.
-	@param descrizione descrizione del libro
+	*
+	*Imposta la descrizione del libro.
+	*@param descrizione descrizione del libro
 	*/
 	public void setDescrizione(String descrizione) {
 		getLibro().setDescrizione(descrizione);
 	}
 	
 	/**
-
-	Imposta la copertina del libro.
-	@param copertina copertina del libro
+	*
+	*Imposta la copertina del libro.
+	*@param copertina copertina del libro
 	*/
 	public void setCopertina(String copertina) {
 		getLibro().setCopertina(copertina);
 	}
 	
 	/**
-
-	Imposta l'autore del libro.
-	@param autore autore del libro
+	*
+	*Imposta l'autore del libro.
+	*@param autore autore del libro
 	*/
 	public void setAutore(String autore) {
 		getLibro().setAutore(autore);

@@ -5,9 +5,9 @@ import com.librarium.model.enums.RuoloAccount;
 import com.librarium.model.enums.StatoAccountUtente;
 
 /**
-
-La classe Utente rappresenta un utente del sistema.
-
+*
+*La classe Utente rappresenta un utente del sistema.
+*
 */
 public class Utente {
 	
@@ -16,11 +16,11 @@ public class Utente {
 	private Integer numeroSolleciti;
 	
 	/**
-
-	Crea un nuovo oggetto Utente con i dati forniti.
-	@param datiUtente I dati dell'utente come un oggetto UtentiRecord.
-	@param numeroPrestiti Il numero di prestiti effettuati dall'utente.
-	@param numeroSolleciti Il numero di solleciti inviati all'utente.
+	*
+	*Crea un nuovo oggetto Utente con i dati forniti.
+	*@param datiUtente I dati dell'utente come un oggetto UtentiRecord.
+	*@param numeroPrestiti Il numero di prestiti effettuati dall'utente.
+	*@param numeroSolleciti Il numero di solleciti inviati all'utente.
 	*/
 	public Utente(UtentiRecord datiUtente, Object numeroPrestiti, Object numeroSolleciti) {
 		this.datiUtente = datiUtente;
@@ -29,54 +29,54 @@ public class Utente {
 	}
 	
 	/**
-
-	Restituisce i dati dell'utente come un oggetto UtentiRecord.
-	@return I dati dell'utente come un oggetto UtentiRecord.
+	*
+	*Restituisce i dati dell'utente come un oggetto UtentiRecord.
+	*@return I dati dell'utente come un oggetto UtentiRecord.
 	*/
 	public UtentiRecord getDatiUtente() {
 		return datiUtente;
 	}
 	
 	/**
-
-	Restituisce l'ID dell'utente.
-	@return L'ID dell'utente.
+	*
+	*Restituisce l'ID dell'utente.
+	*@return L'ID dell'utente.
 	*/
 	public Integer getId() {
 		return datiUtente.getId();
 	}
 	
 	/**
-
-	Restituisce il nome dell'utente.
-	@return Il nome dell'utente.
+	*
+	*Restituisce il nome dell'utente.
+	*@return Il nome dell'utente.
 	*/
 	public String getNome() {
 		return datiUtente.getNome();
 	}
 	
 	/**
-
-	Restituisce il cognome dell'utente.
-	@return Il cognome dell'utente.
+	*
+	*Restituisce il cognome dell'utente.
+	*@return Il cognome dell'utente.
 	*/
 	public String getCognome() {
 		return datiUtente.getCognome();
 	}
 	
 	/**
-
-	Restituisce l'email dell'utente.
-	@return L'email dell'utente.
+	*
+	*Restituisce l'email dell'utente.
+	*@return L'email dell'utente.
 	*/
 	public String getEmail() {
 		return datiUtente.getEmail();
 	}
 	
 	/**
-
-	Restituisce la password dell'utente.
-	@return La password dell'utente.
+	*
+	*Restituisce la password dell'utente.
+	*@return La password dell'utente.
 	*/
 	public String getPassword() {
 		return datiUtente.getPassword();
@@ -164,44 +164,44 @@ public class Utente {
 	}
 	
 	/**
-
-	Imposta lo stato dell'account utente.
-	@param stato Stato dell'account utente
+	*
+	*Imposta lo stato dell'account utente.
+	*@param stato Stato dell'account utente
 	*/
 	public void setStato(StatoAccountUtente stato) {
 		datiUtente.setStato(stato.name());
 	}
 	/**
-
-	Imposta il ruolo dell'account utente.
-	@param ruolo Ruolo dell'account utente
+	*
+	*Imposta il ruolo dell'account utente.
+	*@param ruolo Ruolo dell'account utente
 	*/
 	public void setRuolo(String ruolo) {
 		datiUtente.setRuolo(ruolo);
 	}
 	
 	/**
-
-	Imposta il ruolo dell'account utente.
-	@param ruolo Ruolo dell'account utente
+	*
+	*Imposta il ruolo dell'account utente.
+	*@param ruolo Ruolo dell'account utente
 	*/
 	public void setRuolo(RuoloAccount ruolo) {
 		datiUtente.setRuolo(ruolo.name());
 	}
 	
 	/**
-
-	Imposta il numero di prestiti effettuati dall'utente.
-	@param numeroPrestiti Numero di prestiti effettuati dall'utente
+	*
+	*Imposta il numero di prestiti effettuati dall'utente.
+	*@param numeroPrestiti Numero di prestiti effettuati dall'utente
 	*/
 	public void setNumeroPrestiti(Integer numeroPrestiti) {
 		this.numeroPrestiti = numeroPrestiti;
 	}
 	
 	/**
-
-	Imposta il numero di solleciti effettuati per l'utente.
-	@param numeroSolleciti Numero di solleciti effettuati per l'utente
+	*
+	*Imposta il numero di solleciti effettuati per l'utente.
+	*@param numeroSolleciti Numero di solleciti effettuati per l'utente
 	*/
 	public void setNumeroSolleciti(Integer numeroSolleciti) {
 		this.numeroSolleciti = numeroSolleciti;

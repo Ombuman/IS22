@@ -20,6 +20,13 @@ import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
+/**
+*
+*Classe che estende {@link BetterDialog} per creare una finestra di registrazione.
+*Include i campi di testo per il nome, cognome, email, password e conferma password,
+*un pulsante per la registrazione e un messaggio di errore.
+*Utilizza un binder di tipo {@link SignupInfo} per gestire i dati inseriti.
+*/
 public class SignupDialog extends BetterDialog {
 
 	private static final long serialVersionUID = 1L;
@@ -35,6 +42,9 @@ public class SignupDialog extends BetterDialog {
 	private Button signupButton;
 	private Span errorMessage;
 	
+	/**
+	 * Costruttore della classe che inizializza la finestra di dialogo di registrazione.
+	 */
 	public SignupDialog() {
 		super();
 		
@@ -42,6 +52,9 @@ public class SignupDialog extends BetterDialog {
 		addBindingAndValidation();
 	}
 	
+	/**
+	 * Metodo che crea la form di registrazione con i vari campi e pulsanti.
+	 */
 	private void creaFormRegistrazione() {
 		// Titolo
 		setHeaderTitle("Registrazione");
@@ -103,11 +116,21 @@ public class SignupDialog extends BetterDialog {
 		add(formContainer);
 	}
 
+	/**
+	*
+	*Mostra la pagina di accesso. Chiude la finestra corrente e apre una finestra di Login.
+	*/
 	private void mostraPaginaDiAccesso() {
 		this.close();
 		new LoginDialog().open();
 	}
 
+	/**
+	 *
+	*Aggiunge il binding e la validazione per i campi Nome, Cognome, Email, Password e Conferma password.
+	*
+	*Utilizza un {@link Binder} per gestire i dati inseriti e verificarne la validità.
+	*/
 	private void addBindingAndValidation() {
 		// Creo il binder per salvare e gestire i dati inseriti
 		binder = new Binder<>(SignupInfo.class);
@@ -129,19 +152,42 @@ public class SignupDialog extends BetterDialog {
 		).bind(SignupInfo::getConfermaPassword, SignupInfo::setConfermaPassword);
 	}
 	
+	/**
+	*
+	*Verifica la disponibilità dell'email inserita.
+	*@param email l'email da verificare
+	*@return true se l'email è disponibile, false altrimenti
+	*/
 	private boolean validateEmail(String email) {
 		return AuthenticationManager.getInstance().verificaDisponibilitaEmail(email);
 	}
 	
+	/**
+	*
+	*Nasconde il messaggio di errore.
+	*/
 	private void hideErrorMessage() {
 		errorMessage.setVisible(false);
 	}
 	
+	/**
+	*
+	*Mostra il messaggio di errore specificato.
+	*@param errorText il testo del messaggio di errore
+	*/
 	private void showErrorMessage(String errorText) {
 		errorMessage.setVisible(true);
 		errorMessage.setText(errorText);
 	}
-	
+	/**
+	*
+	*Questo metodo tenta la registrazione dell'utente con i dati inseriti nel binder.
+	*Prima viene nascosto eventuale messaggio di errore, quindi viene effettuata la validazione dei dati inseriti.
+	*Se la validazione fallisce, viene interrotta l'esecuzione del metodo.
+	*Se la registrazione ha successo, viene mostrata la pagina di accesso.
+	*In caso di eccezione, viene mostrato un messaggio di errore.
+	*
+	*/
 	private void tentaRegistrazione() {
 		hideErrorMessage();
 		

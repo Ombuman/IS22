@@ -24,8 +24,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
- * The main view is a top-level placeholder for other views.
- */
+*
+*La classe MainLayout estende la classe AppLayout e rappresenta il layout principale dell'applicazione.
+*
+*/
 public class MainLayout extends AppLayout{
 	
 	private static final long serialVersionUID = -5626971534512164084L;
@@ -35,12 +37,18 @@ public class MainLayout extends AppLayout{
     
     private static VerticalLayout navLayout;
     
+    /**
+     * Costruttore che definisce il contenuto del drawer e dell'header.
+     */
     public MainLayout() {
         //setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
     }
 
+    /**
+     * Aggiunge il contenuto dell'header, ovvero un toggle per il drawer e il titolo della vista corrente.
+     */
 	private void addHeaderContent() {
         DrawerToggle toggle = new DrawerToggle();
         toggle.getElement().setAttribute("aria-label", "Menu toggle");
@@ -51,6 +59,9 @@ public class MainLayout extends AppLayout{
         addToNavbar(true, toggle, viewTitle);
     }
 
+	/**
+	 * Aggiunge il contenuto del drawer, ovvero il nome dell'app, le opzioni di navigazione e il footer.
+	 */
     private void addDrawerContent() {
     	VerticalLayout drawerContent = new VerticalLayout();
         
@@ -62,6 +73,11 @@ public class MainLayout extends AppLayout{
         addToDrawer(drawerContent);
     }
 
+    /**
+     * Crea il layout di navigazione con opzioni che variano a seconda del fatto che l'utente sia loggato o meno.
+     * 
+     * @return il layout di navigazione
+     */
     private VerticalLayout createNavigation() {
     	 navLayout = new VerticalLayout();
     	 navLayout.addClassNames(LumoUtility.Padding.NONE, LumoUtility.Gap.SMALL);
@@ -71,12 +87,20 @@ public class MainLayout extends AppLayout{
     	 return navLayout;
     }
 
+    /**
+     * Crea il footer.
+     * @return il footer
+     */
     private Footer createFooter() {
         Footer layout = new Footer();
 
         return layout;
     }
 
+    /**
+	*
+    *Metodo che viene chiamato dopo la navigazione e che setta il titolo della pagina corrente.
+    */
     @Override
     protected void afterNavigation() {
         super.afterNavigation();
@@ -84,11 +108,20 @@ public class MainLayout extends AppLayout{
         viewTitle.setText(getCurrentPageTitle());
     }
     
+    /**
+	*
+    *Metodo che restituisce il titolo della pagina corrente.
+    *@return Titolo della pagina corrente.
+    */
     private String getCurrentPageTitle() {
         PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
         return title == null ? "" : title.value();
     }
     
+    /**
+	*
+    *Metodo statico che gestisce la visualizzazione del layout di navigazione in base allo stato di autenticazione dell'utente.
+    */
     public static void updateNavLayout() {
     	navLayout.removeAll();
     	
@@ -111,6 +144,11 @@ public class MainLayout extends AppLayout{
     	}
     }
     
+    /**
+	*
+    *Metodo statico che crea il layout di navigazione per un utente autenticato.
+    *@return Layout di navigazione per un utente autenticato.
+    */
     private static VerticalLayout creaNavUtenteRegistrato() {
     	Button logout = new Button("Logout");
     	logout.addClassName(LumoUtility.Margin.Top.SMALL);
