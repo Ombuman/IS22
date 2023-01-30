@@ -19,9 +19,18 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 public class BookDialog extends BetterDialog {
-	
+	/**
+    *
+	*La classe BookDialog estende la classe BetterDialog e rappresenta una finestra di dialogo per mostrare informazioni su un libro.
+	*/
 	private static final long serialVersionUID = -7939567460963187013L;
-
+	
+	/**
+	*
+	*Costruttore della classe BookDialog che prende come parametro i dati del libro da mostrare.
+	*
+	*@param datiLibro I dati del libro da mostrare
+	*/
 	public BookDialog(Libro datiLibro) {
 		super();
 		setHeaderTitle(datiLibro.getLibro().getTitolo());
@@ -64,7 +73,14 @@ public class BookDialog extends BetterDialog {
 		
 		getFooter().add(prenotaButton);
 	}
-	
+	/**
+    *
+	*Crea un layout verticale contenente informazioni sul libro.
+    *
+	*@param datiLibro Record con i dati del libro
+    *
+	*@return Layout verticale con informazioni sul libro
+	*/
 	private VerticalLayout createInfoLibro(LibriRecord datiLibro) {
 		VerticalLayout layout = new VerticalLayout();
 		layout.addClassName("info-libro");

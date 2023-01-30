@@ -8,7 +8,12 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-
+/**
+ *La classe Catalogo estende la classe  VerticalLayout per creare una pagina con un catalogo di libri.
+ *Ha un filtro per cercare libri per testo, genere e casa editrice.
+ *Quando viene effettuata una ricerca, viene visualizzata una lista di libri filtrati.
+ *
+ */
 public class Catalogo extends VerticalLayout {
 
 	private static final long serialVersionUID = -1982388913019511687L;
@@ -31,7 +36,10 @@ public class Catalogo extends VerticalLayout {
 		
 		add(filtri, listaLibri);
 	}
-	
+	/**
+	*
+	*Metodo che viene chiamato quando viene effettuata una ricerca per aggiornare la lista dei libri filtrati.
+	*/
 	public static void aggiornaListaLibri() {
 		listaLibri.removeAll();
 		
