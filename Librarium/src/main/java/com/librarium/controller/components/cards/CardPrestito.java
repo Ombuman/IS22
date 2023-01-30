@@ -15,6 +15,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
+/**
+ * Classe che rappresenta una scheda per un prestito all'interno di una lista di prestiti.
+ * La classe estende HorizontalLayout e presenta un layout orizzontale che mostra i dettagli del prestito.
+ * Il layout contiene l'header del prestito che rappresenta lo stato e il titolo del libro,
+ * e le informazioni sul prestito che includono la data di prenotazione, la data di inizio, la data di fine
+ * e un bottone per annullare la prenotazione (solo se lo stato del prestito è "prenotato").
+ */
 public class CardPrestito extends HorizontalLayout{
 
 	private static final long serialVersionUID = -930172053538253552L;
@@ -35,6 +42,11 @@ public class CardPrestito extends HorizontalLayout{
 		add(details);
 	}
 	
+	/**
+	 * Inizializza un nuovo dialogo di conferma per la cancellazione di una prenotazione.
+	 * Il testo del dialogo visualizzerà il titolo del libro prenotato.
+	 * Il dialogo presenterà due pulsanti: "Sì, eliminala" e "No, mantienila".
+	 */
 	private void inizializzaDialogo() {
 		confirmDialog = new ConfirmDialog();
 		confirmDialog.setHeader("Annullamento prenotazione");
@@ -51,6 +63,12 @@ public class CardPrestito extends HorizontalLayout{
 		confirmDialog.setRejectButton(rejectButton);
 	}
 	
+	/**
+	 * Crea un layout orizzontale che rappresenta l'header per il dettaglio del prestito.
+	 * Il layout contiene un badge che rappresenta lo stato del prestito e il titolo del libro.
+	 * Il layout è allineato al centro e il titolo del libro ha un font medio e pesante.
+	 * @return il layout orizzontale creato
+	 */
 	private HorizontalLayout creaHeaderPrestito() {
 		Span titolo = new Span(prestito.getLibro().getTitolo());
 		titolo.addClassNames(LumoUtility.FontSize.MEDIUM, LumoUtility.FontWeight.BLACK);
@@ -62,6 +80,13 @@ public class CardPrestito extends HorizontalLayout{
 		return header;
 	}
 	
+	/**
+	 * Crea un layout verticale che rappresenta le informazioni sul prestito.
+	 * Il layout contiene la data di prenotazione, la data di inizio (se esistente), la data di fine (se esistente)
+	 * e un bottone per annullare la prenotazione (solo se lo stato del prestito è "prenotato").
+	 * 
+	 * @return il layout verticale creato
+	 */
 	private VerticalLayout creaInfoPrestito() {
 		Button annullaPrenotazione = new Button("Annulla prenotazione");
 		annullaPrenotazione.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -83,6 +108,12 @@ public class CardPrestito extends HorizontalLayout{
 		return infoPrestito;
 	}
 	
+	/**
+	 * Crea un badge di stato per il prestito corrente.
+	 * Il badge viene creato in base allo stato del prestito, che può essere: prenotato, ritirato o concluso.
+	 * 
+	 * @return Il badge di stato del prestito.
+	 */
 	private Span creaBadgeStatoPrestito() {
 		Span stato = new Span();
 		
@@ -104,12 +135,22 @@ public class CardPrestito extends HorizontalLayout{
 		return stato;
 	}
 
+	/**
+	 * Crea un icona utilizzando la libreria VaadinIcon.
+	 * @param vaadinIcon Il tipo di icona da creare
+	 * 
+	 * @return L'icona creata
+	 */
 	private Icon createIcon(VaadinIcon vaadinIcon) {
 		Icon icon = new Icon(vaadinIcon);
 	    icon.getStyle().set("padding", "var(--lumo-space-xs");
 	    return icon;
 	}
 	
+	
+	/**
+	 * @return StatoPrestito: lo stato del prestito
+	 */
 	private StatoPrestito getStatoPrestito() {
 		return StatoPrestito.valueOf(prestito.getDati().getStato());
 	}
