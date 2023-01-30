@@ -281,6 +281,12 @@ public class PrestitiManager extends DatabaseConnection {
 		}
 	}
 	
+	/**
+	 * Conclude un prestito cambiando il suo stato in "CONCLUSO" e impostando la data di fine con la data di oggi.
+	 * Aggiorna anche lo stato del libro a "DISPONIBILE" e rimuove tutti i solleciti collegati a questo prestito.
+	 * 
+	 * @param prestito {@link Prestito} Il prestito da concludere
+	 */
 	public void concludiPrestito(Prestito prestito) {
 		if(prestito == null)
 			return;
@@ -308,6 +314,12 @@ public class PrestitiManager extends DatabaseConnection {
 		}
 	}
 
+	/**
+	 * Aggiorna la data dell'ultimo sollecito per un prestito
+	 * 
+	 * @param id ID del prestito
+	 * @param oggi Data dell'ultimo sollecito (oggi)
+	 */
 	public void aggiornaDataUltimoSollecito(Integer id, String oggi) {		
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);

@@ -24,10 +24,22 @@ import com.librarium.model.entities.Utente;
 import com.librarium.model.enums.RuoloAccount;
 import com.librarium.model.enums.StatoAccountUtente;
 
+/**
+ * La classe UsersManager è una classe che estende DatabaseConnection e serve a gestire le operazioni sugli utenti.
+ * Utilizza il pattern singleton per creare un'unica istanza.
+ */
 public class UsersManager extends DatabaseConnection {
 	
+	/**
+	 * Variabile statica per la gestione del pattern singleton.
+	 */
 	private static UsersManager instance;
 	
+	/**
+	 * Metodo che restituisce l'unica istanza della classe. Se non esiste ancora, viene creata una nuova istanza.
+	 * 
+	 * @return L'istanza di UsersManager.
+	*/
 	public static UsersManager getInstance() {
 		if(instance == null)
 			instance = new UsersManager();
@@ -35,6 +47,13 @@ public class UsersManager extends DatabaseConnection {
 		return instance;
 	}
 	
+	/**
+	 * Metodo per l'aggiunta di un utente. Riceve come parametro i dati dell'utente da inserire e restituisce l'ID assegnato dal database.
+	 * In caso di errori o di un parametro nullo, restituisce null.
+	 * 
+	 * @param datiUtente Dati dell'utente da inserire.
+	 * @return ID dell'utente inserito o null in caso di errori o parametro nullo.
+	 */
 	public Integer aggiungiUtente(SignupInfo datiUtente) {
 		if(datiUtente == null)
 			return null;
@@ -53,6 +72,13 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
+	/**
+	 * Questo metodo consente di ottenere l'utente corrispondente all'id specificato.
+	 * Il risultato è un oggetto di tipo {@link Utente}.
+	 * 
+	 * @param idUtente l'id dell'utente da cercare
+	 * @return l'utente corrispondente all'id specificato, oppure null se non esiste alcun utente con quell'id
+	 */
 	public Utente getUtente(Integer idUtente) {
 		if(idUtente == null)
 			return null;
