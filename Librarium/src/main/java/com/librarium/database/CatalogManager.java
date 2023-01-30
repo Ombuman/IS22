@@ -18,10 +18,23 @@ import com.librarium.database.generated.org.jooq.tables.records.LibriRecord;
 import com.librarium.model.entities.Libro;
 import com.librarium.model.enums.StatoLibro;
 
+/**
+ * La classe CatalogManager estende la classe {@link DatabaseConnection} e fornisce metodi per gestire il catalogo di libri.
+ * 
+ * E' implementata come singleton.
+ */
 public class CatalogManager extends DatabaseConnection{
 
+	/**
+	 * Variabile statica che rappresenta l'istanza unica del catalog manager.
+	 */
 	private static CatalogManager instance;
 	
+	/**
+	 * Metodo che ritorna l'istanza unica del catalog manager.
+	 * 
+	 * @return l'istanza unica del catalog manager.
+	 */
 	public static CatalogManager getInstance() {
 		if(instance == null)
 			instance = new CatalogManager();
@@ -29,12 +42,26 @@ public class CatalogManager extends DatabaseConnection{
 		return instance;
 	}
 	
-	/*========================== LIBRI ===========================*/
-	
+	/**
+	 * Metodo che restituisce la lista dei libri in base ai filtri specificati.
+	 * 
+	 * @param filtroParole parole da filtrare nei titoli e autori dei libri.
+	 * @param Generi filtro sui generi dei libri.
+	 * @param casaEditrice filtro sulla casa editrice dei libri.
+	 * @return lista di libri che soddisfano i filtri specificati.
+	 */
 	public List<Libro> leggiLibri(String filtroParole, GeneriRecord Generi, String casaEditrice){
 		return leggiLibri(filtroParole, Generi.getId().toString(), casaEditrice);
 	}
 	
+	/**
+	 * Metodo che restituisce la lista dei libri in base ai filtri specificati.
+	 * 
+	 * @param filtroParole parole da filtrare nei titoli e autori dei libri.
+	 * @param filtroGeneri filtro sui generi dei libri.
+	 * @param casaEditrice filtro sulla casa editrice dei libri.
+	 * @return lista di libri che soddisfano i filtri specificati.
+	 */
 	public List<Libro> leggiLibri(String filtroParole, String filtroGeneri, String casaEditrice) {
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
@@ -66,6 +93,12 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	
+	/**
+	 * Questo metodo converte una lista di oggetti {@link Record} in una lista di oggetti {@link Libro}.
+	 * 
+	 * @param listaRecord la lista di oggetti Record da convertire
+	 * @return la lista di oggetti Libro convertiti
+	 */
 	private List<Libro> listaRecordToLibri(Result<Record> result) {
 		List<GeneriRecord> listaGeneri = leggiGeneri();
 		List<Libro> libri = new ArrayList<>();
@@ -79,6 +112,10 @@ public class CatalogManager extends DatabaseConnection{
 		return libri;
 	}
 	
+	/**
+	 * Questo metodo viene utilizzato per convertire un singolo record del database in un oggetto di tipo {@link Libro}.
+	 * @param record Il record da convertire
+	 */
 	private Libro recordToLibro(Record result) {
 		if(result == null)
 			return null;
@@ -90,6 +127,14 @@ public class CatalogManager extends DatabaseConnection{
 		return new Libro(recordLibro, generi);
 	}
 	
+	/**
+	 * Questo metodo consente di leggere i dettagli di un libro selezionato dalla lista dei libri.
+	 * Il metodo richiede come parametro l'ID del libro selezionato e restituisce un oggetto Libro
+	 * che rappresenta i dettagli del libro richiesto.
+	 * 
+	 * @param idLibro ID del libro selezionato per la lettura dei dettagli
+	 * @return Oggetto Libro che rappresenta i dettagli del libro richiesto
+	 */
 	public Libro leggiLibro(Integer idLibro) {
 		if(idLibro == null)
 			return null;
@@ -111,6 +156,12 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	
+	/**
+	 * Questo metodo inserisce un nuovo libro nel database.
+	 * 
+	 * @param libro Il libro da inserire nel database
+	 * @return L'ID del libro appena inserito, oppure null se si è verificato un errore durante l'inserimento
+	 */
 	public Integer aggiungiLibro(Libro libro) {
 		if(libro == null)
 			return null;
@@ -134,6 +185,11 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	
+	/**
+	 * Rimuove il libro dal database a partire dal suo ID.
+	 * 
+	 * @param idLibro l'ID del libro da rimuovere
+	 */
 	public void rimuoviLibro(Integer idLibro) {
 		if(idLibro == null)
 			return;
@@ -153,6 +209,11 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	
+	/**
+	 * Aggiorna un libro esistente nel database.
+	 * 
+	 * @param libro Il libro da aggiornare.
+	 */
 	public void aggiornaLibro(Libro libro) {
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
@@ -172,6 +233,12 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	
+	/**
+	 * Aggiorna lo stato del libro identificato dall'ID fornito con il nuovo stato fornito.
+	 * 
+	 * @param idLibro L'ID del libro da aggiornare
+	 * @param nuovoStato Il nuovo stato del libro
+	 */
 	public void aggiornaStatoLibro(Integer idLibro, StatoLibro nuovoStato) {
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
@@ -184,8 +251,13 @@ public class CatalogManager extends DatabaseConnection{
 			System.out.println(ex.getMessage());
 		}
 	}
-	/*======================================================================*/
 	
+	/**
+	 * Legge il genere a partire dall'ID fornito.
+	 * 
+	 * @param idGenere ID del genere da leggere.
+	 * @return Il record del genere letto dal database, null in caso di errore o se l'ID è null.
+	 */
 	public GeneriRecord leggiGenere(Integer idGenere) {
 		if(idGenere == null)
 			return null;
@@ -204,8 +276,13 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	
+	/**
+	 * Questo metodo legge tutti i generi dal database e li restituisce in una lista.
+	 * 
+	 * @return una lista di {@link GeneriRecord} che rappresentano i generi presenti nel database.
+	 * Se non ci sono generi o c'è stato un errore durante l'operazione, viene restituito null.
+	 */
 	public List<GeneriRecord> leggiGeneri() {
-		
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
 			Result<Record> result = 
@@ -224,7 +301,12 @@ public class CatalogManager extends DatabaseConnection{
 			return null;
 		}
 	}
-	
+	/**
+	 * Aggiunge un nuovo genere al database.
+	 * 
+	 * @param genere Il record che rappresenta il nuovo genere da aggiungere.
+	 * @return L'id del genere inserito, null se si è verificato un errore durante l'inserimento.
+	 */
 	public Integer aggiungiGenere(GeneriRecord genere) {
 		if(genere == null)
 			return null;
@@ -245,6 +327,11 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	
+	/**
+	 * Rimuove il genere identificato dall'ID specificato.
+	 * 
+	 * @param idGenere ID del genere da rimuovere
+	 */
 	public void rimuoviGenere(Integer idGenere){		
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
@@ -258,6 +345,12 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	
+	/**
+	 * Metodo per ottenere il numero di libri appartenenti ad un determinato genere.
+	 * 
+	 * @param idGenere L'identificativo del genere.
+	 * @return Il numero di libri appartenenti al genere o null se l'id del genere non è valido o se si verifica un errore durante l'esecuzione.
+	 */
 	public Integer getNumeroLibriGenere(Integer idGenere) {
 		if(idGenere == null)
 			return null;
@@ -278,8 +371,11 @@ public class CatalogManager extends DatabaseConnection{
 		}
 	}
 	
-	/*========================== CASE EDITRICI ===========================*/
-	
+	/**
+	 * Questo metodo legge le case editrici presenti nei libri e le restituisce in una lista di stringhe.
+	 * 
+	 * @return ArrayList<String> una lista di stringhe che rappresentano le case editrici presenti nei libri
+	 */
 	public ArrayList<String> leggiCaseEditrici() {
 		try  {
 
@@ -300,7 +396,4 @@ public class CatalogManager extends DatabaseConnection{
 			return null;
 		}
 	}
-	/*=====================================================================*/
-
-	
 }

@@ -12,10 +12,24 @@ import com.librarium.database.generated.org.jooq.tables.records.UtentiRecord;
 import com.librarium.model.authentication.LoginInfo;
 import com.librarium.model.authentication.SignupInfo;
 
+/**
+ * La classe AuthenticationManager è una classe singleton che gestisce l'autenticazione degli utenti.
+ * Fornisce metodi per la verifica della disponibilità di una email, la registrazione di un nuovo utente
+ * e l'autenticazione di un utente esistente.
+ */
 public class AuthenticationManager extends DatabaseConnection {
 	
+	/**
+	 * Variabile statica che rappresenta l'istanza unica della classe.
+	 */
 	private static AuthenticationManager instance;
 	
+	/**
+	 * Metodo che ritorna l'istanza unica della classe.
+	 * Se non esiste un'istanza viene creata una nuova.
+	 * 
+	 * @return l'istanza unica della classe.
+	 */
 	public static AuthenticationManager getInstance() {
 		if(instance == null)
 			instance = new AuthenticationManager();
@@ -23,6 +37,12 @@ public class AuthenticationManager extends DatabaseConnection {
 		return instance;
 	}
 	
+	/**
+	 * Metodo che verifica la disponibilità dell'email passata come parametro.
+	 * 
+	 * @param email l'email da verificare.
+	 * @return true se l'email è disponibile, false altrimenti.
+	 */
 	public boolean verificaDisponibilitaEmail(String email) {
 		if(email == null || email.isBlank())
 			return false;
@@ -44,10 +64,22 @@ public class AuthenticationManager extends DatabaseConnection {
 		}
 	}
 	
+	/**
+	 * Metodo che registra un nuovo utente nel database.
+	 * 
+	 * @param datiUtente i dati dell'utente da registrare.
+	 * @return l'ID dell'utente registrato o -1 in caso di errore.
+	 */
 	public Integer registraUtente(SignupInfo datiUtente) {
 		return UsersManager.getInstance().aggiungiUtente(datiUtente);
 	}
 	
+	/**
+	 * Metodo per l'autenticazione di un utente.
+	 * 
+	 * @param datiUtente oggetto contenente i dati di login dell'utente.
+	 * @return un oggetto UtentiRecord con i dati dell'utente se l'autenticazione è andata a buon fine, altrimenti null.
+	 */
 	public UtentiRecord autenticaUtente(LoginInfo datiUtente) {
 		if(datiUtente == null)
 			return null;

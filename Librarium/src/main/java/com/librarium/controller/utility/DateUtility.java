@@ -8,8 +8,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 
+ * Classe per lavorare con le date e le loro formattazioni
+ *
+ */
 public class DateUtility {
 	
+	/**
+	 * Restituisce la data di oggi come stringa
+	 * 
+	 * @return La data di oggi in formato "dd/MM/yyyy"
+	 */
 	public static String getDataOggi() {
 		// data di oggi
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -17,6 +27,13 @@ public class DateUtility {
 		return oggi;
 	}
 	
+	/**
+	 * Calcola la differenza di giorni tra due date
+	 * @param dataInizio La data di inizio in formato "dd/MM/yyyy"
+	 * @param dataFine La data di fine in formato "dd/MM/yyyy"
+	 * 
+	 * @return La differenza di giorni tra le due date
+	 */
 	public static long getDifferenzaGiorni(String dataInizio, String dataFine) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		
@@ -32,6 +49,13 @@ public class DateUtility {
 		}
 	}
 	
+	/**
+	 * Aggiunge giorni ad una data
+	 * @param date La data di partenza in formato "dd/MM/yyyy"
+	 * @param giorni Il numero di giorni da aggiungere
+	 * 
+	 * @return La data risultante dopo l'aggiunta dei giorni
+	 */
 	public static String aggiungiGiorni(String date, int giorni) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		
