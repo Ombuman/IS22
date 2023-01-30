@@ -103,14 +103,33 @@ public class UsersManager extends DatabaseConnection {
 		
 	}
 	
+	/**
+	 * Recupera tutti gli utenti presenti nel database.
+	 * 
+	 * @return La lista di tutti gli utenti presenti nel database, o null in caso di errore.
+	 */
 	public List<Utente> getUtenti(){
 		return getUtenti(null, RuoloAccount.UTENTE.name());
 	}
 	
+	/**
+	 * Restituisce la lista di tutti gli utenti con stato account sospeso.
+	 * 
+	 * @return la lista di tutti gli utenti con stato account sospeso.
+	 */
 	public List<Utente> getUtentiSospesi(){
 		return getUtenti(StatoAccountUtente.SOSPESO.name(), RuoloAccount.UTENTE.name());
 	}
 	
+	/**
+	 * Questo metodo ritorna una lista di {@link Utente} che rispettano i criteri di ricerca
+	 * indicati come parametri di statoAccount e ruoloAccount. Se un parametro è null o vuoto,
+	 * viene ignorato nella ricerca.
+	 * 
+	 * @param statoAccount lo stato dell'account dell'utente da cercare. Se null o vuoto, viene ignorato
+	 * @param ruoloAccount il ruolo dell'account dell'utente da cercare. Se null o vuoto, viene ignorato
+	 * @return una lista di {@link Utente} che rispettano i criteri di ricerca, oppure null in caso di errore
+	 */
 	public List<Utente> getUtenti(String statoAccount, String ruoloAccount) {
 		try{
 			
@@ -148,6 +167,12 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
+	/**
+	 * Setta lo stato di un account utente specificato dall'ID.
+	 * 
+	 * @param idUtente l'ID dell'utente di cui si vuole cambiare lo stato
+	 * @param nuovoStato il nuovo stato dell'account utente
+	 */
 	public void setStatoAccount(Integer idUtente, String nuovoStato) {
 		if(idUtente == null || nuovoStato == null || nuovoStato.isBlank())
 			return;
@@ -166,6 +191,12 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
+	/**
+	 * Recupera lo stato corrente dell'account di un utente.
+	 * 
+	 * @param idUtente ID dell'utente per cui recuperare lo stato dell'account
+	 * @return Stato dell'account dell'utente se presente, altrimenti null
+	 */
 	public StatoAccountUtente getStatoAccount(Integer idUtente) {
 		try{
 			DSLContext ctx = DSL.using(connection, SQLDialect.SQLITE);
@@ -182,6 +213,14 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
+	/**
+	 * Questo metodo serve per aggiornare i dati del profilo di un utente presente nel sistema.
+	 * 
+	 * @param idUtente L'identificativo univoco dell'utente.
+	 * @param datiUtente I nuovi dati del profilo dell'utente.
+	 * @return L'oggetto {@link UtentiRecord} con i nuovi dati del profilo dell'utente,
+	 * se l'aggiornamento è stato eseguito correttamente. Null, altrimenti.
+	 */
 	public UtentiRecord aggiornaAccountUtente(Integer idUtente, InfoProfiloUtente datiUtente) {
 		if(datiUtente == null)
 			return null;
@@ -207,6 +246,11 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 
+	/**
+	 * Invia un sollecito per un prestito specifico.
+	 * 
+	 * @param prestito Il prestito per cui inviare il sollecito.
+	 */
 	public void inviaSollecito(Prestito prestito) {
 		if(prestito == null) 
 			return;
@@ -229,6 +273,12 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
+	/**
+	 * Recupera tutti i solleciti inviati ad un determinato utente.
+	 * 
+	 * @param idUtente Identificativo univoco dell'utente di cui si vogliono recuperare i solleciti.
+	 * @return Una lista di oggetti {@link Sollecito} relativi ai solleciti inviati all'utente o null se l'id dell'utente non è valido.
+	 */
 	public List<Sollecito> getSollecitiUtente(Integer idUtente) {
 		if(idUtente == null)
 			return null;
@@ -253,6 +303,13 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 	
+	/**
+	 * Restituisce la lista di solleciti per un utente e un libro specifici.
+	 * 
+	 * @param idUtente l'identificativo dell'utente
+	 * @param idLibro l'identificativo del libro
+	 * @return la lista di solleciti per l'utente e il libro specificati, oppure null se c'è un errore o se i parametri sono nulli.
+	 */
 	public List<Sollecito> getSollecitiUtenteLibro(Integer idUtente, Integer idLibro) {
 		if(idUtente == null || idLibro == null)
 			return null;
@@ -277,6 +334,12 @@ public class UsersManager extends DatabaseConnection {
 		}
 	}
 
+	/**
+	 * Rimuove i solleciti relativi ad un utente per un determinato libro.
+	 * 
+	 * @param idUtente ID dell'utente a cui sono associati i solleciti.
+	 * @param idLibro ID del libro a cui sono associati i solleciti.
+	 */
 	public void rimuoviSolleciti(Integer idUtente, Integer idLibro) {
 		if(idUtente == null || idLibro == null)
 			return;
@@ -292,7 +355,6 @@ public class UsersManager extends DatabaseConnection {
 			e.printStackTrace();
 			return;
 		}
-		
 	}
 	
 }

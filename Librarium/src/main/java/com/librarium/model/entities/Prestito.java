@@ -12,7 +12,7 @@ La classe Prestito rappresenta un prestito effettuato da un utente.
 Contiene informazioni sul prestito, l'utente e il libro.
 
 */
-class Prestito {
+public class Prestito {
 	
 	private PrestitiRecord dati;
 	private UtentiRecord utente;
