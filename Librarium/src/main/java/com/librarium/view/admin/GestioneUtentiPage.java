@@ -18,23 +18,41 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+/**
+ * Classe che rappresenta la pagina di gestione degli utenti da parte del bibliotecario.
+ */
 @PageTitle("Gestione Utenti")
 @Route(value = "/gestione-utenti", layout = AdminLayout.class)
 public class GestioneUtentiPage extends PrivatePage{
 
 	private static final long serialVersionUID = 6393738022482601686L;
-
-	private Tabs tabs;
-	private ListTab<Utente> tabTutti;
-	private ListTab<Utente> tabSospesi;
 	
+	/**
+	 * Componente Tabs che gestisce la visualizzazione della lista di utenti 
+	 * attivi e sospesi.
+	 */
+	private Tabs tabs;
+	/* Componente ListTab che gestisce la visualizzazione della lista di tutti gli utenti. */
+	private ListTab<Utente> tabTutti;
+	/* Componente ListTab che gestisce la visualizzazione della lista di utenti sospesi. */
+	private ListTab<Utente> tabSospesi;
+	/* Componente Grid che gestisce la visualizzazione della lista di utenti. */
 	private Grid<Utente> gridUtenti;
 	
+	/**
+	 * Metodo che sovrascrive il metodo beforeEnter della classe padre,
+	 * verificando che l'utente che accede alla pagina sia un bibliotecario.
+	 * 
+	 * @param event - Evento BeforeEnterEvent generato dall'entrata nella pagina.
+	 */
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
 		super.beforeEnter(event, RuoloAccount.BIBLIOTECARIO);
 	}
 	
+	/**
+	 * Costruttore della classe che inizializza i componenti della pagina.
+	 */
 	public GestioneUtentiPage() {
 		creaTabs();
 		creaGrid();
@@ -43,6 +61,9 @@ public class GestioneUtentiPage extends PrivatePage{
 		add(tabs, gridUtenti);
 	}
 	
+	/**
+	 * Crea i tabs che mostrano la lista di utenti sospesi o di tutti gli utenti.
+	 */
 	private void creaTabs() {
 		tabs = new Tabs();
 		tabTutti = new ListTab<Utente>("Tutti", "Tutti");
@@ -53,6 +74,9 @@ public class GestioneUtentiPage extends PrivatePage{
 		tabs.addSelectedChangeListener(e -> cambiaTab());
 	}
 	
+	/**
+	 * Crea la griglia per la visualizzazione dei dati degli utenti.
+	 */
 	private void creaGrid() {
 		gridUtenti = new Grid<>(Utente.class, false);
 		gridUtenti.setMultiSort(true, MultiSortPriority.APPEND);
@@ -69,6 +93,10 @@ public class GestioneUtentiPage extends PrivatePage{
 		aggiornaListe();
 	}
 	
+	/**
+	 * Crea la colonna dello stato dell'utente nella grid.
+	 * Viene visualizzato "ATTIVO" o "SOSPESO" a seconda dello stato del profilo utente.
+	 */
 	private void creaColonnaStato() {
 		gridUtenti.addComponentColumn(utente -> {
 			Span statoUtente = new Span();
@@ -87,6 +115,11 @@ public class GestioneUtentiPage extends PrivatePage{
 		}).setHeader("Stato").setAutoWidth(true);
 	}
 	
+	/**
+	 * Questo metodo crea la colonna per le azioni da intraprendere sulle righe della tabella.
+	 * La colonna contiene un pulsante che permette di sospendere o riattivare l'account di un utente.
+	 * Quando il pulsante viene premuto, viene mostrato un dialogo di conferma per l'azione intrapresa.
+	 */
 	private void creaColonnaAzioni() {
 		gridUtenti.addComponentColumn(utente -> {
 			BetterConfirmDialog confirmDialog = new BetterConfirmDialog();
@@ -123,6 +156,10 @@ public class GestioneUtentiPage extends PrivatePage{
 		}).setHeader("Azioni").setAutoWidth(true);
 	}
 	
+	/**
+	 * Cambia il contenuto del {@link Grid} in base al tab selezionato.
+	 * Il contenuto viene impostato utilizzando la lista di {@link Utente} associata al tab selezionato.
+	 */
 	private void cambiaTab() {
 		@SuppressWarnings("unchecked")
 		ListTab<Utente> tab = (ListTab<Utente>) tabs.getSelectedTab();
@@ -133,6 +170,10 @@ public class GestioneUtentiPage extends PrivatePage{
 		gridUtenti.setItems(tab.getLista());
 	}
 	
+	/**
+	 * Aggiorna le liste dei tab del pannello degli utenti.
+	 * Verranno utilizzate le liste dei {@link Utente} restituite da {@link UsersManager}.
+	 */
 	private void aggiornaListe() {
 		tabTutti.setLista(UsersManager.getInstance().getUtenti());
 		tabSospesi.setLista(UsersManager.getInstance().getUtentiSospesi());

@@ -11,7 +11,6 @@ import com.librarium.model.enums.StatoLibro;
 
 /**
  * Classe che rappresenta un libro, composto da un record di libri (libro) e da una lista di record di generi (generi).
- *
  */
 public class Libro {
 	

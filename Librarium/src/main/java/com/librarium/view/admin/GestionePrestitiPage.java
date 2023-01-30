@@ -23,31 +23,56 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+/**
+ * La classe GestionePrestitiPage rappresenta la pagina per la gestione dei prestiti all'interno dell'applicazione.
+ * La classe estende PrivatePage e richiede il ruolo di Bibliotecario per l'accesso.
+ */
 @PageTitle("Gestione Prestiti")
 @Route(value = "/gestione-prestiti", layout = AdminLayout.class)
 public class GestionePrestitiPage extends PrivatePage{
 
 	private static final long serialVersionUID = -1125039884282775763L;
 	
+	/** Tabs per la visualizzazione dei prestiti prenotati, attivi e conclusi */
 	private Tabs tabs;
+	/* Tab per visualizzare i prestiti prenotati */
 	private ListTab<Prestito> tabPrenotazioni;
+	/* Tab per visualizzare i prestiti attivi */
 	private ListTab<Prestito> tabAttivi;
+	/* Tab per visualizzare i prestiti conclusi */
 	private ListTab<Prestito> tabConclusi;
-	
+
+	/** Grid per la visualizzazione dei prestiti */
 	private Grid<Prestito> gridPrestiti;
+	/* Colonna per annullare una prenotazione */
 	private Column<Prestito> colonnaAnnullaPrenotazione;
+	/* Colonna per attivare un prestito */
 	private Column<Prestito> colonnaAttivaPrestito;
+	/* Colonna per concludere un prestito */
 	private Column<Prestito> colonnaConcludiPrestito;
+	/* Colonna per le azioni sul profilo dell'utente */
 	private Column<Prestito> colonnaAzioniAccount;
+	/* Colonna per la visualizzazione della data dell'ultimo sollecito */
 	private Column<Prestito> colonnaDataUltimoSollecito;
+	/* Colonna per la visualizzazione della data di inizio prestito */
 	private Column<Prestito> colonnaDataInizio;
+	/* Colonna per la visualizzazione della data di conclusione prestito */
 	private Column<Prestito> colonnaDataFine;
 	
+	/**
+	 * Metodo per la verifica del ruolo utente prima di accedere alla pagina.
+	 * 
+	 * @param event BeforeEnterEvent
+	 */
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
 		super.beforeEnter(event, RuoloAccount.BIBLIOTECARIO);
 	}
 	
+	/**
+	 * Costruttore di default per la classe GestionePrestitiPage.
+	 * Inizializza i tabs, la grid dei prestiti e le colonne.
+	*/
 	public GestionePrestitiPage() {
 		tabs = new Tabs();
 		tabs.setWidthFull();
@@ -88,6 +113,9 @@ public class GestionePrestitiPage extends PrivatePage{
 		add(tabs, gridPrestiti);
 	}
 
+	/**
+	 * Metodo che aggiorna la visibilità delle colonne della grid in base alla scheda selezionata.
+	 */
 	private void aggiornaColonneGrid() {
 		@SuppressWarnings("unchecked")
 		ListTab<Prestito> tab = (ListTab<Prestito>)tabs.getSelectedTab();
@@ -123,6 +151,11 @@ public class GestionePrestitiPage extends PrivatePage{
 		}
 	}
 	
+	/**
+	 * Aggiorna il contenuto del {@link Grid} di prestiti in base alla scheda selezionata.
+	 * Viene utilizzato il cast verso {@link ListTab} per recuperare la lista di prestiti associata alla scheda selezionata.
+	 * La visibilità delle colonne del grid viene poi regolata in base alla scheda selezionata.
+	 */
 	private void aggiornaGrid() {
 		@SuppressWarnings("unchecked")
 		ListTab<Prestito> tab = (ListTab<Prestito>) tabs.getSelectedTab();
@@ -131,6 +164,11 @@ public class GestionePrestitiPage extends PrivatePage{
 		aggiornaColonneGrid();
 	}
 	
+	/**
+	 * Aggiorna le liste dei prestiti presenti nei tre tab della UI. Le liste sono recuperate 
+	 * dal {@link PrestitiManager} in base allo stato del prestito.
+	 * I dati visualizzati nella grid vengono anche aggiornati di conseguenza.
+	 */
 	private void aggiornaListe() {
 		tabPrenotazioni.setLista(PrestitiManager.getInstance().getPrestiti(StatoPrestito.PRENOTATO.name()));
 		tabAttivi.setLista(PrestitiManager.getInstance().getPrestiti(StatoPrestito.RITIRATO.name()));
@@ -140,6 +178,14 @@ public class GestionePrestitiPage extends PrivatePage{
 		aggiornaGrid();
 	}
 	
+	/**
+	 * Crea la colonna "Attiva Prestito" della {@link Grid} dei prestiti.
+	 * La colonna contiene un pulsante "Attiva" che permette di attivare il prestito selezionato.
+	 * Se l'account dell'utente è sospeso, il pulsante sarà disabilitato.
+	 * Quando il pulsante viene cliccato, viene visualizzata una {@link BetterConfirmDialog} per confermare l'attivazione del prestito.
+	 * Se la conferma viene data, il prestito viene attivato tramite il metodo {@link PrestitiManager#attivaPrestito(Prestito)}.
+	 * Al termine dell'operazione, vengono aggiornate le liste dei prestiti visualizzati nei vari tab tramite il metodo {@link #aggiornaListe()}.
+	*/
 	private void creaColonnaAttivaPrestito() {
 		colonnaAttivaPrestito = gridPrestiti.addComponentColumn(prestito -> {
 			Button confermaRitiro = new Button("Attiva");
@@ -165,6 +211,12 @@ public class GestionePrestitiPage extends PrivatePage{
 		}).setWidth("130px").setFrozen(true);
 	}
 	
+	/**
+	 * Crea la colonna per l'annullamento della prenotazione di un prestito.
+	 * La colonna mostrerà un pulsante "Annulla Prenotazione" che, se cliccato,
+	 * aprirà una finestra di conferma per l'annullamento effettivo della prenotazione.
+	 * Se l'utente conferma l'annullamento, la prenotazione verrà eliminata e le liste dei prestiti verranno aggiornate.
+	*/
 	private void creaColonnaAnnullaPrenotazione() {
 		colonnaAnnullaPrenotazione = gridPrestiti.addComponentColumn(prestito -> {
 			Button annullaPrenotazione = new Button("Annulla Prenotazione");
@@ -191,6 +243,13 @@ public class GestionePrestitiPage extends PrivatePage{
 		}).setWidth("200px");
 	}
 	
+	/**
+	 * Questo metodo crea la colonna "Concludi" nella {@link Grid} dei prestiti.
+	 * La colonna contiene un {@link Button} che, una volta cliccato, apre una finestra di conferma 
+	 * della conclusione del prestito tramite {@link BetterConfirmDialog}.
+	 * Se l'utente conferma la conclusione, il prestito viene concluso tramite il metodo {@link PrestitiManager#concludiPrestito(Prestito)}.
+	 * La lista dei prestiti viene poi aggiornata tramite il metodo {@link #aggiornaListe()}.
+	*/
 	private void creaColonnaConcludiPrestito() {
 		colonnaConcludiPrestito = gridPrestiti.addComponentColumn(prestito -> {
 			Button confermaConcludi = new Button("Concludi");
@@ -213,6 +272,12 @@ public class GestionePrestitiPage extends PrivatePage{
 		}).setWidth("130px").setFrozen(true);
 	}
 	
+	/**
+	 * Crea la colonna delle azioni sugli account dei prestiti nella griglia dei prestiti.
+	 * La colonna verrà creata solamente se l'account non è bloccato e se l'utente ha già ricevuto 
+	 * meno di 3 solleciti o se l'invio del sollecito è possibile.
+	 * Altrimenti, verrà mostrato un pulsante disabilitato per segnalare che l'account è sospeso.
+	*/
 	private void creaColonnaAzioniAccount() {
 		colonnaAzioniAccount = gridPrestiti.addComponentColumn(prestito -> {
 			// se l'account non è bloccato verifico se devo inviare dei solleciti

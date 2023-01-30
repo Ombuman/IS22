@@ -18,6 +18,12 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
+/**
+ * Classe che rappresenta la pagina per la gestione del catalogo dei libri in biblioteca.
+ * La pagina è accessibile solo ai bibliotecari ed è composta da una tabella per la visualizzazione dei 
+ * libri e un pulsante per l'aggiunta di un nuovo libro.
+ */
+
 @PageTitle("Gestione Catalogo")
 @Route(value = "/gestione-catalogo", layout = AdminLayout.class)
 public class GestioneCatalogoPage extends PrivatePage{
@@ -26,11 +32,19 @@ public class GestioneCatalogoPage extends PrivatePage{
 	
 	private TabellaGestioneCatalogo tabella;
 	
+	/**
+	 * Metodo invocato prima dell'entrata nella pagina, controlla che l'utente abbia il ruolo di bibliotecario.
+	 * 
+	 * @param event evento prima dell'entrata nella pagina
+	 */
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
 		super.beforeEnter(event, RuoloAccount.BIBLIOTECARIO);
 	}
 	
+	/**
+	 * Costruttore che inizializza la pagina con la tabella dei libri e il pulsante per l'aggiunta di un nuovo libro.
+	 */
 	public GestioneCatalogoPage() {
 		addClassNames(LumoUtility.Padding.SMALL, LumoUtility.Padding.Bottom.LARGE);
 		
@@ -41,6 +55,11 @@ public class GestioneCatalogoPage extends PrivatePage{
 		setSizeFull();
 	}
 	
+	/**
+	 * Crea e restituisce il pulsante per l'aggiunta di un nuovo libro.
+	 * 
+	 * @return pulsante per l'aggiunta di un nuovo libro
+	 */
 	private Button creaPulsanteAggiungi() {
 		Icon plus = new Icon(VaadinIcon.PLUS);
 		plus.addClassName(LumoUtility.IconSize.SMALL);

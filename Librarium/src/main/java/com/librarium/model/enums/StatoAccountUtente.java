@@ -1,5 +1,11 @@
 package com.librarium.model.enums;
 
+/**
+ * Enumerazione che rappresenta lo stato di un account utente.
+ */
 public enum StatoAccountUtente {
-	ATTIVO, SOSPESO;
+	/* Stato dell'account utente attivo */
+	ATTIVO, 
+	/* Stato dell'account utente sospeso*/
+	SOSPESO;
 }
