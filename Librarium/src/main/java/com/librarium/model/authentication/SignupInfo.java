@@ -4,10 +4,10 @@ import com.librarium.controller.utility.EncryptionUtility;
 
 /**
 *
-*La classe SignupInfo rappresenta le informazioni necessarie per l'iscrizione di un utente.
-*Contiene i campi per il nome, cognome, email, password e conferma password dell'utente.
-*Offre metodi per accedere e modificare queste informazioni.
-*Inoltre, fornisce un metodo per crittografare la password.
+* La classe SignupInfo rappresenta le informazioni necessarie per l'iscrizione di un utente.
+* Contiene i campi per il nome, cognome, email, password e conferma password dell'utente.
+* Offre metodi per accedere e modificare queste informazioni.
+* Inoltre, fornisce un metodo per crittografare la password.
 *
 */
 public class SignupInfo {
@@ -19,19 +19,18 @@ public class SignupInfo {
 	private String confermaPassword;
 	
 	/**
-	*Costruttore di default che imposta tutti i campi a stringhe vuote.
+	* Costruttore di default che imposta tutti i campi a stringhe vuote.
 	*/
 	public SignupInfo() {
 		this("", "", "", "");
 	}
 	
 	/**
-	*
-	*Costruttore che accetta come argomenti i valori per nome, cognome, email e password.
-	*@param nome il nome dell'utente
-	*@param cognome il cognome dell'utente
-	*@param email l'email dell'utente
-	*@param password la password scelta dall'utente
+	* Costruttore che accetta come argomenti i valori per nome, cognome, email e password.
+	* @param nome il nome dell'utente
+	* @param cognome il cognome dell'utente
+	* @param email l'email dell'utente
+	* @param password la password scelta dall'utente
 	*/
 	public SignupInfo(String nome, String cognome, String email, String password) {
 		this.nome = nome;
@@ -41,9 +40,8 @@ public class SignupInfo {
 	}
 
 	/**
-	*
-	*Restituisce il nome dell'utente.
-	*@return il nome dell'utente
+	* Restituisce il nome dell'utente.
+	* @return il nome dell'utente
 	*/
 	public String getNome() {
 		return nome;
